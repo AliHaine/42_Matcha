@@ -16,11 +16,17 @@ def connectDatabase():
     try:
         conn = psycopg2.connect(
                 host="0.0.0.0",
+                port=os.getenv('POSTGRES_PORT'),
                 database=os.getenv('POSTGRES_DB'),
                 user=os.getenv('POSTGRES_USER'),
                 password=os.getenv('POSTGRES_PASSWORD'))
+        if conn:
+            print('Connected to database')
+        else:
+            print('Failed to connect to database')
     except Exception as e:
         print(e)
+        connectDatabase()
 
 def createTables(*models):
     cur = conn.cursor()
@@ -32,16 +38,18 @@ def createTables(*models):
     conn.commit()
     cur.close()
 
-def createElem(model, elem):
+def createElem(model, elem, requiredColumns):
     for column in model.columns.keys():
         if column == 'id':
+            continue
+        if column not in requiredColumns:
             continue
         if column not in elem.keys():
             print(f'Column {column} not found in elem')
             return False
     cur = conn.cursor()
-    columns = ', '.join([column for column in model.columns.keys() if column != 'id'])
-    values = ', '.join([f"'{elem[column]}'" for column in model.columns.keys() if column != 'id'])
+    columns = ', '.join([column for column in model.columns.keys() if column != 'id' and column in requiredColumns])
+    values = ', '.join([f"'{elem[column]}'" for column in model.columns.keys() if column != 'id' and column in requiredColumns])
     sqlCommand = f'INSERT INTO {model.table_name} ({columns}) VALUES ({values})'
     print(sqlCommand)
     cur.execute(sqlCommand)
