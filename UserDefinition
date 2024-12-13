@@ -1,0 +1,84 @@
+User
+* = obligatoire first inscription
+
+*Id
+*Email
+*Mdp
+*Prenom (30 chars max)
+*Nom (30 chars max)
+*Sexe (h ou f)
+*Age (15-80 ans)
+Ville (Sera check pour voir si existe, ville france, belge, suisse, luxembourgeoise)
+Description
+
+Categorie Corp
+poids (40-300 kg)
+Taille (90-220 cm)
+Corpulance (Maigre, normal, sportif, gros)
+
+Categorie Sante
+Fumeur (Boolean true/false)
+Bois (Jamais, Ocasionnnelement, souvent, tres souvent)
+Alimentation (Omnivore, Végétarien, Végétalien, Vegan, Riche en protein, Autre)
+
+Categorie Relation idéale
+Recherche (Rencontre amicale, Relation sérieuse, Aucune idée, Juste pour discuter)
+Engagement (Court terme, Long terme, Indécis)
+Fréquence de contact (Quotidienne, Hebdomadaire, Occasionnelle)
+
+Interet (Choisir 3 minimum)
+
+Arts et Culture
+Cinéma
+Lecture
+Écriture
+Théâtre
+Peinture/Dessin
+Musées/Expositions
+Photographie
+Musique (écoute, concerts)
+
+Sport et Activités physiques
+Course à pied
+Fitness
+Randonnée
+Cyclisme
+Natation
+Sports d’équipe (football, basketball, etc.)
+Sports extrêmes (escalade, parapente, etc.)
+
+Loisirs créatifs
+Bricolage (DIY)
+Couture et tricot
+Jardinage
+Scrapbooking
+Design intérieur
+
+Vie sociale et événements
+Soirées entre amis
+Bénévolat
+Sorties en famille
+Activités en groupe
+
+Intérêts intellectuels
+Philosophie
+Développement personnel
+Histoire
+Économie
+Politique
+
+Relaxation et bien-être
+Méditation
+Spa et massages
+Bain de soleil
+Relaxation en bord de mer
+Séances de bien-être
+
+Autres passions
+Animaux de compagnie
+Mode et tendances
+Autos et motos
+Collection d’objets (timbres, pièces, etc.)
+Humour et comédie
+Cuisine
+Menage
