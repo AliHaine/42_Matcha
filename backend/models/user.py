@@ -9,23 +9,49 @@ PASSWORD_REQUIREMENTS = {
     'min_lowercase': 1,
     'min_digits': 1
 }
+REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'sexe', 'age']
 
-
+USER_ENUM = {
+    'id': 0,
+    'firstName': 1,
+    'lastName': 2,
+    'sexe': 3,
+    'age': 4,
+    'email': 5,
+    'password': 6,
+    'description': 7
+}
 class User:
     table_name = 'users'
     columns = {
         'id': 'SERIAL PRIMARY KEY',
-        'firstName': 'VARCHAR(100) NOT NULL',
-        'lastName': 'VARCHAR(100) NOT NULL',
-        'email': 'VARCHAR(100) UNIQUE NOT NULL',
-        'password': 'VARCHAR(100) NOT NULL',
+        'firstName': 'VARCHAR(30) NOT NULL',
+        'lastName': 'VARCHAR(30) NOT NULL',
+        'sexe': 'VARCHAR(1) NOT NULL',
+        'CONSTRAINT check_sexe': 'CHECK (sexe IN (\'H\', \'F\'))',
+        'age': 'INTEGER NOT NULL',
+        'email': 'VARCHAR(256) UNIQUE NOT NULL',
+        'password': 'VARCHAR(256) NOT NULL',
         'description': 'VARCHAR(500) DEFAULT NULL',
-    }
+        # categorie corps
+        'poids': 'INTEGER DEFAULT NULL',
+        'taille': 'INTEGER DEFAULT NULL',
+        'corpulance': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_corpulance': 'CHECK (corpulance IN (\'mince\', \'normal\', \'sportif\', \'fort\'))',
+        # categorie sante
+        'fumeur': 'BOOLEAN DEFAULT NULL',
+        'Boit': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_boit': 'CHECK (Boit IN (\'jamais\', \'occasionnel\', \'souvent\'))',
+        'alimentation': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_alimentation': 'CHECK (alimentation IN (\'vegetarien\', \'vegan\', \'carnivore\', \'omnivore\'))',
+        # categorie relation ideale
+        'recherche': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_recherche': 'CHECK (recherche IN (\'amicale\', \'amoureuse\', \'sexuelle\', \'aucune idee\', \'discussion uniquement\'))',
+        'engagement': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_engagement': 'CHECK (engagement IN (\'court terme\', \'long terme\', \'aucune idee\'))',
+        'frequence': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_frequence': 'CHECK (frequence IN (\'Quotidienne\', \'Hebdomadaire\', \'Occassionnelle\', \'autre\'))',
 
-class UserInterests:
-    table_name = 'user_interests'
-    columns = {
-        'id': 'SERIAL PRIMARY KEY',
     }
 
 # TODO
@@ -82,25 +108,27 @@ def create_user(user):
         raise Exception('Password is not valid')
     if password != user['passwordConfirm']:
         raise Exception('Passwords do not match')
+    age = user['age']
+    if age <= 15 or age > 80:
+        raise Exception('Age is not valid')
+    sexe = user['sexe']
+    if sexe != 'H' and sexe != 'F':
+        raise Exception("Sexe is not valid")
     user['password'] = crypt_password(user['password'])
-    createElem(User, user, ['firstName', 'lastName', 'email', 'password'])
+    createElem(User, user, REQUIRED_FIELDS)
     user['password'] = password
 
 
-def login_user_func(request, userToLogin):
-    email = userToLogin['email']
-    password = userToLogin['password']
+def login_user_func(userToLogin):
+    email = userToLogin.get('email', '')
+    password = userToLogin.get('password', '')
     if emailValidator(email, doublonCheck=False) == False:
         raise Exception('Invalid email')
     users = getElems(User, {'email': email})
     if len(users) == 0:
         raise Exception('User not found')
     user = users[0]
-    print("\n\n\nDEBUG POINT")
-    print(user)
-    print(user[3])
-    print(password)
-    if check_password(password, user[3]) == True:
+    if check_password(password, user[USER_ENUM['password']]) == True:
         session['email'] = email
     else:
         raise Exception('Invalid password')

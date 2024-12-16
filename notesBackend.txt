@@ -23,10 +23,19 @@ api mise en place (fonctionnelle i think ?) (toutes commencent par /api):
 
 - /registerRequirements (GET) : recuperer les infos obligatoires pour register
 
-- /addDescription (POST) : (pas encore setup) permettra de set la description de l'utilisateur
+- /modifyInterests (POST) : mettre a jour les interets de l'utilisateur connecte
+    details :
+        avant d'ajouter les nouveaux interets le backend clear les interets actuels de l'utilisateur
+        infos a envoyer :
+            - interets (interests) : c'est un tableau de string avec le nom exact des interets que l'utilisateur souhaite avoir
+
+- /getInterests (GET) : retourne la liste complete des interets
+
+- /modifyDescription (POST) : set la description de 
+
 
 api a faire :
-- modification d'informations (description, mail, interets, etc....)
+- modification d'informations (mail, nom, etc....)
 
 var de profils a mettre en place :
 - interets
