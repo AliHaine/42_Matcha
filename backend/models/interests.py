@@ -3,7 +3,7 @@ from models import User
 import os
 from pathlib import Path
 
-LIST_INTERESTS = open(Path(os.getcwd()) / 'config' / 'interests.txt', 'r').read().split('\n')
+LIST_INTERESTS = open(Path(__file__).parent.parent / 'config' / 'interests.txt', 'r').read().split('\n')
 
 class UserInterests:
     table_name = 'user_interests'
@@ -23,11 +23,9 @@ class interests:
     }
 
 def init_interests():
-    print(LIST_INTERESTS)
     inter = getElems(interests)
     interNames = [elem[1] for elem in inter]
     if len(inter) > 0:
-        print('Interests already initialized')
         for interest in inter:
             if (interest[1] not in LIST_INTERESTS):
                 deleteElem(interests, {'id': interest[0]})
@@ -60,7 +58,6 @@ def getAllUsersInterest(userEmail):
     for interest in usersInterests:
         gettedInterest = getElems(interests, {'id': interest[1]})
         temp.append(gettedInterest[0][1])
-    print(temp)
     usersInterests = temp
     if len(usersInterests) == 0:
         return []
@@ -76,7 +73,6 @@ def getAllInterestsUsers(interestName):
     for user in usersInterests:
         gettedUser = getElems(User, {'id': user[0]})
         temp.append(gettedUser[0][1])
-    print(temp)
     usersInterests = temp
     if len(usersInterests) == 0:
         return []

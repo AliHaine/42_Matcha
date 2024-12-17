@@ -1,26 +1,9 @@
 from crypting import crypt_password, check_password
-from database import createElem, getElems
+from database import createElem, getElems, modifyElem
 from flask import session
 
-ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ- "
-PASSWORD_REQUIREMENTS = {
-    'min_length': 8,
-    'min_uppercase': 1,
-    'min_lowercase': 1,
-    'min_digits': 1
-}
-REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'sexe', 'age']
+from config import *
 
-USER_ENUM = {
-    'id': 0,
-    'firstName': 1,
-    'lastName': 2,
-    'sexe': 3,
-    'age': 4,
-    'email': 5,
-    'password': 6,
-    'description': 7
-}
 class User:
     table_name = 'users'
     columns = {
@@ -28,30 +11,32 @@ class User:
         'firstName': 'VARCHAR(30) NOT NULL',
         'lastName': 'VARCHAR(30) NOT NULL',
         'sexe': 'VARCHAR(1) NOT NULL',
-        'CONSTRAINT check_sexe': 'CHECK (sexe IN (\'H\', \'F\'))',
+        'CONSTRAINT check_sexe': "CHECK (sexe IN ('" + "', '".join(LIST_SEXE) + "'))",
         'age': 'INTEGER NOT NULL',
+        'CONSTRAINT check_age': f"CHECK (age > {MIN_AGE} AND age < {MAX_AGE})",
         'email': 'VARCHAR(256) UNIQUE NOT NULL',
         'password': 'VARCHAR(256) NOT NULL',
         'description': 'VARCHAR(500) DEFAULT NULL',
         # categorie corps
         'poids': 'INTEGER DEFAULT NULL',
+        'CONSTRAINT check_poids': f'CHECK (poids > {MIN_POIDS} AND poids < {MAX_POIDS})',
         'taille': 'INTEGER DEFAULT NULL',
-        'corpulance': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_corpulance': 'CHECK (corpulance IN (\'mince\', \'normal\', \'sportif\', \'fort\'))',
+        'CONSTRAINT check_taille': f'CHECK (taille > {MIN_TAILLE} AND taille < {MAX_TAILLE})',
+        'corpulence': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_corpulance': f"CHECK (corpulence IN ('" + "', '".join(LIST_CORPU) + "'))",
         # categorie sante
         'fumeur': 'BOOLEAN DEFAULT NULL',
-        'Boit': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_boit': 'CHECK (Boit IN (\'jamais\', \'occasionnel\', \'souvent\'))',
+        'boit': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_boit': f"CHECK (boit IN ('" + "', '".join(LIST_BOIT) + "'))",
         'alimentation': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_alimentation': 'CHECK (alimentation IN (\'vegetarien\', \'vegan\', \'carnivore\', \'omnivore\'))',
+        'CONSTRAINT check_alimentation': f"CHECK (alimentation IN ('" + "', '".join(LIST_ALIM) + "'))",
         # categorie relation ideale
         'recherche': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_recherche': 'CHECK (recherche IN (\'amicale\', \'amoureuse\', \'sexuelle\', \'aucune idee\', \'discussion uniquement\'))',
+        'CONSTRAINT check_recherche': "CHECK (recherche IN ('" + "', '".join(LIST_RECHERCHE) + "'))",
         'engagement': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_engagement': 'CHECK (engagement IN (\'court terme\', \'long terme\', \'aucune idee\'))',
+        'CONSTRAINT check_engagement': "CHECK (engagement IN ('" + "', '".join(LIST_ENGAGEMENT) + "'))",
         'frequence': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_frequence': 'CHECK (frequence IN (\'Quotidienne\', \'Hebdomadaire\', \'Occassionnelle\', \'autre\'))',
-
+        'CONSTRAINT check_frequence': "CHECK (frequence IN ('" + "', '".join(LIST_FREQUENCE) + "'))",
     }
 
 # TODO
@@ -109,10 +94,10 @@ def create_user(user):
     if password != user['passwordConfirm']:
         raise Exception('Passwords do not match')
     age = user['age']
-    if age <= 15 or age > 80:
+    if age < MIN_AGE or age > MAX_AGE:
         raise Exception('Age is not valid')
     sexe = user['sexe']
-    if sexe != 'H' and sexe != 'F':
+    if sexe not in LIST_SEXE:
         raise Exception("Sexe is not valid")
     user['password'] = crypt_password(user['password'])
     createElem(User, user, REQUIRED_FIELDS)
@@ -132,3 +117,28 @@ def login_user_func(userToLogin):
         session['email'] = email
     else:
         raise Exception('Invalid password')
+
+def checkSanity(sanity, userId):
+    if sanity['fumeur'] not in [True, False]:
+        raise Exception('Invalid fumeur')
+    if sanity['boit'] not in LIST_BOIT:
+        raise Exception('Invalid boit')
+    if sanity['alimentation'] not in LIST_ALIM:
+        raise Exception('Invalid alimentation')
+    modifyElem(User, userId, sanity)
+
+def modifyUserBody(bodyInfo, userId):
+    poids = bodyInfo['poids']
+    if type(poids).__name__ != 'int':
+        raise Exception('Invalid poids')
+    taille = bodyInfo['taille']
+    if type(taille).__name__ != 'int':
+        raise Exception('Invalid taille')
+    if poids < MIN_POIDS or poids > MAX_POIDS:
+        raise Exception('Invalid poids')
+    if taille < MIN_TAILLE or taille > MAX_TAILLE:
+        raise Exception('Invalid taille')
+    if bodyInfo['corpulence'] not in LIST_CORPU:
+        raise Exception('Invalid corpulence')
+    print(bodyInfo)
+    modifyElem(User, userId, bodyInfo)

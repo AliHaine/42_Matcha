@@ -5,13 +5,21 @@ from pathlib import Path
 from time import sleep
 
 
-dotenv_path = Path(os.getcwd()) / 'database/docker/.env'
+dotenv_path = Path(__file__).parent / 'docker/.env'
 load_dotenv(dotenv_path)
 
 conn = None
+retry = 1
+MAX_RETRY = 2
 
 def connectDatabase():
     global conn
+    global retry
+    if retry > MAX_RETRY:
+        print('Failed to connect to database after 10 tries, exiting')
+        print(f'Please check if the .env exists in the folder : {dotenv_path}')
+        print("If .env exists, check if the variables are correct")
+        return
     try:
         conn = psycopg2.connect(
                 host="0.0.0.0",
@@ -24,9 +32,9 @@ def connectDatabase():
         else:
             print('Failed to connect to database')
     except Exception as e:
-        print(e)
-        print('retrying in 5 seconds')
-        sleep(5)
+        print(f'failed to connected to db, retrying in 1 seconds (try number : {retry})')
+        sleep(1)
+        retry += 1
         connectDatabase()
 
 def createTables(models):
@@ -90,6 +98,16 @@ def modifyElem(model, elemId, modifications):
     sqlCommand = f'UPDATE {model.table_name} SET '
     sqlCommand += ', '.join([f"{key} = '{value}'" for key, value in modifications.items()])
     sqlCommand += f" WHERE id = {elemId}"
+    print(sqlCommand)
     cur.execute(sqlCommand)
     conn.commit()
     cur.close()
+
+def dropAll():
+    cur = conn.cursor()
+    cur.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;')
+    conn.commit()
+    cur.close()
+
+def databaseConnected():
+    return conn is not None

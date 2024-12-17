@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
-from database import connectDatabase, createTables, createElem, getElems, deleteElem, modifyElem
-from models import User, create_user, ALLOWED_CHARACTERS, PASSWORD_REQUIREMENTS, REQUIRED_FIELDS, login_user_func, UserInterests, interests, init_interests, modifyUserInterest, getAllUsersInterest, LIST_INTERESTS
+from database import connectDatabase, createTables, getElems, deleteElem, modifyElem, dropAll, databaseConnected
+from models import *
 from crypting import init_bcrypt
+import sys
+from config import *
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
@@ -22,13 +23,11 @@ def userIsLoggedIn():
     return False
 
 @app.route('/api/test', methods=['GET'])
-def test():
-    if userIsLoggedIn() == True:
-        getAllUsersInterest(session.get('email'))
+def testRoute():
     return jsonify({'Success': 'Test success'})
 
-@app.route('/api/register', methods=['POST'])
-def register_user():
+@app.route('/api/account/register', methods=['POST'])
+def registerUserRoute():
     values = request.json
     if userIsLoggedIn() == True:
         return jsonify({'Error': 'User already logged in'})
@@ -51,12 +50,7 @@ def register_user():
     except Exception as e:
         return jsonify({'Error': str(e)})
 
-@app.route('/api/registerRequirements', methods=['GET'])
-def get_register_requirements():
-    # return ALLOWED_CHARACTERS, PASSWORD_REQUIREMENTS
-    return jsonify({'allowed_charactes': ALLOWED_CHARACTERS, 'password_requirements': PASSWORD_REQUIREMENTS, 'required fields': REQUIRED_FIELDS + ['passwordConfirm']})
-
-@app.route('/api/login', methods=['POST'])
+@app.route('/api/account/login', methods=['POST'])
 def loginRoute():
     data = request.json
     if userIsLoggedIn() == True:
@@ -75,7 +69,7 @@ def loginRoute():
     except Exception as e:
         return jsonify({'Error': str(e)})
     
-@app.route('/api/logout', methods=['GET'])
+@app.route('/api/account/logout', methods=['GET'])
 def logoutRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Error': 'User already logged out'})
@@ -84,8 +78,20 @@ def logoutRoute():
         return jsonify({'Success': 'User logged out successfully'})
     return jsonify({'Error': 'User not logged in'})
 
-@app.route('/api/modifyDescription', methods=['POST'])
-def modifyDescription():
+@app.route('/api/account/getUser', methods=['GET'])
+def getUserRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Error': 'User not logged in'})
+    user = getElems(User, {'email': session.get('email')})[0]
+    return jsonify({'user': {
+        'firstName': user[USER_ENUM['firstName']],
+        'lastName': user[USER_ENUM['lastName']],
+        'email': user[USER_ENUM['email']],
+        'description': user[USER_ENUM['description']]
+    }})
+
+@app.route('/api/account/modifyDescription', methods=['POST'])
+def modifyDescriptionRoute():
     data = request.json
     if userIsLoggedIn() == False:
         return jsonify({'Error': 'you must be logged in to modify description'})
@@ -98,22 +104,23 @@ def modifyDescription():
         return jsonify({'Success': 'Description updated successfully'})
     except Exception as e:
         return jsonify({'Error': str(e)})
-
     
-    
-@app.route('/api/modifyInterests', methods=['POST'])
-def addInterests():
+@app.route('/api/account/modifyInterests', methods=['POST'])
+def modifyInterestsRoute():
     data = request.json
     if userIsLoggedIn() == False:
         return jsonify({'Error': 'you must be logged in to modify interests'})
     interests = data.get('interests', [])
-    # if len(interests) < 3:
-    #     return jsonify({'Error': 'not enough interests provided'})
     user = getElems(User, {'email': session.get('email')})[0]
+    if len(interests) <= 0:
+        return jsonify({'Error': 'you must provide at least one interest'})
+    else:
+        for interest in interests:
+            if interest not in LIST_INTERESTS:
+                return jsonify({'Error': f'Interest {interest} not allowed'})
     deleteElem(UserInterests, {'user_id': user[0]})
     if len(interests) > 0:
         for interest in interests:
-            print(interest)
             try:
                 modifyUserInterest(session.get('email'), interest)
                 pass
@@ -121,13 +128,81 @@ def addInterests():
                 return jsonify({'Error': str(e)})
     return jsonify({'Success': 'Interests added successfully'})
 
+@app.route('/api/account/modifySanity', methods=['POST'])
+def modifySanityRoute():
+    data = request.json
+    if userIsLoggedIn() == False:
+        return jsonify({'Error': 'you must be logged in to modify sanity'})
+    fumeur = data.get('fumeur', None)
+    boit = data.get('boit', None)
+    alimentation = data.get('alimentation', None)
+    if not boit or not alimentation or fumeur is None:
+        return jsonify({'Error': 'you must provide all the sanity fields (fumeur, boit, alimentation)'})
+    sanity = {
+        'fumeur': fumeur,
+        'boit': boit,
+        'alimentation': alimentation
+    }
+    user = getElems(User, {'email': session.get('email')})[0]
+    try:
+        checkSanity(sanity, user[0])
+        return jsonify({'Success': 'Sanity updated successfully'})
+    except Exception as e:
+        return jsonify({'Error': str(e)})
+
+@app.route('/api/account/modifyBodyInfo', methods=['POST'])
+def modifyBodyInfoRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Error': 'you must be logged in to modify body info'})
+    data = request.json
+    taille = data.get('taille', None)
+    poids = data.get('poids', None)
+    corpulence = data.get('corpulence', None)
+    if not taille or not poids or not corpulence:
+        return jsonify({'Error': 'you must provide all the body info fields (taille, poids, corpulence)'})
+    user = getElems(User, {'email': session.get('email')})[0]
+    bodyInfo= {
+        'taille': taille,
+        'poids': poids,
+        'corpulence': corpulence
+    }
+    try:
+        modifyUserBody(bodyInfo, user[0])
+        return jsonify({'Success': 'Body info updated successfully'})
+    except Exception as e:
+        return jsonify({'Error': str(e)})
+
+@app.route('/api/registerRequirements', methods=['GET'])
+def getRegisterRequirementsRoute():
+    # return ALLOWED_CHARACTERS, PASSWORD_REQUIREMENTS
+    return jsonify({'allowed_charactes': ALLOWED_CHARACTERS, 'password_requirements': PASSWORD_REQUIREMENTS, 'required fields': REQUIRED_FIELDS + ['passwordConfirm']})
+
 @app.route('/api/getInterests', methods=['GET'])
-def getGlobalInterests():
+def getInterestsRoute():
     return jsonify({'interests': LIST_INTERESTS})
-    
+
+@app.route('/api/getSanity', methods=['GET'])
+def getSanityRoute():
+    return jsonify({'sanity': ['fumeur', 'boit', 'alimentation'],
+                    'fumeur': [True, False],
+                    'boit': LIST_BOIT,
+                    'alimentation': LIST_ALIM})
+
+@app.route('/api/getBodyInfo', methods=['GET'])
+def getBodyInfoRoute():
+    return jsonify({'body_info': ['taille', 'poids', 'corpulence'],
+                    'taille': {'min': MIN_TAILLE, 'max': MAX_TAILLE},
+                    'poids': {'min': MIN_POIDS, 'max': MAX_POIDS},
+                    'corpulence': LIST_CORPU})
 
 if __name__ == '__main__':
     connectDatabase()
+    if databaseConnected() == False:
+        print("Error: Database not connected")
+        exit(1)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "RESET":
+            dropAll()
     tupleModels = (User, interests, UserInterests)
     createTables(tupleModels)
     init_bcrypt(app)
