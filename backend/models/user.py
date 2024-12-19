@@ -142,3 +142,74 @@ def modifyUserBody(bodyInfo, userId):
         raise Exception('Invalid corpulence')
     print(bodyInfo)
     modifyElem(User, userId, bodyInfo)
+
+def modifyUserPersonnalInfo(personnalInfo, userId):
+    Errors = []
+    validUser = {}
+    if 'firstName' in personnalInfo:
+        firstName = personnalInfo['firstName']
+        if firstName is not None:
+            if checkInvalidCharacters(personnalInfo['firstName']) == True:
+                Errors.append('Invalid characters in firstName')
+            else:
+                validUser['firstName'] = personnalInfo['firstName']
+    if 'lastName' in personnalInfo:
+        lastName = personnalInfo['lastName']
+        if lastName is not None:
+            if checkInvalidCharacters(personnalInfo['lastName']) == True:
+                Errors.append('Invalid characters in lastName')
+            else:
+                validUser['lastName'] = personnalInfo['lastName']
+    if 'email' in personnalInfo:
+        email = personnalInfo['email']
+        if email is not None:
+            if emailValidator(personnalInfo['email'], doublonCheck=True) == False:
+                Errors.append('Invalid email')
+            else:
+                validUser['email'] = personnalInfo['email']
+    if 'age' in personnalInfo:
+        age = personnalInfo['age']
+        if age is not None:
+            if type(age).__name__ != 'int':
+                Errors.append('Invalid age')
+            else:
+                if age < MIN_AGE or age > MAX_AGE:
+                    Errors.append('Invalid age')
+                else:
+                    validUser['age'] = personnalInfo['age']
+    if 'sexe' in personnalInfo:
+        sexe = personnalInfo['sexe']
+        if sexe is not None:
+            if sexe not in LIST_SEXE:
+                Errors.append("Sexe is not valid")
+            else:
+                validUser['sexe'] = personnalInfo['sexe']
+    if 'newPassword' in personnalInfo:
+        newPassword = personnalInfo['newPassword']
+        if newPassword is not None:
+            if passwordValidator(newPassword) == False or newPassword != personnalInfo['newPasswordConfirm']:
+                Errors.append('Password is not valid')
+            else:
+                validUser['password'] = crypt_password(newPassword)
+    if len(Errors) > 0:
+        strErrors = ', '.join(Errors)
+        raise Exception(strErrors)
+    if len(validUser) <= 0:
+        raise Exception('No valid fields to modify')
+    else:
+        password = personnalInfo.get('password', None)
+        if password is not None:
+            user = getElems(User, {'id': userId})[0]
+            if check_password(password, user[USER_ENUM['password']]) == True:
+                print('password is correct')
+                modifyElem(User, userId, validUser)
+                session['email'] = validUser.get('email', session.get('email'))
+            else:
+                raise Exception('Invalid password')
+        else:
+            raise Exception('No password provided for modification')
+            # if passwordValidator(password) == False:
+            #     raise Exception('Password is not valid')
+            # if password != 
+            #     raise Exception('Passwords do not match')
+            # validUser['password'] = crypt_password(password)

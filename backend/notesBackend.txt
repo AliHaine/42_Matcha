@@ -1,56 +1,8 @@
-api mise en place (fonctionnelle i think ?) (toutes commencent par /api):
-- /accout/register (POST) : creation de compte
-    details :
-        informations requises :
-            - prenom (firstName)
-            - nom (lastName)
-            - email (email)
-            - password (password, passwordConfirm)
-        
-        cree l'utilisateur et l'authentifie directement si tout est ok
-
-- /account/login (POST) : auth d'un utilisateur
-    details :
-        informations requises :
-            - email (email)
-            - password (password)
-        
-        si tout est ok l'utilisateur est connecte sinon message d'erreur
-
-- /account/logout (GET) : deconnecte l'utilisateur si auth
-    details :
-        vraiment besoin de details sur celui ci ?
-
-- /account/modifyDescription (POST) : set la description de l'utilisateur connecte
-
-- /account/modifyInterests (POST) : mettre a jour les interets de l'utilisateur connecte
-    details :
-        avant d'ajouter les nouveaux interets le backend clear les interets actuels de l'utilisateur
-        infos a envoyer :
-            - interets (interests) : c'est un tableau de string avec le nom exact des interets que l'utilisateur souhaite avoir
-
-- /account/modifySanity (POST) : set les valeur de la categorie sante (fumeur, boit, alimentation) de l'utilisateur connecte
-    details :
-        infos a envoyer :
-            - fumeur (fumeur) : un booleen (true ou false)
-            - boit (boit) : string avec la frequence (voir valeur dispo dans backend/config/userGlobal.py, valeur LIST_BOIT)
-            - alimentation (alimentation) : string avec l'alimentation (voir valeur dispo dans backend/config/userGlobal.py, valeur LIST_ALIM)
-
-- /registerRequirements (GET) : recuperer les infos obligatoires pour register
-
-- /getInterests (GET) : retourne la liste complete des interets
-
-- /getSanity (GET) : permet de recuperer les categories informations obligatoires avec les valeurs dispos
-
-- /getBodyInfo (GET) : permettra de recup toutes les valeurs de la categorie corps avec les valeurs dispos
-
 api a faire :
 - modification d'informations (mail, nom, etc....)
-- /account/modifyBodyInfo (POST) : set les valeurs de la categories corps (taille, poids, corpulance)
 
 TODO :
 - se renseigner pour proteger les requetes post ? (csrf token like ?)
-- faire un readme pour que ce fichier soit plus lisible
 
 
 exemple requete curl au cas ou :

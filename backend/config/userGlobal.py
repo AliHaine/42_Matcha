@@ -1,3 +1,4 @@
+# pour la creation d'un utilisateur
 ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ- "
 PASSWORD_REQUIREMENTS = {
     'min_length': 8,
@@ -17,17 +18,22 @@ USER_ENUM = {
     'password': 6,
     'description': 7
 }
-
 LIST_SEXE = ['H', 'F']
 MIN_AGE = 15
 MAX_AGE = 80
+
+# pour la categorie santé
+LIST_BOIT = ['jamais', 'occasionnel', 'souvent']
+LIST_ALIM = ['vegetarien', 'vegan', 'carnivore', 'omnivore']
+
+# pour la categorie corps
 MAX_POIDS = 300
 MIN_POIDS = 30
 MAX_TAILLE = 250
 MIN_TAILLE = 90
 LIST_CORPU = ['mince', 'normal', 'sportif', 'fort']
-LIST_BOIT = ['jamais', 'occasionnel', 'souvent']
-LIST_ALIM = ['vegetarien', 'vegan', 'carnivore', 'omnivore']
+
+# pour la categorie relation ideale
 LIST_RECHERCHE = ['amicale', 'amoureuse', 'aucune idee']
 LIST_ENGAGEMENT = ['court terme', 'long terme', 'aucune idee']
 LIST_FREQUENCE = ['Quotidienne', 'Hebdomadaire', 'Occassionnelle', 'autre']

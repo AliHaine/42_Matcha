@@ -24,13 +24,13 @@ def userIsLoggedIn():
 
 @app.route('/api/test', methods=['GET'])
 def testRoute():
-    return jsonify({'Success': 'Test success'})
+    return jsonify({'Success': True})
 
 @app.route('/api/account/register', methods=['POST'])
 def registerUserRoute():
     values = request.json
     if userIsLoggedIn() == True:
-        return jsonify({'Error': 'User already logged in'})
+        return jsonify({'Success': False, 'Error': 'User already logged in'})
     user = {
         'firstName': values.get('firstName', ''),
         'lastName': values.get('lastName', ''),
@@ -42,48 +42,75 @@ def registerUserRoute():
     }
     for field in REQUIRED_FIELDS + ['passwordConfirm']:
         if not user.get(field):
-            return jsonify({'Error': f'Missing required field: {field}'})
+            return jsonify({'Success': False, 'Error': f'Missing required field: {field}'})
     try:
         create_user(user)
         login_user_func(user)
-        return jsonify({'Success': 'User created successfully'})
+        return jsonify({'Success': True})
     except Exception as e:
-        return jsonify({'Error': str(e)})
+        return jsonify({'Success': False, 'Error': str(e)})
 
 @app.route('/api/account/login', methods=['POST'])
 def loginRoute():
     data = request.json
     if userIsLoggedIn() == True:
-        return jsonify({'Error': 'User already logged in'})
+        return jsonify({'Success': False, 'Error': 'User already logged in'})
     email = data.get('email', '')
     password = data.get('password', '')
     if not email or not password:
-        return jsonify({'Error': 'Missing required fields'})
+        return jsonify({'Success': False, 'Error': 'Missing required field: email or password'})
     try:
         user = {
             'email': email,
             'password': password
         }
         login_user_func(user)
-        return jsonify({'Success': 'User logged in successfully'})
+        return jsonify({'Success': True})
     except Exception as e:
-        return jsonify({'Error': str(e)})
+        return jsonify({'Success': False, 'Error': str(e)})
     
 @app.route('/api/account/logout', methods=['GET'])
 def logoutRoute():
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'User already logged out'})
+        return jsonify({'Success': False, 'Error': 'User not logged in'})
     if session.get('email'):
         session.pop('email')
-        return jsonify({'Success': 'User logged out successfully'})
-    return jsonify({'Error': 'User not logged in'})
+        return jsonify({'Success': True})
+    return jsonify({'Success': False, 'Error': 'User not logged in'})
+
+@app.route('/api/account/modifyPersonnalInfo', methods=['POST'])
+def modifyPersonnalInfoRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'User not logged in'})
+    data = request.json
+    userPersonalInfo = {
+        'firstName': data.get('firstName', None),
+        'lastName': data.get('lastName', None),
+        'age': data.get('age', None),
+        'sexe': data.get('sexe', None),
+        'email': data.get('email', None),
+        'password': data.get('password', None),
+        'newPassword': data.get('newPassword', None),
+        'newPasswordConfirm': data.get('newPasswordConfirm', None)
+    }
+    for field, value in userPersonalInfo.items():
+        if value == "":
+            userPersonalInfo[field] = None
+    try:
+        user = getElems(User, {'email': session.get('email')})[0]
+        print(userPersonalInfo)
+        modifyUserPersonnalInfo(userPersonalInfo, user[0])
+        return jsonify({'Success': True})
+    except Exception as e:
+        return jsonify({'Success': False, 'Error': str(e)})
+
 
 @app.route('/api/account/getUser', methods=['GET'])
 def getUserRoute():
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'User not logged in'})
+        return jsonify({'Success': False,'Error': 'User not logged in'})
     user = getElems(User, {'email': session.get('email')})[0]
-    return jsonify({'user': {
+    return jsonify({'Success': True, 'user': {
         'firstName': user[USER_ENUM['firstName']],
         'lastName': user[USER_ENUM['lastName']],
         'email': user[USER_ENUM['email']],
@@ -94,30 +121,30 @@ def getUserRoute():
 def modifyDescriptionRoute():
     data = request.json
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'you must be logged in to modify description'})
+        return jsonify({'Success': False, 'Error': 'you must be logged in to modify description'})
     description = data.get('description', '')
     if len(description) <= 0:
-        return jsonify({'Error': 'you must provide a description'})
+        return jsonify({'Success': False, 'Error': 'you must provide a description'})
     user = getElems(User, {'email': session.get('email')})[0]
     try:
         modifyElem(User, user[0], {'description': description})
-        return jsonify({'Success': 'Description updated successfully'})
+        return jsonify({'Success': True})
     except Exception as e:
-        return jsonify({'Error': str(e)})
+        return jsonify({'Success': False, 'Error': str(e)})
     
 @app.route('/api/account/modifyInterests', methods=['POST'])
 def modifyInterestsRoute():
     data = request.json
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'you must be logged in to modify interests'})
+        return jsonify({'Success': False, 'Error': 'you must be logged in to modify interests'})
     interests = data.get('interests', [])
     user = getElems(User, {'email': session.get('email')})[0]
     if len(interests) <= 0:
-        return jsonify({'Error': 'you must provide at least one interest'})
+        return jsonify({'Success': False, 'Error': 'you must provide at least one interest'})
     else:
         for interest in interests:
             if interest not in LIST_INTERESTS:
-                return jsonify({'Error': f'Interest {interest} not allowed'})
+                return jsonify({'Success': False, 'Error': f'Interest {interest} not allowed'})
     deleteElem(UserInterests, {'user_id': user[0]})
     if len(interests) > 0:
         for interest in interests:
@@ -125,19 +152,19 @@ def modifyInterestsRoute():
                 modifyUserInterest(session.get('email'), interest)
                 pass
             except Exception as e:
-                return jsonify({'Error': str(e)})
-    return jsonify({'Success': 'Interests added successfully'})
+                return jsonify({'Success': False, 'Error': str(e)})
+    return jsonify({'Success': True})
 
 @app.route('/api/account/modifySanity', methods=['POST'])
 def modifySanityRoute():
     data = request.json
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'you must be logged in to modify sanity'})
+        return jsonify({'Success': False,'Error': 'you must be logged in to modify sanity'})
     fumeur = data.get('fumeur', None)
     boit = data.get('boit', None)
     alimentation = data.get('alimentation', None)
     if not boit or not alimentation or fumeur is None:
-        return jsonify({'Error': 'you must provide all the sanity fields (fumeur, boit, alimentation)'})
+        return jsonify({'Success': False, 'Error': 'you must provide all the sanity fields (fumeur, boit, alimentation)'})
     sanity = {
         'fumeur': fumeur,
         'boit': boit,
@@ -146,20 +173,20 @@ def modifySanityRoute():
     user = getElems(User, {'email': session.get('email')})[0]
     try:
         checkSanity(sanity, user[0])
-        return jsonify({'Success': 'Sanity updated successfully'})
+        return jsonify({'Success': True})
     except Exception as e:
-        return jsonify({'Error': str(e)})
+        return jsonify({'Success': False,'Error': str(e)})
 
 @app.route('/api/account/modifyBodyInfo', methods=['POST'])
 def modifyBodyInfoRoute():
     if userIsLoggedIn() == False:
-        return jsonify({'Error': 'you must be logged in to modify body info'})
+        return jsonify({'Success': False, 'Error': 'you must be logged in to modify body info'})
     data = request.json
     taille = data.get('taille', None)
     poids = data.get('poids', None)
     corpulence = data.get('corpulence', None)
     if not taille or not poids or not corpulence:
-        return jsonify({'Error': 'you must provide all the body info fields (taille, poids, corpulence)'})
+        return jsonify({'Success': False, 'Error': 'you must provide all the body info fields (taille, poids, corpulence)'})
     user = getElems(User, {'email': session.get('email')})[0]
     bodyInfo= {
         'taille': taille,
@@ -168,9 +195,9 @@ def modifyBodyInfoRoute():
     }
     try:
         modifyUserBody(bodyInfo, user[0])
-        return jsonify({'Success': 'Body info updated successfully'})
+        return jsonify({'Success': True})
     except Exception as e:
-        return jsonify({'Error': str(e)})
+        return jsonify({'Success': False, 'Error': str(e)})
 
 @app.route('/api/registerRequirements', methods=['GET'])
 def getRegisterRequirementsRoute():
