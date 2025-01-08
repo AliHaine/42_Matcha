@@ -222,6 +222,19 @@ def getBodyInfoRoute():
                     'poids': {'min': MIN_POIDS, 'max': MAX_POIDS},
                     'corpulence': LIST_CORPU})
 
+
+@app.route('/api/account/profiles/<int:page>', methods=['GET'])
+def getProfilesRoute(page):
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to get profiles'})
+    user = getElems(User, {'email': session.get('email')})[0]
+    if type(page) != int:
+        return jsonify({'Success': False, 'Error': 'Page must be an integer'})
+    if page < 1:
+        return jsonify({'Success': False, 'Error': 'Page must be greater than 0'})
+    profile = getPublicProfile(page)
+    return jsonify({'Success': True, 'profile': profile})
+
 if __name__ == '__main__':
     connectDatabase()
     if databaseConnected() == False:

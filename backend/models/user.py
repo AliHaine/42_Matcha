@@ -208,8 +208,26 @@ def modifyUserPersonnalInfo(personnalInfo, userId):
                 raise Exception('Invalid password')
         else:
             raise Exception('No password provided for modification')
-            # if passwordValidator(password) == False:
-            #     raise Exception('Password is not valid')
-            # if password != 
-            #     raise Exception('Passwords do not match')
-            # validUser['password'] = crypt_password(password)
+
+def getPublicProfile(profileId):
+    from .interests import getAllUsersInterest
+    user = getElems(User, {'id': profileId})[0]
+    userInterests = getAllUsersInterest(user[USER_ENUM['email']])
+    return {
+        'firstName': user[USER_ENUM['firstName']],
+        'lastName': user[USER_ENUM['lastName']],
+        'email': user[USER_ENUM['email']],
+        'description': user[USER_ENUM['description']],
+        'sexe': user[USER_ENUM['sexe']],
+        'age': user[USER_ENUM['age']],
+        'poids': user[USER_ENUM['poids']],
+        'taille': user[USER_ENUM['taille']],
+        'corpulence': user[USER_ENUM['corpulence']],
+        'fumeur': user[USER_ENUM['fumeur']],
+        'boit': user[USER_ENUM['boit']],
+        'alimentation': user[USER_ENUM['alimentation']],
+        'recherche': user[USER_ENUM['recherche']],
+        'engagement': user[USER_ENUM['engagement']],
+        'frequence': user[USER_ENUM['frequence']],
+        'interests': userInterests
+    }

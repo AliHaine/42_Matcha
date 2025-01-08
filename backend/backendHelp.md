@@ -1,4 +1,3 @@
-
 # informations globales sur les endpoints :
 
 tout les endpoints commencent par un /api.
@@ -125,3 +124,22 @@ exemple :
         - corpulance : valeurs disponibles pour la var corpulance
         - poids : poids min et max possible
         - taille : taille min et max possible
+
+#### /account/profiles/\<id> (GET) : permet de recuperer les informations publiques d'un profil
+    valeurs retournes :
+        - nom (lastName)
+        - prenom (firstName)
+        - email (email) (peut etre le supprime car unsafe et useless ?)
+        - description (description)
+        - sexe (sexe)
+        - age
+        - poids
+        - taille
+        - corpulence
+        - fumeur
+        - boit
+        - alimentation
+        - recherche
+        - engagement
+        - frequence
+        - interets (interests) : c'est un tableau, au cas ou

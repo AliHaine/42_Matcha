@@ -16,7 +16,16 @@ USER_ENUM = {
     'age': 4,
     'email': 5,
     'password': 6,
-    'description': 7
+    'description': 7,
+    'poids': 8,
+    'taille': 9,
+    'corpulence': 10,
+    'fumeur': 11,
+    'boit': 12,
+    'alimentation': 13,
+    'recherche': 14,
+    'engagement': 15,
+    'frequence': 16
 }
 LIST_SEXE = ['H', 'F']
 MIN_AGE = 15
