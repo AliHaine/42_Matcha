@@ -1,25 +1,26 @@
 #main {
-    /*height: 16vmin;
-    width: 32vmin;*/
     display: flex;
     height: 180px;
     width: 600px;
     background-color: green;
     border-radius: 14px;
+    font-size: 80%;
 }
 
 #pictureAndIcons {
-     display: flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 30%;
     height: 100%;
 }
 
 #profile {
+    background-color: deeppink;
     width: 70%;
     height: 100%;
-
+    padding: 0 10px 0 10px;
+    box-sizing: border-box;
     justify-content:space-between;
 
     display: flex;
@@ -38,8 +39,9 @@ img {
 }
 
 #details {
+    background-color: aqua;
+    width: 80%;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
     margin: auto;
-
 }
