@@ -1,0 +1,45 @@
+#main {
+    /*height: 16vmin;
+    width: 32vmin;*/
+    display: flex;
+    height: 180px;
+    width: 600px;
+    background-color: green;
+    border-radius: 14px;
+}
+
+#pictureAndIcons {
+     display: flex;
+      justify-content: center;
+      align-items: center;
+    width: 30%;
+    height: 100%;
+}
+
+#profile {
+    width: 70%;
+    height: 100%;
+
+    justify-content:space-between;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+img {
+    width: 90%;
+    height: 90%;
+    margin: auto;
+}
+
+#nameAndAge {
+    margin: auto
+}
+
+#details {
+    display: flex;
+    justify-content:space-between;
+    margin: auto;
+
+}
