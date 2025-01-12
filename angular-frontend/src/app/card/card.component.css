@@ -2,9 +2,10 @@
     display: flex;
     height: 180px;
     width: 600px;
-    background-color: green;
+    background: linear-gradient(to bottom right, #5A657D, #9EB1DA);
     border-radius: 14px;
-    font-size: 80%;
+    margin-left: 35%;
+    margin-top: 15%;
 }
 
 #pictureAndIcons {
@@ -16,13 +17,11 @@
 }
 
 #profile {
-    background-color: deeppink;
     width: 70%;
     height: 100%;
     padding: 0 10px 0 10px;
     box-sizing: border-box;
     justify-content:space-between;
-
     display: flex;
     flex-direction: column;
 
@@ -38,10 +37,27 @@ img {
     margin: auto
 }
 
+#description {
+    font-size: 14px;
+}
+
 #details {
     background-color: aqua;
     width: 80%;
     display: flex;
     justify-content: space-between;
     margin: auto;
+}
+
+.detailTitle {
+    display: flex;
+    background-color: deeppink;
+    align-items: center;
+    font-weight: bold;
+}
+
+.detailTitle img {
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
 }
