@@ -1,0 +1,20 @@
+nav {
+    width: 100%;
+    background-color: var(--color-5);
+    margin: 0;
+    color: var(--color-2);
+    display: flex;
+    justify-content: space-between;
+    font-size: 30px;
+    padding: 5px;
+}
+
+#navbarElements {
+    list-style-type: none;
+    display: flex;
+    padding: 5px;
+}
+
+#navbarElements li {
+    padding: 5px;
+}

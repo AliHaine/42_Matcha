@@ -1,3 +1,13 @@
+a {
+    color: inherit;
+    text-decoration: inherit
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
 :root {
     --color-1: #E9C5C5;
     --color-2: #C8A8B3;
