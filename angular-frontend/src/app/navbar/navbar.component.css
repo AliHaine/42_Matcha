@@ -2,22 +2,51 @@ nav {
     width: 100%;
     background-color: var(--color-5);
     margin: 0;
-    padding: 5px;
+    padding: 1vmin;
+    font-size: 2.2vmin;
     color: var(--color-2);
     display: flex;
-    font-size: 30px;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: space-between;
 }
 
-#navbarElements {
+#leftElements {
     list-style-type: none;
     display: flex;
 }
 
-#navbarElements li {
-    margin-left: 25px;
+#leftElements li {
+    margin-left: 2vmin;
+    font-family: Inter;
+    transition: transform 0.5s, color 0.5s;
+}
+
+#leftElements li:hover {
+    transform: scale(1.1) translateY(-0.1vmin);
+    color: #f2d5cf;
+}
+
+#leftElements li a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent li */
+    display: block; /* Make the link take full block space for better hover area */
 }
 
 #middleLogo {
-    background-color: red;
-    align-self: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+    font-family: 'Jua';
+    font-size: 4vmin;
+}
+
+#middleLogo a {
+    bottom: 0;
+}
+
+#rightElements {
+    margin-right: 2vmin;
 }
