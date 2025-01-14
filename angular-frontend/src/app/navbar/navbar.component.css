@@ -18,7 +18,6 @@ nav {
 
 #leftElements li {
     margin-left: 2vmin;
-    font-family: Inter;
     transition: transform 0.5s, color 0.5s;
 }
 

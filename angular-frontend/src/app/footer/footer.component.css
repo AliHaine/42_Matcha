@@ -1,0 +1,15 @@
+footer {
+    background-color: var(--color-5);
+    color: var(--color-2);
+    width: 100%;
+    bottom: 0;
+    font-size: 150%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+}
+
+#footerRight {
+    display: flex;
+    justify-content: flex-end;
+}
