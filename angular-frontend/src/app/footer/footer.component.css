@@ -3,19 +3,25 @@ footer {
     color: var(--color-2);
     width: 100%;
     bottom: 0;
-    font-size: 120%;
+    font-size: 1.2vmin;
     position: absolute;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
+    align-content: center;
     padding: 0.5vmin;
 }
 
 #footerCenter {
-
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
 }
 
 #footerRight {
+    justify-self: flex-end;
     display: flex;
 }
 
@@ -23,6 +29,6 @@ footer {
     margin-right: 1.5vmin;
 }
 
-.footerRightButton:hover {
+.footerHover:hover {
     color: var(--color-1);
 }
