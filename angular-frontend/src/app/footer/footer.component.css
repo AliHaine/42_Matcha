@@ -3,13 +3,26 @@ footer {
     color: var(--color-2);
     width: 100%;
     bottom: 0;
-    font-size: 150%;
+    font-size: 120%;
     position: absolute;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0.5vmin;
+}
+
+#footerCenter {
+
 }
 
 #footerRight {
     display: flex;
-    justify-content: flex-end;
+}
+
+.footerRightButton {
+    margin-right: 1.5vmin;
+}
+
+.footerRightButton:hover {
+    color: var(--color-1);
 }

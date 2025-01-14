@@ -23,7 +23,7 @@ nav {
 
 #leftElements li:hover {
     transform: scale(1.1) translateY(-0.1vmin);
-    color: #f2d5cf;
+    color: var(--color-1);
 }
 
 #leftElements li a {
