@@ -4,12 +4,11 @@
     width: 700px;
     background: linear-gradient(to bottom right, #5A657D, #9EB1DA);
     border-radius: 11px;
-    margin-left: 35%;
-    margin-top: 15%;
     color: white;
     font-size: 14px;
     border: solid var(--color-2);
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.30);
 }
 
 /* -------------------------------------------------- */
