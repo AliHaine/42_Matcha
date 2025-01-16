@@ -1,8 +1,61 @@
 import { Injectable } from '@angular/core';
+import {Card} from "../models/card.model";
+import {Interest} from "../models/interest.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardService {
-  constructor() { }
+
+  private profiles: Card[] = [];
+
+  constructor() {
+    this.profiles.push(new Card("Leila 24ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new Interest("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new Interest("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new Interest("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new Interest("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
+
+    this.profiles.push(new Card("Manon 18ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new Interest("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new Interest("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new Interest("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new Interest("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg"));
+
+    this.profiles.push(new Card("Marie 28ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new Interest("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new Interest("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new Interest("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new Interest("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://img.wattpad.com/533a915c6bc0730244fd229e31e920937bbe8b38/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f77705077786868544c5f555936673d3d2d3237332e313439336635316662653138623462653433363938373839353537302e6a7067?s=fit&w=720&h=720"));
+
+    this.profiles.push(new Card("Emily 38ans, Mulhouse",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new Interest("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new Interest("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new Interest("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new Interest("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://www.sciencesetavenir.fr/assets/img/2018/08/31/cover-r4x3w1200-5b8964e9c16e5-snapchat-dysmorphie-selfie.jpg"));
+  }
+
+  getProfile(index: number): Card {
+    return <Card>this.profiles.at(index);
+  }
+
+  refreshProfile() {
+      console.log("refresh FUNCTION called")
+  }
 }

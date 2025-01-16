@@ -28,7 +28,7 @@
     transform: translate(-50%, -50%);
 }
 
-.testt {
+.profilePicIcons {
     position: absolute;
     top: 88%;
     left: 50%;
@@ -81,19 +81,6 @@
     display: flex;
     justify-content: space-around;
     font-size: 13px;
-}
-
-.detailTitle {
-    display: flex;
-    color: var(--color-1);
-    align-items: center;
-    font-weight: bold;
-}
-
-.detailTitle img {
-    width: 25px;
-    height: 25px;
-    margin-right: 5px;
 }
 
 #description a {

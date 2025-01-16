@@ -12,12 +12,5 @@ import {InterestComponent} from "../interest/interest.component";
 })
 
 export class CardComponent {
-  private interests: {} = {
-    "interest": ["line1", "line2", "line3"],
-    "health": ["line1", "line2", "line3"],
-    "shape": ["line1", "line2", "line3"],
-    "looking": ["line1", "line2", "line3"]
-  };
-
-  card: InputSignal<Card> = input(new Card("test", "test", this.interests, "test"));
+  card: InputSignal<Card> = input.required();
 }

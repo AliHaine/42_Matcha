@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {CardComponent} from "../card/card/card.component";
 import {NavbarComponent} from "../navbar/navbar.component";
 import {FooterComponent} from "../footer/footer.component";
+import {CardService} from "../../services/card.service";
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,6 @@ import {FooterComponent} from "../footer/footer.component";
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  cardService = inject(CardService);
 
 }

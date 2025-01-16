@@ -1,7 +1,7 @@
 <div id="main">
     <div id="pictureAndIcons">
-        <img class="profilePic" src="/fille1.jpeg" />
-        <div class="testt">
+        <img class="profilePic" [src]=card().profilePicturePath />
+        <div class="profilePicIcons">
             <img class="overlayIcon giftIcon" src="/icons/gift.png">
             <img class="overlayIcon heartIcon" src="/icons/heart.png">
             <img class="overlayIcon" src="/icons/profile.png">
@@ -13,48 +13,13 @@
             {{card().nameAgeCity}}
         </div>
         <div id="description">
-            Lorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!
-            Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos
-            dicta est velit nemo.. <a href="google.com">VOIR PLUS</a>
+            {{card().description}} <a href="google.com">SEE MORE</a>
         </div>
         <div id="details">
-            <app-interest></app-interest>
-
-            <div id="area2">
-                <div class="detailTitle">
-                    <img src="/icons/pharmacie.png">
-                    <div>
-                        Santé
-                    </div>
-                </div>
-                <div>Non fumeur</div>
-                <div>Ne bois pas</div>
-                <div>Vegan</div>
-            </div>
-
-            <div id="area3">
-                <div class="detailTitle">
-                    <img src="/icons/body.png">
-                    <div>
-                        Corp
-                    </div>
-                </div>
-                <div>Poid  58 kg</div>
-                <div>Taille 166 cm</div>
-                <div>Sportive</div>
-            </div>
-
-            <div id="area4">
-                <div class="detailTitle">
-                    <img src="/icons/search.png">
-                    <div>
-                        Recherche
-                    </div>
-                </div>
-                <div>Rencontre amicale</div>
-                <div>Engagement court terme</div>
-                <div>Contact Occasionnelle </div>
-            </div>
+            <app-interest [interest]="card().getInterestFromIndex(0)"/>
+            <app-interest [interest]="card().getInterestFromIndex(1)"/>
+            <app-interest [interest]="card().getInterestFromIndex(2)"/>
+            <app-interest [interest]="card().getInterestFromIndex(3)"/>
         </div>
     </div>
 </div>
