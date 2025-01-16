@@ -1,0 +1,12 @@
+.detail-title {
+    display: flex;
+    color: var(--color-1);
+    align-items: center;
+    font-weight: bold;
+}
+
+.detail-title img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
