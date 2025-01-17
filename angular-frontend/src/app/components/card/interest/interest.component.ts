@@ -8,5 +8,5 @@ import {Interest} from "../../../models/interest.model";
   styleUrl: './interest.component.css'
 })
 export class InterestComponent {
-  interest: InputSignal<Interest> = input(new Interest("/icons/interest.png", "testna", ["line1", "line2", "line3"]))
+  interest: InputSignal<Interest> = input.required();
 }
