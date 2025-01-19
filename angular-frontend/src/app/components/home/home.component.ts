@@ -12,5 +12,4 @@ import {CardService} from "../../services/card.service";
 })
 export class HomeComponent {
   cardService = inject(CardService);
-
 }
