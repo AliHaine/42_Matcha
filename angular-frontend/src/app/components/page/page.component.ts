@@ -8,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class PageComponent {
 
+    title: String;
+    content: String;
+
+    constructor(title: String, content: String) {
+      this.title = title;
+      this.content = content;
+    }
 }
