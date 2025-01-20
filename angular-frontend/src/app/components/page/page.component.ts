@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {PageModel} from "../../models/page.model";
+import {PageService} from "../../services/page.service";
 
 @Component({
   selector: 'app-page',
@@ -8,11 +11,17 @@ import { Component } from '@angular/core';
 })
 export class PageComponent {
 
-    title: String;
-    content: String;
+    private route = inject(ActivatedRoute);
+    private pageService = inject(PageService);
+    page: PageModel = new PageModel("Page not found", "The page you ask for don't exist");
 
-    constructor(title: String, content: String) {
-      this.title = title;
-      this.content = content;
+    constructor() {
+        const name = this.route.snapshot.paramMap.get("name")
+        if (!name) {
+            console.log("no page");
+            return;
+        }
+
+        this.pageService.fillPageModel(this.page, name, "Conditions of use");
     }
 }

@@ -22,5 +22,5 @@
 #page-content {
     color: var(--color-1);
     font-size: 150%;
-    margin: 2%;
+    white-space: pre-line;
 }
