@@ -11,8 +11,8 @@ class UserInterests:
         'user_id': 'INT NOT NULL',
         'interest_id': 'INT NOT NULL',
         'PRIMARY KEY (user_id, interest_id)': '',
-        'FOREIGN KEY (user_id)': 'REFERENCES users(id)',
-        'FOREIGN KEY (interest_id)': 'REFERENCES interests(id)',
+        'FOREIGN KEY (user_id)': 'REFERENCES users(id) ON DELETE CASCADE',
+        'FOREIGN KEY (interest_id)': 'REFERENCES interests(id) ON DELETE CASCADE',
     }
 
 class interests:

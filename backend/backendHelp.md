@@ -95,11 +95,10 @@ exemple :
         pour connaitre les valeurs disponnibles pour la taille, le poids et la corpu regarder le retour api de /getBodyInfo, ou le fichier config/userGlobal.py
         nom des valeurs dans le fichier :
             - LIST_CORPU
-            - LIST_ALIM
     Infos a envoyer :
-        - fumeur (fumeur) : booleen
-        - boit (boit)
-        - alimentation (alimentation)
+        - taille (taille) : int
+        - poids (poids) : int
+        - corpulence (corpulence)
 
 #### /registerRequirements (GET) : permet de recuperer les principaux details verifies lors d'un register
     Infos retournes :

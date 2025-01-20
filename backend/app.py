@@ -5,6 +5,7 @@ from models import *
 from crypting import init_bcrypt
 import sys
 from config import *
+from algo import *
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
@@ -126,6 +127,8 @@ def modifyDescriptionRoute():
     if len(description) <= 0:
         return jsonify({'Success': False, 'Error': 'you must provide a description'})
     user = getElems(User, {'email': session.get('email')})[0]
+    if len(description) > 500:
+        return jsonify({'Success': False, 'Error': 'description must be less than 500 characters'})
     try:
         modifyElem(User, user[0], {'description': description})
         return jsonify({'Success': True})
@@ -234,6 +237,14 @@ def getProfilesRoute(page):
         return jsonify({'Success': False, 'Error': 'Page must be greater than 0'})
     profile = getPublicProfile(page)
     return jsonify({'Success': True, 'profile': profile})
+
+@app.route('/api/matcha', methods=['GET'])
+def getMatchaRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to get matcha'})
+    user = getElems(User, {'email': session.get('email')})[0]
+    matcha = getMatchableUsers(user[0])
+    return jsonify({'Success': True, 'matcha': matcha})
 
 if __name__ == '__main__':
     connectDatabase()
