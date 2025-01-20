@@ -13,15 +13,11 @@ export class PageComponent {
 
     private route = inject(ActivatedRoute);
     private pageService = inject(PageService);
-    page: PageModel = new PageModel("Page not found", "The page you ask for don't exist");
+    page: PageModel;
 
     constructor() {
+        console.log("conmp constructor")
         const name = this.route.snapshot.paramMap.get("name")
-        if (!name) {
-            console.log("no page");
-            return;
-        }
-
-        this.pageService.fillPageModel(this.page, name, "Conditions of use");
+        this.page = this.pageService.getPageWithKey(name);
     }
 }
