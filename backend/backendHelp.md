@@ -23,6 +23,10 @@ exemple :
         - Success = false
         - Error = message d'erreur de la part du serveur
 
+### informations annexes avant la suite
+    Pour lancer le backend rapidement lancer le script launchBackend.sh et suivre les infos indiques
+    Si ca veut creer 30 utilisateurs randoms correct pour les tests lancer le script createRandomUsers.sh avec le back de lance
+
 # ENDPOINTS disponnibles
 
 (si un bug est trouve, merci de l'indiquer dans le fichier bugsBackend.txt)
@@ -95,10 +99,24 @@ exemple :
         pour connaitre les valeurs disponnibles pour la taille, le poids et la corpu regarder le retour api de /getBodyInfo, ou le fichier config/userGlobal.py
         nom des valeurs dans le fichier :
             - LIST_CORPU
+            - MAX/MIN_POIDS
+            - MAX/MIN_TAILLE
     Infos a envoyer :
         - taille (taille) : int
         - poids (poids) : int
         - corpulence (corpulence)
+    
+#### /account/modifyIdealRelation (POST) : modifie les valeurs de la categorie relation (recherche, engagement, frequence)
+    details :
+        pour connaitre les valeurs dispo regarder le retour api de getIdealRelation ou le fichier config/userGlobal.py
+        nom des valeurs dans le fichier :
+            - LIST_RECHERCHE
+            - LIST_ENGAGEMENT
+            - LIST_FREQUENCE
+    Infos a envoyer :
+        - recherche (recherche)
+        - engagement (engagement)
+        - frequence (frequence)
 
 #### /registerRequirements (GET) : permet de recuperer les principaux details verifies lors d'un register
     Infos retournes :
@@ -123,6 +141,13 @@ exemple :
         - corpulance : valeurs disponibles pour la var corpulance
         - poids : poids min et max possible
         - taille : taille min et max possible
+
+#### /getIdealRelation (GET) : meme chose que getSanity mais avec les infos pour relations
+    valeurs retournes :
+        - ideal_relation : liste des champs obligatoires pour modifyIdealRelation
+        - recherche : liste des valeurs dispo
+        - engagement : liste des valeurs dispo
+        - frequence : liste des valeurs dispo
 
 #### /account/profiles/\<id> (GET) : permet de recuperer les informations publiques d'un profil
     valeurs retournes :

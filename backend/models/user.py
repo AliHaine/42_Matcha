@@ -143,6 +143,15 @@ def modifyUserBody(bodyInfo, userId):
     print(bodyInfo)
     modifyElem(User, userId, bodyInfo)
 
+def modifyUserIdealRelation(relationInfo, userId):
+    if relationInfo['recherche'] not in LIST_RECHERCHE:
+        raise Exception('Invalid recherche')
+    if relationInfo['engagement'] not in LIST_ENGAGEMENT:
+        raise Exception('Invalid engagement')
+    if relationInfo['frequence'] not in LIST_FREQUENCE:
+        raise Exception('Invalid frequence')
+    modifyElem(User, userId, relationInfo)
+
 def modifyUserPersonnalInfo(personnalInfo, userId):
     Errors = []
     validUser = {}
@@ -231,3 +240,30 @@ def getPublicProfile(profileId):
         'frequence': user[USER_ENUM['frequence']],
         'interests': userInterests
     }
+
+
+def convertToPublicProfiles(userSet):
+    from .interests import getAllUsersInterest
+    profiles = []
+    for user in userSet:
+        userInterests = getAllUsersInterest(user[USER_ENUM['email']])
+        profiles.append({
+            "id": user[USER_ENUM['id']],
+            "firstName": user[USER_ENUM['firstName']],
+            "lastName": user[USER_ENUM['lastName']],
+            "email": user[USER_ENUM['email']],
+            "description": user[USER_ENUM['description']],
+            "sexe": user[USER_ENUM['sexe']],
+            "age": user[USER_ENUM['age']],
+            "poids": user[USER_ENUM['poids']],
+            "taille": user[USER_ENUM['taille']],
+            "corpulence": user[USER_ENUM['corpulence']],
+            "fumeur": user[USER_ENUM['fumeur']],
+            "boit": user[USER_ENUM['boit']],
+            "alimentation": user[USER_ENUM['alimentation']],
+            "recherche": user[USER_ENUM['recherche']],
+            "engagement": user[USER_ENUM['engagement']],
+            "frequence": user[USER_ENUM['frequence']],
+            "interests": userInterests
+        })
+    return profiles

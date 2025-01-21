@@ -82,12 +82,14 @@ def deleteElem(model, details):
     conn.commit()
     cur.close()
 
-def getElems(model, details=None):
+def getElems(model, details=None, suppressEmpty=False):
     cur = conn.cursor()
     sqlCommand = f'SELECT * FROM {model.table_name}'
     if details:
         for key, value in details.items():
             sqlCommand += f" WHERE {key} = '{value}'"
+    if suppressEmpty == True:
+        sqlCommand += ' WHERE ' + ' AND '.join([f"{column} IS NOT NULL" for column in model.columns.keys() if not column.startswith('CONSTRAINT')])
     cur.execute(sqlCommand)
     rows = cur.fetchall()
     cur.close()

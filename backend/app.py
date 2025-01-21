@@ -23,9 +23,53 @@ def userIsLoggedIn():
         return True
     return False
 
+def checkMissingFields(email):
+    users = getElems(User, {'email': email})
+    if len(users) == 0 and email:
+        session.pop('email')
+        email = None
+    if email:
+        user = users[0]
+        ret = {
+            "Success": True,
+            "Errors": [],
+            "Missings": []
+        }
+        print(user)
+        if not user[USER_ENUM['firstName']] or not user[USER_ENUM['lastName']] or not user[USER_ENUM['email']] or not user[USER_ENUM['age']] or not user[USER_ENUM['sexe']]:
+            ret['Success'] = False
+            ret['Errors'].append('Missing mandatory fields')
+            ret['Missings'].append("mandatory")
+        if not user[USER_ENUM['description']]:
+            ret['Success'] = False
+            ret['Errors'].append('Missing description')
+            ret['Missings'].append("description")
+        if not user[USER_ENUM['poids']] or not user[USER_ENUM['taille']] or not user[USER_ENUM['corpulence']]:
+            ret['Success'] = False
+            ret['Errors'].append('Missing body info')
+            ret['Missings'].append("body")
+        if user[USER_ENUM['fumeur']] is None or not user[USER_ENUM['boit']] or not user[USER_ENUM['alimentation']]:
+            ret['Success'] = False
+            ret['Errors'].append('Missing sanity info')
+            ret['Missings'].append("sanity")
+        if not user[USER_ENUM['recherche']] or not user[USER_ENUM['engagement']] or not user[USER_ENUM['frequence']]:
+            ret['Success'] = False
+            ret['Errors'].append('Missing ideal Relation info')
+            ret['Missings'].append("ideal")
+        return ret
+    else:
+        return jsonify({'Success': False, 'Error': 'User not found'})
+
+
 @app.route('/api/test', methods=['GET'])
 def testRoute():
-    return jsonify({'Success': True})
+    return jsonify({})
+
+@app.route('/api/account/checkMissingFields', methods=['GET'])
+def checkMissingFieldsRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'User not logged in'})
+    return jsonify(checkMissingFields(session.get('email')))
 
 @app.route('/api/account/register', methods=['POST'])
 def registerUserRoute():
@@ -56,6 +100,9 @@ def loginRoute():
     data = request.json
     if userIsLoggedIn() == True:
         return jsonify({'Success': False, 'Error': 'User already logged in'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
     email = data.get('email', '')
     password = data.get('password', '')
     if not email or not password:
@@ -83,6 +130,9 @@ def logoutRoute():
 def modifyPersonnalInfoRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'User not logged in'})
+    retMissingFields = checkMissingFields()
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
     data = request.json
     userPersonalInfo = {
         'firstName': data.get('firstName', None),
@@ -110,6 +160,9 @@ def modifyPersonnalInfoRoute():
 def getUserRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False,'Error': 'User not logged in'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
     user = getElems(User, {'email': session.get('email')})[0]
     return jsonify({'Success': True, 'user': {
         'firstName': user[USER_ENUM['firstName']],
@@ -202,6 +255,29 @@ def modifyBodyInfoRoute():
     except Exception as e:
         return jsonify({'Success': False, 'Error': str(e)})
 
+@app.route('/api/account/modifyIdealRelation', methods=['POST'])
+def modifyIdealRelationRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to modify ideal Relation'})
+    data = request.json
+    recherche = data.get('recherche', None)
+    engagement = data.get('engagement', None)
+    frequence = data.get('frequence', None)
+    if not recherche or not engagement or not frequence:
+        return jsonify({'Success': False, 'Error': 'you must provide all the ideal Relation fields (recherche, engagement, frequence)'})
+    user = getElems(User, {'email': session.get('email')})[0]
+    idealRelation = {
+        'recherche': recherche,
+        'engagement': engagement,
+        'frequence': frequence
+    }
+    try:
+        modifyUserIdealRelation(idealRelation, user[0])
+        return jsonify({'Success': True})
+    except Exception as e:
+        return jsonify({'Success': False, 'Error': str(e)})
+    
+
 @app.route('/api/registerRequirements', methods=['GET'])
 def getRegisterRequirementsRoute():
     # return ALLOWED_CHARACTERS, PASSWORD_REQUIREMENTS
@@ -225,11 +301,20 @@ def getBodyInfoRoute():
                     'poids': {'min': MIN_POIDS, 'max': MAX_POIDS},
                     'corpulence': LIST_CORPU})
 
+@app.route('/api/getIdealRelation', methods=['GET'])
+def getIdealRelationRoute():
+    return jsonify({'ideal_relation': ['recherche', 'engagement', 'frequence'],
+                    'recherche': LIST_RECHERCHE,
+                    'engagement': LIST_ENGAGEMENT,
+                    'frequence': LIST_FREQUENCE})
 
 @app.route('/api/account/profiles/<int:page>', methods=['GET'])
 def getProfilesRoute(page):
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'you must be logged in to get profiles'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
     user = getElems(User, {'email': session.get('email')})[0]
     if type(page) != int:
         return jsonify({'Success': False, 'Error': 'Page must be an integer'})
@@ -242,6 +327,9 @@ def getProfilesRoute(page):
 def getMatchaRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'you must be logged in to get matcha'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
     user = getElems(User, {'email': session.get('email')})[0]
     matcha = getMatchableUsers(user[0])
     return jsonify({'Success': True, 'matcha': matcha})

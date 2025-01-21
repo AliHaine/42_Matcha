@@ -6,6 +6,10 @@ alim=$(echo $sanity | jq -r '.alimentation[]')
 boit=$(echo $sanity | jq -r '.boit[]')
 bodyInfo=$(curl -s 'localhost:8000/api/getBodyInfo')
 corpulence=$(echo $bodyInfo | jq -r '.corpulence[]')
+idealRelation=$(curl -s 'localhost:8000/api/getIdealRelation')
+engagement=$(echo $idealRelation | jq -r '.engagement[]')
+frequence=$(echo $idealRelation | jq -r '.frequence[]')
+recherche=$(echo $idealRelation | jq -r '.recherche[]')
 # Vérifier si des intérêts ont été récupérés
 if [ -z "$interests" ]; then
     echo "Aucun intérêt récupéré."
@@ -31,9 +35,24 @@ if [ -z "$corpulence" ]; then
     echo "Aucun element corpulence récupéré."
     exit 1
 fi
+if [ -z "$idealRelation" ]; then
+    echo "Aucun element idealRelation récupéré."
+    exit 1
+fi
+if [ -z "$engagement" ]; then
+    echo "Aucun element engagement récupéré."
+    exit 1
+fi
+if [ -z "$frequence" ]; then
+    echo "Aucun element frequence récupéré."
+    exit 1
+fi
+if [ -z "$recherche" ]; then
+    echo "Aucun element recherche récupéré."
+    exit 1
+fi
 
 # Convertir les intérêts en tableau Bash
-interests_array=()
 while IFS= read -r line; do
     interests_array+=("$line")
 done <<< "$interests"
@@ -46,6 +65,16 @@ done <<< "$boit"
 while IFS= read -r line; do
     corpulence_array+=("$line")
 done <<< "$corpulence"
+while IFS= read -r line; do
+    engagement_array+=("$line")
+done <<< "$engagement"
+while IFS= read -r line; do
+    frequence_array+=("$line")
+done <<< "$frequence"
+while IFS= read -r line; do
+    recherche_array+=("$line")
+done <<< "$recherche"
+
 for i in {1..30}
 do
     user=$(curl -s 'https://randomuser.me/api/?nat=fr')
@@ -68,8 +97,9 @@ do
     userInterests=$(printf "%s\n" "${interests_array[@]}" | shuf -n $num_select | jq -R -s -c 'split("\n")[:-1]')
     echo "Interests: $userInterests"
     curl -X POST localhost:8000/api/account/modifyInterests -b temp.txt -H "Content-Type: application/json" -d "{\"interests\":$userInterests}"
-    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non eros sed massa consequat vestibulum ut ac odio. Quisque in risus ac elit dictum blandit. Proin efficitur eros quis lacinia posuere. Proin rutrum blandit leo id elementum. Sed sollicitudin risus vitae nunc vehicula, vel luctus tellus mollis. Donec bibendum sapien nunc, ac mollis dui varius mattis. Nullam id nisl pellentesque, imperdiet ipsum at, mollis ante. Proin at venenatis dolor."
-    # curl -X POST localhost:8000/api/account/modifyDescription -b temp.txt -H "Content-Type: application/json" -d "{\"description\":\"$description\"}"
+    # description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non eros sed massa consequat vestibulum ut ac odio. Quisque in risus ac elit dictum blandit. Proin efficitur eros quis lacinia posuere. Proin rutrum blandit leo id elementum. Sed sollicitudin risus vitae nunc vehicula, vel luctus tellus mollis. Donec bibendum sapien nunc, ac mollis dui varius mattis. Nullam id nisl pellentesque, imperdiet ipsum at, mollis ante. Proin at venenatis dolor."
+    description="test"
+    curl -X POST localhost:8000/api/account/modifyDescription -b temp.txt -H "Content-Type: application/json" -d "{\"description\":\"$description\"}"
     userAlim=$(printf "%s\n" "${alim_array[@]}" | shuf -n 1)
     userBoit=$(printf "%s\n" "${boit_array[@]}" | shuf -n 1)
     userFume=$(shuf -n 1 -e true false)
@@ -80,4 +110,9 @@ do
     userCorpulence=$(printf "%s\n" "${corpulence_array[@]}" | shuf -n 1)
     echo "Poids: $userPoids Taille: $userTaille Corpulence: $userCorpulence"
     curl -X POST localhost:8000/api/account/modifyBodyInfo -b temp.txt -H "Content-Type: application/json" -d "{\"poids\":$userPoids,\"taille\":$userTaille,\"corpulence\":\"$userCorpulence\"}"
+    userEngagement=$(printf "%s\n" "${engagement_array[@]}" | shuf -n 1)
+    userFrequence=$(printf "%s\n" "${frequence_array[@]}" | shuf -n 1)
+    userRecherche=$(printf "%s\n" "${recherche_array[@]}" | shuf -n 1)
+    echo "Engagement: $userEngagement Frequence: $userFrequence Recherche: $userRecherche"
+    curl -X POST localhost:8000/api/account/modifyIdealRelation -b temp.txt -H "Content-Type: application/json" -d "{\"engagement\":\"$userEngagement\",\"frequence\":\"$userFrequence\",\"recherche\":\"$userRecherche\"}"
 done
