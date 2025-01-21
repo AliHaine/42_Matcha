@@ -1,5 +1,5 @@
 import {Component, input, InputSignal} from '@angular/core';
-import {Card} from "../../../models/card.model";
+import {CardModel} from "../../../models/card.model";
 import {InterestComponent} from "../interest/interest.component";
 
 @Component({
@@ -12,5 +12,5 @@ import {InterestComponent} from "../interest/interest.component";
 })
 
 export class CardComponent {
-  card: InputSignal<Card> = input.required();
+  card: InputSignal<CardModel> = input.required();
 }

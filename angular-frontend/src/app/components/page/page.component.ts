@@ -1,7 +1,6 @@
-import {Component, inject} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {PageModel} from "../../models/page.model";
+import {Component, inject, OnInit} from '@angular/core';
 import {PageService} from "../../services/page.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-page',
@@ -9,15 +8,15 @@ import {PageService} from "../../services/page.service";
   templateUrl: './page.component.html',
   styleUrl: './page.component.css'
 })
-export class PageComponent {
+export class PageComponent implements OnInit {
 
-    private route = inject(ActivatedRoute);
-    private pageService = inject(PageService);
-    page: PageModel;
+    pageService = inject(PageService);
+    route = inject(ActivatedRoute);
 
-    constructor() {
-        console.log("conmp constructor")
-        const name = this.route.snapshot.paramMap.get("name")
-        this.page = this.pageService.getPageWithKey(name);
+    ngOnInit() {
+        this.route.paramMap.subscribe((param) => {
+            const fileName = "pages/" + this.route.snapshot.paramMap.get('name') + ".txt"
+            this.pageService.loadPage(fileName);
+        })
     }
 }

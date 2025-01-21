@@ -1,4 +1,4 @@
-export class Interest {
+export class InterestModel {
     categoryIconPath: String;
     categoryName: String
     interests: [string, string, string];
