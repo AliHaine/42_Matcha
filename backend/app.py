@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, send_from_directory
 from flask_cors import CORS
 from database import connectDatabase, createTables, getElems, deleteElem, modifyElem, dropAll, databaseConnected
 from models import *
@@ -9,9 +9,12 @@ from algo import *
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
-
+app.config['UPLOAD_FOLDER'] = 'media'
+app.config['PROFILE_PIC_FOLDER'] = 'media/profile_pics'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
 CORS(app)
+
 
 def userIsLoggedIn():
     sessionEmail = session.get('email')
@@ -63,7 +66,7 @@ def checkMissingFields(email):
 
 @app.route('/api/test', methods=['GET'])
 def testRoute():
-    return jsonify({})
+    return jsonify({'Success': True})
 
 @app.route('/api/account/checkMissingFields', methods=['GET'])
 def checkMissingFieldsRoute():
@@ -330,9 +333,38 @@ def getMatchaRoute():
     retMissingFields = checkMissingFields(session.get('email'))
     if retMissingFields['Success'] == False:
         return jsonify(retMissingFields)
+    nbProfiles = request.args.get('nbProfiles', default=8, type=int)  # Récupère 'page', avec une valeur par défaut
     user = getElems(User, {'email': session.get('email')})[0]
-    matcha = getMatchableUsers(user[0])
+    matcha = getMatchableUsers(user[0], nbProfiles)
     return jsonify({'Success': True, 'matcha': matcha})
+
+@app.route('/api/account/location', methods=['GET'])
+def getLocationRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to get location'})
+
+@app.route('/api/profile_pics/<path:filename>', methods=['GET'])
+def getProfilePicRoute(filename):
+    return send_from_directory(app.config['PROFILE_PIC_FOLDER'], filename)
+
+@app.route('/api/account/uploadProfilePic', methods=['POST'])
+def uploadProfilePicRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to upload a profile pic'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
+    if 'file' not in request.files:
+        return jsonify({'Success': False, 'Error': 'No file part'})
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'Success': False, 'Error': 'No selected file'})
+    if file and file.filename.split('.')[-1] in app.config['ALLOWED_EXTENSIONS']:
+        user = getElems(User, {'email': session.get('email')})[0]
+        filename = f"{user[USER_ENUM['id']]}_" + file.filename
+        file.save(f"{app.config['PROFILE_PIC_FOLDER']}/{filename}")
+        return jsonify({'Success': True})
+    return jsonify({'Success': False, 'Error': 'File not allowed'})
 
 if __name__ == '__main__':
     connectDatabase()
@@ -342,7 +374,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == "RESET":
             dropAll()
-    tupleModels = (User, interests, UserInterests)
+    tupleModels = (User, interests, UserInterests, cities, UserCity)
     createTables(tupleModels)
     init_bcrypt(app)
     init_interests()
