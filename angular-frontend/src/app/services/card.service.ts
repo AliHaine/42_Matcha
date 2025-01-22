@@ -59,6 +59,36 @@ export class CardService {
         new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
         new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
         "https://cdn.intra.42.fr/users/c3a0ea6cea763a36acd687089feb55ea/ngalzand.jpeg"));
+
+    this.profiles.push(new CardModel("Leila 24ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
+
+     this.profiles.push(new CardModel("Leila 24ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
+
+    this.profiles.push(new CardModel("Leila 24ans, Metz",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
+        new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
   }
 
   getProfile(index: number): CardModel {
@@ -67,5 +97,9 @@ export class CardService {
 
   refreshProfile() {
       console.log("refresh FUNCTION called")
+  }
+
+  getProfiles(): CardModel[] {
+      return this.profiles;
   }
 }
