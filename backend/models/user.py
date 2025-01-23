@@ -37,6 +37,7 @@ class User:
         'CONSTRAINT check_engagement': "CHECK (engagement IN ('" + "', '".join(LIST_ENGAGEMENT) + "'))",
         'frequence': 'VARCHAR(30) DEFAULT NULL',
         'CONSTRAINT check_frequence': "CHECK (frequence IN ('" + "', '".join(LIST_FREQUENCE) + "'))",
+        'numberPhoto': 'INTEGER DEFAULT 0'
     }
 
 # TODO

@@ -6,15 +6,23 @@ from crypting import init_bcrypt
 import sys
 from config import *
 from algo import *
+import os
+from PIL import Image
 
 app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app.secret_key = "super secret key"
-app.config['UPLOAD_FOLDER'] = 'media'
-app.config['PROFILE_PIC_FOLDER'] = 'media/profile_pics'
+app.config['UPLOAD_FOLDER'] = BASE_DIR + '/media'
+app.config['PROFILE_PIC_FOLDER'] = BASE_DIR + '/media/profile_pics'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
 CORS(app)
 
+def find_files_with_prefix(directory, prefix):
+    return [
+        file for file in os.listdir(directory)
+        if file.startswith(prefix)
+    ]
 
 def userIsLoggedIn():
     sessionEmail = session.get('email')
@@ -333,7 +341,7 @@ def getMatchaRoute():
     retMissingFields = checkMissingFields(session.get('email'))
     if retMissingFields['Success'] == False:
         return jsonify(retMissingFields)
-    nbProfiles = request.args.get('nbProfiles', default=8, type=int)  # Récupère 'page', avec une valeur par défaut
+    nbProfiles = request.args.get('nbProfiles', default=8, type=int)
     user = getElems(User, {'email': session.get('email')})[0]
     matcha = getMatchableUsers(user[0], nbProfiles)
     return jsonify({'Success': True, 'matcha': matcha})
@@ -347,13 +355,18 @@ def getLocationRoute():
 def getProfilePicRoute(filename):
     return send_from_directory(app.config['PROFILE_PIC_FOLDER'], filename)
 
+def is_image_corrupted(file_path):
+    try:
+        with Image.open(file_path) as img:
+            img.verify()  # Vérifie l'intégrité du fichier
+        return False  # Si aucun problème, l'image n'est pas corrompue
+    except (IOError, SyntaxError):
+        return True  # L'image est corrompue
+
 @app.route('/api/account/uploadProfilePic', methods=['POST'])
 def uploadProfilePicRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'you must be logged in to upload a profile pic'})
-    retMissingFields = checkMissingFields(session.get('email'))
-    if retMissingFields['Success'] == False:
-        return jsonify(retMissingFields)
     if 'file' not in request.files:
         return jsonify({'Success': False, 'Error': 'No file part'})
     file = request.files['file']
@@ -361,10 +374,59 @@ def uploadProfilePicRoute():
         return jsonify({'Success': False, 'Error': 'No selected file'})
     if file and file.filename.split('.')[-1] in app.config['ALLOWED_EXTENSIONS']:
         user = getElems(User, {'email': session.get('email')})[0]
-        filename = f"{user[USER_ENUM['id']]}_" + file.filename
+        if (user[USER_ENUM['numberPhoto']] >= 5):
+            return jsonify({'Success': False, 'Error': 'You can only upload 5 photos'})
+        for i in range(0, 5):
+            print("index", i)
+            ret = find_files_with_prefix(app.config['PROFILE_PIC_FOLDER'], f"{user[USER_ENUM['id']]}_{i}")
+            if len(ret) == 0:
+                filename = f"{user[USER_ENUM['id']]}_{i}." + file.filename.split('.')[-1]
+                break
         file.save(f"{app.config['PROFILE_PIC_FOLDER']}/{filename}")
+        if is_image_corrupted(f"{app.config['PROFILE_PIC_FOLDER']}/{filename}"):
+            os.remove(f"{app.config['PROFILE_PIC_FOLDER']}/{filename}")
+            return jsonify({'Success': False, 'Error': 'File corrupted'})
+        modifyElem(User, user[0], {'numberPhoto': user[USER_ENUM['numberPhoto']] + 1})
         return jsonify({'Success': True})
     return jsonify({'Success': False, 'Error': 'File not allowed'})
+
+def realignPhotos(user_id, photoNumber, numberPhoto):
+    for i in range(photoNumber, numberPhoto):
+        ret = find_files_with_prefix(app.config['PROFILE_PIC_FOLDER'], f"{user_id}_{i + 1}")
+        if len(ret) == 0:
+            return
+        os.rename(f"{app.config['PROFILE_PIC_FOLDER']}/{ret[0]}", f"{app.config['PROFILE_PIC_FOLDER']}/{user_id}_{i}.{ret[0].split('.')[-1]}")
+
+@app.route('/api/account/deleteProfilePic', methods=['POST'])
+def deleteProfilePicRoute():
+    if userIsLoggedIn() == False:
+        return jsonify({'Success': False, 'Error': 'you must be logged in to delete a profile pic'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
+    user = getElems(User, {'email': session.get('email')})[0]
+    if (user[USER_ENUM['numberPhoto']] <= 0):
+        return jsonify({'Success': False, 'Error': 'You must have at least one photo'})
+    photoNumber = request.args.get('photoNumber', None)
+    if not photoNumber:
+        return jsonify({'Success': False, 'Error': 'You must provide a photo number'})
+    if type(photoNumber) == str:
+        try:
+            photoNumber = int(photoNumber)
+        except:
+            return jsonify({'Success': False, 'Error': 'Photo number must be an integer'})
+    if type(photoNumber) != int:
+        return jsonify({'Success': False, 'Error': 'Photo number must be an integer'})
+    if photoNumber < 0 or photoNumber >= user[USER_ENUM['numberPhoto']]:
+        return jsonify({'Success': False, 'Error': 'Photo number out of range'})
+    ret = find_files_with_prefix(app.config['PROFILE_PIC_FOLDER'], f"{user[USER_ENUM['id']]}_{photoNumber}")
+    if len(ret) == 0:
+        return jsonify({'Success': False, 'Error': 'Photo not found'})
+    os.remove(f"{app.config['PROFILE_PIC_FOLDER']}/{ret[0]}")
+    if photoNumber < user[USER_ENUM['numberPhoto']]:
+        realignPhotos(user[USER_ENUM['id']], photoNumber, user[USER_ENUM['numberPhoto']])
+    modifyElem(User, user[0], {'numberPhoto': user[USER_ENUM['numberPhoto']] - 1})
+    return jsonify({'Success': True})
 
 if __name__ == '__main__':
     connectDatabase()
@@ -378,4 +440,5 @@ if __name__ == '__main__':
     createTables(tupleModels)
     init_bcrypt(app)
     init_interests()
+    print(BASE_DIR)
     app.run(debug=True, host='localhost', port=8000)

@@ -25,7 +25,8 @@ USER_ENUM = {
     'alimentation': 13,
     'recherche': 14,
     'engagement': 15,
-    'frequence': 16
+    'frequence': 16,
+    'numberPhoto': 17,
 }
 LIST_SEXE = ['H', 'F']
 MIN_AGE = 15

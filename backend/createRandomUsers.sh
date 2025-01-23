@@ -75,7 +75,7 @@ while IFS= read -r line; do
     recherche_array+=("$line")
 done <<< "$recherche"
 
-for i in {1..10}
+for i in {1..5}
 do
     user=$(curl -s 'https://randomuser.me/api/?nat=fr')
     # echo $user
