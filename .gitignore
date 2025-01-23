@@ -1,1 +1,4 @@
 **/venv
+/angular-frontend/node_modules/
+/angular-frontend/.angular/
+.idea
