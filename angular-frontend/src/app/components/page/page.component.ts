@@ -1,6 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {PageService} from "../../services/page.service";
-import {ActivatedRoute} from "@angular/router";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-page',
@@ -8,15 +6,4 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './page.component.html',
   styleUrl: './page.component.css'
 })
-export class PageComponent implements OnInit {
-
-    pageService = inject(PageService);
-    route = inject(ActivatedRoute);
-
-    ngOnInit() {
-        this.route.paramMap.subscribe((param) => {
-            const fileName = "pages/" + this.route.snapshot.paramMap.get('name') + ".txt"
-            this.pageService.loadPage(fileName);
-        })
-    }
-}
+export class PageComponent {}
