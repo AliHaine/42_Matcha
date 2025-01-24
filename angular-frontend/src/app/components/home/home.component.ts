@@ -13,6 +13,6 @@ export class HomeComponent{
   cardService = inject(CardService);
 
   constructor() {
-    console.log("called")
+    console.log("home called")
   }
 }
