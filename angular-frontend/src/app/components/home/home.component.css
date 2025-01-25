@@ -1,10 +1,12 @@
-#mainRefreshButton {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-inline: auto;
-    margin-top: 35px;
-    transform: scale(1.3);
+#home-content {
+    align-items: center;
+    justify-content: center;
+}
+
+#refresh-button {
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #cards {
@@ -13,7 +15,6 @@
     gap: 2vmin;
     align-self: center;
     justify-self: center;
-    margin-top: 5.25%;
     grid-column-gap: 6vmin;
 }
 

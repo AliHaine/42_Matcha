@@ -1,9 +1,7 @@
 footer {
     color: var(--color-2);
     width: 100%;
-    bottom: 0;
     font-size: 1.2vmin;
-    position: absolute;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
