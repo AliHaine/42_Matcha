@@ -8,7 +8,11 @@
     font-size: 14px;
     border: solid var(--color-2);
     border-width: 1px;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.30);
+    box-shadow: 0 0 1.5vmin #000000a3;
+}
+
+#main:hover {
+    box-shadow: 0 0 1vmin 0 var(--color-4);
 }
 
 /* -------------------------------------------------- */

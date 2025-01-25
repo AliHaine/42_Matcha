@@ -10,7 +10,7 @@ export class CardModel {
         this.nameAgeCity = nameAgeCity;
         this.description = description;
         this.interests = interests;
-        this.profilePicturePath = profilePicturePath;
+        this.profilePicturePath = profilePicturePath.length <= 0  ? "defaultpp.jpg" : profilePicturePath;
     }
 
     getInterestFromIndex(index: number): InterestModel {
