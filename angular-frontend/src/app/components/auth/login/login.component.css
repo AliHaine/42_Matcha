@@ -1,11 +1,39 @@
-#login {
-    display: flex;
-    flex-direction: column;
+#main-content {
+    padding: 1%;
+    background-color: rgba(var(--color-rgb-5), 0.3);
+    color: var(--color-5);
+    width: 13%;
+    height: 35%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 50%;
-    width: 30%;
-    background-color: rebeccapurple;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    animation: shadow 10s infinite;
+    box-shadow: 0 0 0.5vmin black;
+}
+
+@keyframes shadow {
+    50% {box-shadow: 0 0 2.5vmin black;}
+}
+
+#checkbox-forgot-area {
+    display: flex;
+    justify-content: space-between;
+}
+
+#checkbox-area {
+    display: flex;
+}
+
+#login-area {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--color-1);
 }

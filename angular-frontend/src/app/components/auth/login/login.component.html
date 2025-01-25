@@ -1,5 +1,16 @@
-<div id="login">
-	<input type="text" id="email" required minlength="3">
-	<input>
-	<button> salut </button>
+<div id="main-content">
+	<h1>Login</h1>
+	<div id="login-area">
+		<input class="input-style-1" type="email" id="email" required minlength="3" placeholder="Enter your email adress">
+		<input class="input-style-1" type="text" id="password" required minlength="3" placeholder="Enter your password">
+	</div>
+	<div id="checkbox-forgot-area">
+		<div id="checkbox-area">
+			<input type="checkbox" placeholder="Enter your password">
+			<label>Remember</label>
+		</div>
+		<a class="text-hover-style-1" routerLink="/">Forgot password</a>
+	</div>
+	<button class="button-style-1" (click)="loginButton()"> Login </button>
+	<a class="text-hover-style-1" routerLink="/auth/register">Create account</a>
 </div>
