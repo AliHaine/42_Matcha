@@ -2,3 +2,4 @@
 /angular-frontend/node_modules/
 /angular-frontend/.angular/
 .idea
+/angular-frontend/package-lock.json

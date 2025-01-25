@@ -10,8 +10,6 @@ export class CardService {
   private profiles: CardModel[] = [];
 
   constructor() {
-      console.log("card service constructor")
-
     this.profiles.push(new CardModel("Leila 24ans, Metz",
         "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
         " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
@@ -52,11 +50,11 @@ export class CardService {
         new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
         "https://www.sciencesetavenir.fr/assets/img/2018/08/31/cover-r4x3w1200-5b8964e9c16e5-snapchat-dysmorphie-selfie.jpg"));
 
-    this.profiles.push(new CardModel("Nathan 19ans, Mulhouse",
+    this.profiles.push(new CardModel("Nathan 20ans, Mulhouse",
         "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
         " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
         " dicta est velit nemo..",
-        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Bodybuilding"]),
+        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Harassment"]),
         new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
         new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
         new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
@@ -98,6 +96,19 @@ export class CardService {
   }
 
   refreshProfile() {
+
+      this.profiles.pop();
+
+      this.profiles.push(new CardModel("NathanPiscineForm 18ans, Mulhouse",
+        "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
+        " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
+        " dicta est velit nemo..",
+        [new InterestModel("/icons/interest.png", "Interest", ["Gaming", "Ecology", "Harassment"]),
+        new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
+        new InterestModel("/icons/body.png", "Body", ["Weight 60kg", "Size 175cm", "Normale"]),
+        new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
+        "https://cdn.intra.42.fr/users/c3a0ea6cea763a36acd687089feb55ea/ngalzand.jpeg"))
+
       console.log("refresh FUNCTION called")
   }
 
