@@ -48,3 +48,17 @@ nav {
 #rightElements img {
     margin-right: 2vmin;
 }
+
+.img {
+    margin-right: 2vmin;
+    width: 4vmin;
+    aspect-ratio: 1;
+    display: inline-block;
+    background: var(--color-5);
+    transition: transform 0.5s, background 0.5s;
+}
+
+.img:hover {
+    background: var(--color-1);
+    transform: scale(1.1) translateY(-0.1vmin);
+}
