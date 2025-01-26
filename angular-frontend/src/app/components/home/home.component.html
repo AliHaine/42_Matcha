@@ -1,5 +1,7 @@
 <div id="home-content">
-    <img id="refresh-button" src="/logoicon.png" (click)="cardService.refreshProfile()">
+    <div id="refresh-button">
+        <img src="/logoicon.png" (click)="cardService.refreshProfile()">
+    </div>
     <div id="cards">
         <app-card *ngFor="let card of cardService.getProfiles()" [card]="card"/>
     </div>

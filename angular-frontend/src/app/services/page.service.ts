@@ -9,11 +9,6 @@ import {Observable} from "rxjs";
 export class PageService {
 
     httpClient = inject(HttpClient)
-    page = new PageModel("Loading", "Page is loading..");
-
-    constructor() {
-        console.log("constructor service")
-    }
 
     loadPage(pageName: string): Observable<PageModel> {
         let title = pageName.substring(pageName.indexOf("/")+1, pageName.lastIndexOf('.'));
