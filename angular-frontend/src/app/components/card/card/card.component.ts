@@ -1,5 +1,5 @@
-import {Component, input, InputSignal} from '@angular/core';
-import {Card} from "../../../models/card.model";
+import {Component, input, InputSignal, OnInit} from '@angular/core';
+import {CardModel} from "../../../models/card.model";
 import {InterestComponent} from "../interest/interest.component";
 
 @Component({
@@ -11,6 +11,16 @@ import {InterestComponent} from "../interest/interest.component";
   styleUrl: './card.component.css'
 })
 
-export class CardComponent {
-  card: InputSignal<Card> = input.required();
+export class CardComponent implements OnInit {
+  card: InputSignal<CardModel> = input.required();
+
+  constructor() {
+    console.log("constructor called")
+  }
+
+  ngOnInit() {
+    console.log("on init called")
+  }
+
+
 }

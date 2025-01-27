@@ -1,11 +1,8 @@
-<img id="mainRefreshButton" src="/logoicon.png" (click)="cardService.refreshProfile()">
-<div id="cards">
-    <app-card [card]="cardService.getProfile(0)"/>
-    <app-card [card]="cardService.getProfile(1)"/>
-    <app-card [card]="cardService.getProfile(2)"/>
-    <app-card [card]="cardService.getProfile(3)"/>
-    <app-card [card]="cardService.getProfile(0)"/>
-    <app-card [card]="cardService.getProfile(0)"/>
-    <app-card [card]="cardService.getProfile(0)"/>
-    <app-card [card]="cardService.getProfile(0)"/>
+<div id="home-content">
+    <div id="refresh-button">
+        <img src="/logoicon.png" (click)="cardService.refreshProfile()">
+    </div>
+    <div id="cards">
+        <app-card *ngFor="let card of cardService.getProfiles()" [card]="card"/>
+    </div>
 </div>

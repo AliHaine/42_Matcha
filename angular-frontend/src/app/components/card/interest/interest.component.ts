@@ -1,5 +1,5 @@
 import {Component, input, InputSignal} from '@angular/core';
-import {Interest} from "../../../models/interest.model";
+import {InterestModel} from "../../../models/interest.model";
 
 @Component({
   selector: 'app-interest',
@@ -8,5 +8,5 @@ import {Interest} from "../../../models/interest.model";
   styleUrl: './interest.component.css'
 })
 export class InterestComponent {
-  interest: InputSignal<Interest> = input.required();
+  interest: InputSignal<InterestModel> = input.required();
 }

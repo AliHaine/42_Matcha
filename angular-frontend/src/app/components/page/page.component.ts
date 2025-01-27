@@ -1,7 +1,9 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {PageService} from "../../services/page.service";
 import {ActivatedRoute} from "@angular/router";
 import {PageModel} from "../../models/page.model";
-import {PageService} from "../../services/page.service";
+import {switchMap} from 'rxjs'
+
 
 @Component({
   selector: 'app-page',
@@ -9,19 +11,20 @@ import {PageService} from "../../services/page.service";
   templateUrl: './page.component.html',
   styleUrl: './page.component.css'
 })
-export class PageComponent {
+export class PageComponent implements OnInit {
 
-    private route = inject(ActivatedRoute);
-    private pageService = inject(PageService);
-    page: PageModel = new PageModel("Page not found", "The page you ask for don't exist");
+    pageService = inject(PageService);
+    route = inject(ActivatedRoute);
+    page = signal<PageModel>(new PageModel("Loading", "Page is loading.."));
 
-    constructor() {
-        const name = this.route.snapshot.paramMap.get("name")
-        if (!name) {
-            console.log("no page");
-            return;
-        }
-
-        this.pageService.fillPageModel(this.page, name, "Conditions of use");
+    ngOnInit() {
+        this.route.paramMap.pipe(
+            switchMap(param => {
+                const fileName = "pages/" + param.get('name') + ".txt";
+                return this.pageService.loadPage(fileName);
+            })
+        ).subscribe(page => {
+            this.page.set(page);
+        });
     }
 }

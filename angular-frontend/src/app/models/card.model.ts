@@ -1,19 +1,19 @@
-import {Interest} from "./interest.model";
+import {InterestModel} from "./interest.model";
 
-export class Card {
+export class CardModel {
     nameAgeCity: String;
     description: String;
-    interests: Interest[];
+    interests: InterestModel[];
     profilePicturePath: String;
 
-    constructor(nameAgeCity: String, description: String, interests: Interest[], profilePicturePath: String) {
+    constructor(nameAgeCity: String, description: String, interests: InterestModel[], profilePicturePath: String) {
         this.nameAgeCity = nameAgeCity;
         this.description = description;
         this.interests = interests;
-        this.profilePicturePath = profilePicturePath;
+        this.profilePicturePath = profilePicturePath.length <= 0  ? "defaultpp.jpg" : profilePicturePath;
     }
 
-    getInterestFromIndex(index: number): Interest {
-        return <Interest>this.interests.at(index)
+    getInterestFromIndex(index: number): InterestModel {
+        return <InterestModel>this.interests.at(index)
     }
 }

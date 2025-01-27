@@ -1,5 +1,6 @@
 #page {
-    background-color: var(--color-5);
+    background-color: rgba(var(--color-rgb-5), 0.3);
+    color: var(--color-5);
     margin: 0;
     position: absolute;
     top: 50%;
@@ -7,12 +8,12 @@
     width: 70%;
     height: 80%;
     transform: translate(-50%, -50%);
-    border-radius: 20px;
     overflow:auto;
+    scrollbar-color: var(--color-5) var(--color-1);
+    box-shadow: 0 0 1.5vmin black;
 }
 
 #page-title {
-    color: var(--color-1);
     font-weight: bold;
     font-size: 350%;
     text-align: center;
@@ -20,7 +21,10 @@
 }
 
 #page-content {
-    color: var(--color-1);
     font-size: 150%;
     white-space: pre-line;
+}
+
+#content-container {
+    margin: 2%
 }

@@ -1,10 +1,7 @@
 footer {
-    background-color: var(--color-5);
-    color: var(--color-2);
+    color: var(--color-5);
     width: 100%;
-    bottom: 0;
     font-size: 1.2vmin;
-    position: absolute;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
@@ -27,8 +24,4 @@ footer {
 
 .footerRightButton {
     margin-right: 1.5vmin;
-}
-
-.footerHover:hover {
-    color: var(--color-1);
 }

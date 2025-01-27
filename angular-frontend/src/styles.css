@@ -9,11 +9,56 @@ a {
     font-family: Inter;
 }
 
+body {
+	background: linear-gradient(-45deg, #898596, var(--color-3), var(--color-4));
+    animation: gradient 15s ease infinite;
+	background-size: 400% 400%;
+
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.text-hover-style-1:hover {
+    color: var(--color-1);
+}
+
+.button-style-1 {
+    font-size: 1.5em;
+    line-height: 3em;
+    background-color: var(--color-2);
+    border-radius: 15px;
+    border: solid var(--color-5);
+}
+
+.button-style-1:hover {
+    background-color: var(--color-1);
+}
+
+.input-style-1 {
+    background-color: var(--color-1);
+    line-height: 2em;
+    margin: 1%;
+    border-radius: 15px;
+    border: solid var(--color-5);
+    font-size: 1.1em;
+}
+
 :root {
     --color-1: #E9C5C5;
     --color-2: #C8A8B3;
     --color-3: #A38DA1;
     --color-4: #7B758C;
-    --color-5: #545E74;
-    --color-6: #2F4858;
+    --color-5: #0d172d;
+    --color-6: rgb(26, 41, 50);
+    --color-rgb-5: 13, 23, 45;
 }

@@ -1,37 +1,25 @@
 import {inject, Injectable} from '@angular/core';
 import {PageModel} from "../models/page.model";
 import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageService {
 
-  pages = new Map<string, PageModel>();
-  httpClient = inject(HttpClient)
+    httpClient = inject(HttpClient)
 
-  constructor() {
-      this.httpClient.get("/conditions_of_use.txt", { responseType: "text" }).subscribe(
-          (data) => {
-            console.log(data)
-            this.pages.set("name", new PageModel("test", data));
-          },
-          (error) => {
-            console.error('Error loading the file', error);
-          }
-      );
-  }
-
-  fillPageModel(pageModel: PageModel, url: string, title: string) {
-      this.httpClient.get("/conditions_of_use.txt", { responseType: "text" }).subscribe(
-          (data) => {
-            console.log(data)
-            pageModel.title = title;
-            pageModel.description = data;
-          },
-          (error) => {
-            console.error('Error loading the file', error);
-          }
-      );
-  }
+    loadPage(pageName: string): Observable<PageModel> {
+        let title = pageName.substring(pageName.indexOf("/")+1, pageName.lastIndexOf('.'));
+        title = title.replaceAll('-', ' ').toUpperCase();
+        return new Observable(obs => {
+            this.httpClient.get("/" + pageName, { responseType: 'text'}).subscribe(
+            (data) => {
+                obs.next(new PageModel(title, data))
+             },error => {
+                obs.next(new PageModel("This page doesn't exist", ""));
+            })
+        })
+    }
 }

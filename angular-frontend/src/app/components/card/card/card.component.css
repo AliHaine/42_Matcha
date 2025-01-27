@@ -2,13 +2,29 @@
     display: flex;
     height: 220px;
     width: 700px;
-    background: linear-gradient(to bottom right, #5A657D, #9EB1DA);
+    background: var(--color-6);
     border-radius: 11px;
     color: white;
     font-size: 14px;
     border: solid var(--color-2);
     border-width: 1px;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.30);
+    box-shadow: 0 0 1.5vmin #000000a3;
+}
+
+#main:hover {
+    animation: gradient 2s ease infinite
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* -------------------------------------------------- */
