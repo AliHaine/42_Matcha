@@ -8,7 +8,7 @@ la liste d'endpoints va etre presente sous cette forme :
     details (si necessaire) :
         plus de details au sujet de cet endpoint
     Infos a envoyer (si necessaire) :
-        -   nom classique de la var (nom de la var utilise dans le backend) : details si necessaire
+        -   nom classique de la var (nom de la var utilise par le backend) : details si necessaire
     Infos retournes (si necessaire) :
         - nom de var : detail du contenu
 
@@ -31,6 +31,10 @@ exemple :
 
 (si un bug est trouve, merci de l'indiquer dans le fichier bugsBackend.txt)
 
+
+#### /account/checkMissingFields (GET) : regarde si le profil a ete correcement complete ou non et retourne les erreurs s'il y en a
+
+
 #### /account/register (POST) : permet d'enregistrer un utilisateur
     details :
         cree l'utilisateur si les informations sont valides, si tout est ok l'authentifie directement
@@ -41,7 +45,7 @@ exemple :
         - mot de passe (password)
         - confirmation de mot de passe (passwordConfirm)
         - age (age)
-        - sexe (sexe)
+        - sexe (sex)
 
 
 #### /account/login (POST) : permet de se connecter a un compte
@@ -58,7 +62,7 @@ exemple :
         - prenom (firstName)
         - nom (lastName)
         - age (age)
-        - sexe (sexe)
+        - sexe (sex)
         - email (email)
         - mot de passe (password)
         - nouveau mot de passe (newPassword)
@@ -87,36 +91,36 @@ exemple :
     details:
         pour connaitre les valeurs disponnibles pour boit et alimentation regarder le retour api de /getSanity, ou le fichier config/userGlobal.py
         nom des valeurs dans le fichier :
-            - LIST_BOIT
-            - LIST_ALIM
+            - LIST_DRINK
+            - LIST_DIET
     Infos a envoyer :
-        - fumeur (fumeur) : booleen
-        - boit (boit)
-        - alimentation (alimentation)
+        - fumeur (smoking) : booleen
+        - boit (drink)
+        - alimentation (diet)
 
 #### /account/modifyBodyInfo (POST) : modifie les valeurs de la categorie corps (taille, poids, corpulance)
     details:
         pour connaitre les valeurs disponnibles pour la taille, le poids et la corpu regarder le retour api de /getBodyInfo, ou le fichier config/userGlobal.py
         nom des valeurs dans le fichier :
             - LIST_CORPU
-            - MAX/MIN_POIDS
-            - MAX/MIN_TAILLE
+            - MAX/MIN_WEIGHT
+            - MAX/MIN_HEIGHT
     Infos a envoyer :
-        - taille (taille) : int
-        - poids (poids) : int
-        - corpulence (corpulence)
+        - taille (height) : int
+        - poids (weight) : int
+        - corpulence (corpu)
     
 #### /account/modifyIdealRelation (POST) : modifie les valeurs de la categorie relation (recherche, engagement, frequence)
     details :
         pour connaitre les valeurs dispo regarder le retour api de getIdealRelation ou le fichier config/userGlobal.py
         nom des valeurs dans le fichier :
-            - LIST_RECHERCHE
+            - LIST_RESEARCH
             - LIST_ENGAGEMENT
-            - LIST_FREQUENCE
+            - LIST_FREQUENCY
     Infos a envoyer :
-        - recherche (recherche)
+        - recherche (research)
         - engagement (engagement)
-        - frequence (frequence)
+        - frequence (frequency)
 
 #### /registerRequirements (GET) : permet de recuperer les principaux details verifies lors d'un register
     Infos retournes :
@@ -131,23 +135,23 @@ exemple :
 #### /getSanity (GET) : donne les vals obligatoires a envoyer lors d'un modifySanity et donne les valeurs disponnibles pour chaque champs
     valeurs retournes :
         - sanity : liste de champs obligatoires pour un modify sanity
-        - fumeur : valeurs disponibles pour la var fumeur
-        - boit : valeurs disponibles pour la var boit
-        - alimentation : valeurs disponibles pour la valeur alimentation
+        - smoking : valeurs disponibles pour la var fumeur
+        - drink : valeurs disponibles pour la var boit
+        - diet : valeurs disponibles pour la valeur alimentation
 
 #### /getBodyInfo (GET) : meme chose que pour getSanity mais pour getBodyInfo
     valeurs retournes : 
         - body_info : liste de champs obligatoires pour un modifyBodyInfo
-        - corpulance : valeurs disponibles pour la var corpulance
-        - poids : poids min et max possible
-        - taille : taille min et max possible
+        - corpu : valeurs disponibles pour la var corpulance
+        - weight : poids min et max possible
+        - height : taille min et max possible
 
 #### /getIdealRelation (GET) : meme chose que getSanity mais avec les infos pour relations
     valeurs retournes :
         - ideal_relation : liste des champs obligatoires pour modifyIdealRelation
-        - recherche : liste des valeurs dispo
+        - research : liste des valeurs dispo
         - engagement : liste des valeurs dispo
-        - frequence : liste des valeurs dispo
+        - frequency : liste des valeurs dispo
 
 #### /account/profiles/\<id> (GET) : permet de recuperer les informations publiques d'un profil
     valeurs retournes :
@@ -157,13 +161,27 @@ exemple :
         - description (description)
         - sexe (sexe)
         - age
-        - poids
-        - taille
-        - corpulence
-        - fumeur
-        - boit
-        - alimentation
-        - recherche
-        - engagement
-        - frequence
+        - cat sante (health) : les trois infos de la categorie sante
+        - cat corps (body) : les trois infos de la categorie corps
+        - cat relation (lookingFor) : les trois infos de la categorie relation
         - interets (interests) : c'est un tableau, au cas ou
+
+
+#### /matcha (GET) : endpoint retournant les profils pour le home
+    details :
+        un argument peut etre passe qui est nbProfiles, permettant de recevoir plus ou moins de profils que la valeur par defaut (qui est actuellement 8)
+    valeurs retournes :
+        - Success : si tout c'est bien passe
+        - matcha : tableau d'utilisateurs
+
+#### /account/location (POST) : pas encore setup mais aura pour vocation d;enregistrer la localisation de l'utilisateur
+
+#### /profile_pics/nom_de_l'image (GET) : retourne l'image de profil demande (pour l'instant faut mettre l'extension du fichier mais je vais fix ca)
+
+#### /account/uploadProfilePic (POST) : upload la photo de profil envoye
+    infos a envoyer :
+        - un fichier "file" qui est une image
+
+#### /account/deleteProfilePic (POST) : permet de supprimer une photo de profil demande
+    infos a envoyer :
+        - photoNumber a envoyer sous forme d'un argument qui est le numero de photo qui sera supprime

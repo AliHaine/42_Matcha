@@ -187,7 +187,7 @@ def modifyUserPersonnalInfo(personnalInfo, userId):
                     Errors.append('Invalid age')
                 else:
                     validUser['age'] = personnalInfo['age']
-    if 'sexe' in personnalInfo:
+    if 'sex' in personnalInfo:
         sexe = personnalInfo['sexe']
         if sexe is not None:
             if sexe not in LIST_SEX:
@@ -223,22 +223,31 @@ def getPublicProfile(profileId):
     from .interests import getAllUsersInterest
     user = getElems(User, {'id': profileId})[0]
     userInterests = getAllUsersInterest(user[USER_ENUM['email']])
+    health = [
+        user[USER_ENUM['smoking']],
+        user[USER_ENUM['drink']],
+        user[USER_ENUM['diet']]
+    ]
+    body = [
+        user[USER_ENUM['weight']],
+        user[USER_ENUM['height']],
+        user[USER_ENUM['corpu']]
+    ]
+    lookingFor = [
+        user[USER_ENUM['research']],
+        user[USER_ENUM['engagement']],
+        user[USER_ENUM['frequency']]
+    ]
     return {
         'firstName': user[USER_ENUM['firstName']],
         'lastName': user[USER_ENUM['lastName']],
         'email': user[USER_ENUM['email']],
         'description': user[USER_ENUM['description']],
-        'sexe': user[USER_ENUM['sex']],
+        'sex': user[USER_ENUM['sex']],
         'age': user[USER_ENUM['age']],
-        'poids': user[USER_ENUM['weight']],
-        'taille': user[USER_ENUM['height']],
-        'corpulence': user[USER_ENUM['corpu']],
-        'fumeur': user[USER_ENUM['smoking']],
-        'boit': user[USER_ENUM['drink']],
-        'alimentation': user[USER_ENUM['diet']],
-        'recherche': user[USER_ENUM['research']],
-        'engagement': user[USER_ENUM['engagement']],
-        'frequence': user[USER_ENUM['frequency']],
+        'health': health,
+        'body': body,
+        'lookingFor': lookingFor,
         'interests': userInterests
     }
 

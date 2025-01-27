@@ -149,7 +149,7 @@ def modifyPersonnalInfoRoute():
         'firstName': data.get('firstName', None),
         'lastName': data.get('lastName', None),
         'age': data.get('age', None),
-        'sexe': data.get('sexe', None),
+        'sex': data.get('sex', None),
         'email': data.get('email', None),
         'password': data.get('password', None),
         'newPassword': data.get('newPassword', None),
@@ -165,7 +165,6 @@ def modifyPersonnalInfoRoute():
         return jsonify({'Success': True})
     except Exception as e:
         return jsonify({'Success': False, 'Error': str(e)})
-
 
 @app.route('/api/account/getUser', methods=['GET'])
 def getUserRoute():
@@ -287,7 +286,6 @@ def modifyIdealRelationRoute():
         return jsonify({'Success': True})
     except Exception as e:
         return jsonify({'Success': False, 'Error': str(e)})
-    
 
 @app.route('/api/registerRequirements', methods=['GET'])
 def getRegisterRequirementsRoute():
@@ -300,24 +298,24 @@ def getInterestsRoute():
 
 @app.route('/api/getSanity', methods=['GET'])
 def getSanityRoute():
-    return jsonify({'sanity': ['fumeur', 'boit', 'alimentation'],
-                    'fumeur': [True, False],
-                    'boit': LIST_DRINK,
-                    'alimentation': LIST_DIET})
+    return jsonify({'sanity': ['smoking', 'drink', 'diet'],
+                    'smoking': [True, False],
+                    'drink': LIST_DRINK,
+                    'diet': LIST_DIET})
 
 @app.route('/api/getBodyInfo', methods=['GET'])
 def getBodyInfoRoute():
-    return jsonify({'body_info': ['taille', 'poids', 'corpulence'],
-                    'taille': {'min': MIN_HEIGHT, 'max': MAX_HEIGHT},
-                    'poids': {'min': MIN_WEIGHT, 'max': MAX_WEIGHT},
-                    'corpulence': LIST_CORPU})
+    return jsonify({'body_info': ['height', 'weight', 'corpu'],
+                    'hieght': {'min': MIN_HEIGHT, 'max': MAX_HEIGHT},
+                    'weight': {'min': MIN_WEIGHT, 'max': MAX_WEIGHT},
+                    'corpu': LIST_CORPU})
 
 @app.route('/api/getIdealRelation', methods=['GET'])
 def getIdealRelationRoute():
-    return jsonify({'ideal_relation': ['recherche', 'engagement', 'frequence'],
-                    'recherche': LIST_RESEARCH,
+    return jsonify({'ideal_relation': ['research', 'engagement', 'frequency'],
+                    'research': LIST_RESEARCH,
                     'engagement': LIST_ENGAGEMENT,
-                    'frequence': LIST_FREQUENCY})
+                    'frequency': LIST_FREQUENCY})
 
 @app.route('/api/account/profiles/<int:page>', methods=['GET'])
 def getProfilesRoute(page):
@@ -326,7 +324,6 @@ def getProfilesRoute(page):
     retMissingFields = checkMissingFields(session.get('email'))
     if retMissingFields['Success'] == False:
         return jsonify(retMissingFields)
-    user = getElems(User, {'email': session.get('email')})[0]
     if type(page) != int:
         return jsonify({'Success': False, 'Error': 'Page must be an integer'})
     if page < 1:
