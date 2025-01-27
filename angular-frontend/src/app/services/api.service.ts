@@ -7,11 +7,21 @@ import { Observable } from 'rxjs';
 })
 
 export class ApiService {
-  private baseUrl = 'http://127.0.0.1:5000/api';
+  private baseUrl = 'http://127.0.0.1:8000/api';
 
   constructor(private http: HttpClient) { }
 
     getData(): Observable<any> {
     return this.http.get(`${this.baseUrl}/data`);
   }
+
+    postData(dataToPost: any) {
+      this.http.post(`${this.baseUrl}/account/login`, dataToPost).subscribe(sub => {
+        console.log(sub)
+      });
+    }
+
+    getProfilesFromBack() {
+      return this.http.get(`${this.baseUrl}/matcha`);
+    }
 }
