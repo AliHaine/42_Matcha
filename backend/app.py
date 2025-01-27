@@ -111,9 +111,6 @@ def loginRoute():
     data = request.json
     if userIsLoggedIn() == True:
         return jsonify({'Success': False, 'Error': 'User already logged in'})
-    retMissingFields = checkMissingFields(session.get('email'))
-    if retMissingFields['Success'] == False:
-        return jsonify(retMissingFields)
     email = data.get('email', '')
     password = data.get('password', '')
     if not email or not password:
@@ -124,6 +121,9 @@ def loginRoute():
             'password': password
         }
         login_user_func(user)
+        retMissingFields = checkMissingFields(session.get('email'))
+        if retMissingFields['Success'] == False:
+            return jsonify(retMissingFields)
         return jsonify({'Success': True})
     except Exception as e:
         return jsonify({'Success': False, 'Error': str(e)})
