@@ -10,33 +10,33 @@ class User:
         'id': 'SERIAL PRIMARY KEY',
         'firstName': 'VARCHAR(30) NOT NULL',
         'lastName': 'VARCHAR(30) NOT NULL',
-        'sexe': 'VARCHAR(1) NOT NULL',
-        'CONSTRAINT check_sexe': "CHECK (sexe IN ('" + "', '".join(LIST_SEXE) + "'))",
+        'sex': 'VARCHAR(1) NOT NULL',
+        'CONSTRAINT check_sex': "CHECK (sex IN ('" + "', '".join(LIST_SEX) + "'))",
         'age': 'INTEGER NOT NULL',
         'CONSTRAINT check_age': f"CHECK (age > {MIN_AGE} AND age < {MAX_AGE})",
         'email': 'VARCHAR(256) UNIQUE NOT NULL',
         'password': 'VARCHAR(256) NOT NULL',
         'description': 'VARCHAR(500) DEFAULT NULL',
         # categorie corps
-        'poids': 'INTEGER DEFAULT NULL',
-        'CONSTRAINT check_poids': f'CHECK (poids > {MIN_WEIGHT} AND poids < {MAX_WEIGHT})',
-        'taille': 'INTEGER DEFAULT NULL',
-        'CONSTRAINT check_taille': f'CHECK (taille > {MIN_HEIGHT} AND taille < {MAX_HEIGHT})',
-        'corpulence': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_corpulance': f"CHECK (corpulence IN ('" + "', '".join(LIST_CORPU) + "'))",
+        'weight': 'INTEGER DEFAULT NULL',
+        'CONSTRAINT check_poids': f'CHECK (weight > {MIN_WEIGHT} AND weight < {MAX_WEIGHT})',
+        'height': 'INTEGER DEFAULT NULL',
+        'CONSTRAINT check_taille': f'CHECK (height > {MIN_HEIGHT} AND height < {MAX_HEIGHT})',
+        'corpu': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_corpulance': f"CHECK (corpu IN ('" + "', '".join(LIST_CORPU) + "'))",
         # categorie sante
-        'fumeur': 'BOOLEAN DEFAULT NULL',
-        'boit': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_boit': f"CHECK (boit IN ('" + "', '".join(LIST_DRINK) + "'))",
-        'alimentation': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_alimentation': f"CHECK (alimentation IN ('" + "', '".join(LIST_DIET) + "'))",
+        'smoking': 'BOOLEAN DEFAULT NULL',
+        'drink': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_boit': f"CHECK (drink IN ('" + "', '".join(LIST_DRINK) + "'))",
+        'diet': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_alimentation': f"CHECK (diet IN ('" + "', '".join(LIST_DIET) + "'))",
         # categorie relation ideale
-        'recherche': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_recherche': "CHECK (recherche IN ('" + "', '".join(LIST_RECHERCHE) + "'))",
+        'research': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_recherche': "CHECK (research IN ('" + "', '".join(LIST_RESEARCH) + "'))",
         'engagement': 'VARCHAR(30) DEFAULT NULL',
         'CONSTRAINT check_engagement': "CHECK (engagement IN ('" + "', '".join(LIST_ENGAGEMENT) + "'))",
-        'frequence': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_frequence': "CHECK (frequence IN ('" + "', '".join(LIST_FREQUENCE) + "'))",
+        'frequency': 'VARCHAR(30) DEFAULT NULL',
+        'CONSTRAINT check_frequence': "CHECK (frequency IN ('" + "', '".join(LIST_FREQUENCY) + "'))",
         'numberPhoto': 'INTEGER DEFAULT 0'
     }
 
@@ -97,8 +97,8 @@ def create_user(user):
     age = user['age']
     if age < MIN_AGE or age > MAX_AGE:
         raise Exception('Age is not valid')
-    sexe = user['sexe']
-    if sexe not in LIST_SEXE:
+    sex = user['sex']
+    if sex not in LIST_SEX:
         raise Exception("Sexe is not valid")
     user['password'] = crypt_password(user['password'])
     createElem(User, user, REQUIRED_FIELDS)
@@ -120,37 +120,37 @@ def login_user_func(userToLogin):
         raise Exception('Invalid password')
 
 def checkSanity(sanity, userId):
-    if sanity['fumeur'] not in [True, False]:
-        raise Exception('Invalid fumeur')
-    if sanity['boit'] not in LIST_DRINK:
-        raise Exception('Invalid boit')
-    if sanity['alimentation'] not in LIST_DIET:
-        raise Exception('Invalid alimentation')
+    if sanity['smoking'] not in [True, False]:
+        raise Exception('Invalid smoking')
+    if sanity['drink'] not in LIST_DRINK:
+        raise Exception('Invalid drink')
+    if sanity['diet'] not in LIST_DIET:
+        raise Exception('Invalid diet')
     modifyElem(User, userId, sanity)
 
 def modifyUserBody(bodyInfo, userId):
-    poids = bodyInfo['poids']
-    if type(poids).__name__ != 'int':
-        raise Exception('Invalid poids')
-    taille = bodyInfo['taille']
-    if type(taille).__name__ != 'int':
-        raise Exception('Invalid taille')
-    if poids < MIN_WEIGHT or poids > MAX_WEIGHT:
-        raise Exception('Invalid poids')
-    if taille < MIN_HEIGHT or taille > MAX_HEIGHT:
-        raise Exception('Invalid taille')
-    if bodyInfo['corpulence'] not in LIST_CORPU:
-        raise Exception('Invalid corpulence')
+    weight = bodyInfo['weight']
+    if type(weight).__name__ != 'int':
+        raise Exception('Invalid weight')
+    height = bodyInfo['height']
+    if type(height).__name__ != 'int':
+        raise Exception('Invalid height')
+    if weight < MIN_WEIGHT or weight > MAX_WEIGHT:
+        raise Exception('Invalid weight')
+    if height < MIN_HEIGHT or height > MAX_HEIGHT:
+        raise Exception('Invalid height')
+    if bodyInfo['corpu'] not in LIST_CORPU:
+        raise Exception('Invalid corpu')
     print(bodyInfo)
     modifyElem(User, userId, bodyInfo)
 
 def modifyUserIdealRelation(relationInfo, userId):
-    if relationInfo['recherche'] not in LIST_RECHERCHE:
-        raise Exception('Invalid recherche')
+    if relationInfo['research'] not in LIST_RESEARCH:
+        raise Exception('Invalid research')
     if relationInfo['engagement'] not in LIST_ENGAGEMENT:
         raise Exception('Invalid engagement')
-    if relationInfo['frequence'] not in LIST_FREQUENCE:
-        raise Exception('Invalid frequence')
+    if relationInfo['frequency'] not in LIST_FREQUENCY:
+        raise Exception('Invalid frequency')
     modifyElem(User, userId, relationInfo)
 
 def modifyUserPersonnalInfo(personnalInfo, userId):
@@ -190,7 +190,7 @@ def modifyUserPersonnalInfo(personnalInfo, userId):
     if 'sexe' in personnalInfo:
         sexe = personnalInfo['sexe']
         if sexe is not None:
-            if sexe not in LIST_SEXE:
+            if sexe not in LIST_SEX:
                 Errors.append("Sexe is not valid")
             else:
                 validUser['sexe'] = personnalInfo['sexe']
@@ -228,17 +228,17 @@ def getPublicProfile(profileId):
         'lastName': user[USER_ENUM['lastName']],
         'email': user[USER_ENUM['email']],
         'description': user[USER_ENUM['description']],
-        'sexe': user[USER_ENUM['sexe']],
+        'sexe': user[USER_ENUM['sex']],
         'age': user[USER_ENUM['age']],
-        'poids': user[USER_ENUM['poids']],
-        'taille': user[USER_ENUM['taille']],
-        'corpulence': user[USER_ENUM['corpulence']],
-        'fumeur': user[USER_ENUM['fumeur']],
-        'boit': user[USER_ENUM['boit']],
-        'alimentation': user[USER_ENUM['alimentation']],
-        'recherche': user[USER_ENUM['recherche']],
+        'poids': user[USER_ENUM['weight']],
+        'taille': user[USER_ENUM['height']],
+        'corpulence': user[USER_ENUM['corpu']],
+        'fumeur': user[USER_ENUM['smoking']],
+        'boit': user[USER_ENUM['drink']],
+        'alimentation': user[USER_ENUM['diet']],
+        'recherche': user[USER_ENUM['research']],
         'engagement': user[USER_ENUM['engagement']],
-        'frequence': user[USER_ENUM['frequence']],
+        'frequence': user[USER_ENUM['frequency']],
         'interests': userInterests
     }
 
@@ -249,19 +249,19 @@ def convertToPublicProfiles(userSet):
     for user in userSet:
         userInterests = getAllUsersInterest(user[USER_ENUM['email']])
         health = [
-            user[USER_ENUM['fumeur']],
-            user[USER_ENUM['boit']],
-            user[USER_ENUM['alimentation']]
+            user[USER_ENUM['smoking']],
+            user[USER_ENUM['drink']],
+            user[USER_ENUM['diet']]
         ]
         body = [
-            user[USER_ENUM['poids']],
-            user[USER_ENUM['taille']],
-            user[USER_ENUM['corpulence']]
+            user[USER_ENUM['weight']],
+            user[USER_ENUM['height']],
+            user[USER_ENUM['corpu']]
         ]
         lookingFor = [
-            user[USER_ENUM['recherche']],
+            user[USER_ENUM['research']],
             user[USER_ENUM['engagement']],
-            user[USER_ENUM['frequence']]
+            user[USER_ENUM['frequency']]
         ]
         profiles.append({
             "id": user[USER_ENUM['id']],
@@ -269,7 +269,7 @@ def convertToPublicProfiles(userSet):
             "lastName": user[USER_ENUM['lastName']],
             "email": user[USER_ENUM['email']],
             "description": user[USER_ENUM['description']],
-            "sexe": user[USER_ENUM['sexe']],
+            "sexe": user[USER_ENUM['sex']],
             "age": user[USER_ENUM['age']],
             "health": health,
             "body": body,

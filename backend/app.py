@@ -47,7 +47,7 @@ def checkMissingFields(email):
             "Missings": []
         }
         print(user)
-        if not user[USER_ENUM['firstName']] or not user[USER_ENUM['lastName']] or not user[USER_ENUM['email']] or not user[USER_ENUM['age']] or not user[USER_ENUM['sexe']]:
+        if not user[USER_ENUM['firstName']] or not user[USER_ENUM['lastName']] or not user[USER_ENUM['email']] or not user[USER_ENUM['age']] or not user[USER_ENUM['sex']]:
             ret['Success'] = False
             ret['Errors'].append('Missing mandatory fields')
             ret['Missings'].append("mandatory")
@@ -55,18 +55,18 @@ def checkMissingFields(email):
             ret['Success'] = False
             ret['Errors'].append('Missing description')
             ret['Missings'].append("description")
-        if not user[USER_ENUM['poids']] or not user[USER_ENUM['taille']] or not user[USER_ENUM['corpulence']]:
+        if not user[USER_ENUM['weight']] or not user[USER_ENUM['height']] or not user[USER_ENUM['corpu']]:
             ret['Success'] = False
             ret['Errors'].append('Missing body info')
             ret['Missings'].append("body")
-        if user[USER_ENUM['fumeur']] is None or not user[USER_ENUM['boit']] or not user[USER_ENUM['alimentation']]:
+        if user[USER_ENUM['smoking']] is None or not user[USER_ENUM['drink']] or not user[USER_ENUM['diet']]:
             ret['Success'] = False
-            ret['Errors'].append('Missing sanity info')
-            ret['Missings'].append("sanity")
-        if not user[USER_ENUM['recherche']] or not user[USER_ENUM['engagement']] or not user[USER_ENUM['frequence']]:
+            ret['Errors'].append('Missing health info')
+            ret['Missings'].append("health")
+        if not user[USER_ENUM['research']] or not user[USER_ENUM['engagement']] or not user[USER_ENUM['frequency']]:
             ret['Success'] = False
-            ret['Errors'].append('Missing ideal Relation info')
-            ret['Missings'].append("ideal")
+            ret['Errors'].append('Missing looking for info')
+            ret['Missings'].append("lookingFor")
         return ret
     else:
         return jsonify({'Success': False, 'Error': 'User not found'})
@@ -94,7 +94,7 @@ def registerUserRoute():
         'password': values.get('password', ''),
         'passwordConfirm': values.get('passwordConfirm', ''),
         'age': values.get('age', ''),
-        'sexe': values.get('sexe', ''),
+        'sex': values.get('sex', ''),
     }
     for field in REQUIRED_FIELDS + ['passwordConfirm']:
         if not user.get(field):
@@ -227,15 +227,15 @@ def modifySanityRoute():
     data = request.json
     if userIsLoggedIn() == False:
         return jsonify({'Success': False,'Error': 'you must be logged in to modify sanity'})
-    fumeur = data.get('fumeur', None)
-    boit = data.get('boit', None)
-    alimentation = data.get('alimentation', None)
-    if not boit or not alimentation or fumeur is None:
+    smoking = data.get('smoking', None)
+    drink = data.get('drink', None)
+    diet = data.get('diet', None)
+    if not drink or not diet or smoking is None:
         return jsonify({'Success': False, 'Error': 'you must provide all the sanity fields (fumeur, boit, alimentation)'})
     sanity = {
-        'fumeur': fumeur,
-        'boit': boit,
-        'alimentation': alimentation
+        'smoking': smoking,
+        'drink': drink,
+        'diet': diet
     }
     user = getElems(User, {'email': session.get('email')})[0]
     try:
@@ -249,16 +249,16 @@ def modifyBodyInfoRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'you must be logged in to modify body info'})
     data = request.json
-    taille = data.get('taille', None)
-    poids = data.get('poids', None)
-    corpulence = data.get('corpulence', None)
-    if not taille or not poids or not corpulence:
-        return jsonify({'Success': False, 'Error': 'you must provide all the body info fields (taille, poids, corpulence)'})
+    height = data.get('height', None)
+    weight = data.get('weight', None)
+    corpu = data.get('corpu', None)
+    if not height or not weight or not corpu:
+        return jsonify({'Success': False, 'Error': 'you must provide all the body info fields (height, weight, corpu)'})
     user = getElems(User, {'email': session.get('email')})[0]
     bodyInfo= {
-        'taille': taille,
-        'poids': poids,
-        'corpulence': corpulence
+        'height': height,
+        'weight': weight,
+        'corpu': corpu
     }
     try:
         modifyUserBody(bodyInfo, user[0])
@@ -271,16 +271,16 @@ def modifyIdealRelationRoute():
     if userIsLoggedIn() == False:
         return jsonify({'Success': False, 'Error': 'you must be logged in to modify ideal Relation'})
     data = request.json
-    recherche = data.get('recherche', None)
+    research = data.get('research', None)
     engagement = data.get('engagement', None)
-    frequence = data.get('frequence', None)
-    if not recherche or not engagement or not frequence:
-        return jsonify({'Success': False, 'Error': 'you must provide all the ideal Relation fields (recherche, engagement, frequence)'})
+    frequency = data.get('frequency', None)
+    if not research or not engagement or not frequency:
+        return jsonify({'Success': False, 'Error': 'you must provide all the ideal Relation fields (research, engagement, frequency)'})
     user = getElems(User, {'email': session.get('email')})[0]
     idealRelation = {
-        'recherche': recherche,
+        'research': research,
         'engagement': engagement,
-        'frequence': frequence
+        'frequency': frequency
     }
     try:
         modifyUserIdealRelation(idealRelation, user[0])
@@ -315,9 +315,9 @@ def getBodyInfoRoute():
 @app.route('/api/getIdealRelation', methods=['GET'])
 def getIdealRelationRoute():
     return jsonify({'ideal_relation': ['recherche', 'engagement', 'frequence'],
-                    'recherche': LIST_RECHERCHE,
+                    'recherche': LIST_RESEARCH,
                     'engagement': LIST_ENGAGEMENT,
-                    'frequence': LIST_FREQUENCE})
+                    'frequence': LIST_FREQUENCY})
 
 @app.route('/api/account/profiles/<int:page>', methods=['GET'])
 def getProfilesRoute(page):

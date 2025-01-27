@@ -6,29 +6,29 @@ PASSWORD_REQUIREMENTS = {
     'min_lowercase': 1,
     'min_digits': 1
 }
-REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'sexe', 'age']
+REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'sex', 'age']
 
 USER_ENUM = {
     'id': 0,
     'firstName': 1,
     'lastName': 2,
-    'sexe': 3,
+    'sex': 3,
     'age': 4,
     'email': 5,
     'password': 6,
     'description': 7,
-    'poids': 8,
-    'taille': 9,
-    'corpulence': 10,
-    'fumeur': 11,
-    'boit': 12,
-    'alimentation': 13,
-    'recherche': 14,
+    'weight': 8,
+    'height': 9,
+    'corpu': 10,
+    'smoking': 11,
+    'drink': 12,
+    'diet': 13,
+    'research': 14,
     'engagement': 15,
-    'frequence': 16,
+    'frequency': 16,
     'numberPhoto': 17,
 }
-LIST_SEXE = ['H', 'F']
+LIST_SEX = ['M', 'F']
 MIN_AGE = 15
 MAX_AGE = 80
 
@@ -41,9 +41,9 @@ MAX_WEIGHT = 300
 MIN_WEIGHT = 40
 MAX_HEIGHT = 220
 MIN_HEIGHT = 90
-LIST_CORPU = ['thin', 'normal', 'athletic', 'fort']
+LIST_CORPU = ['thin', 'normal', 'athletic', 'fat']
 
 # pour la categorie relation ideale
-LIST_RECHERCHE = ['friendly meeting', 'serious relationship', 'no idea']
-LIST_ENGAGEMENT = ['court terme', 'long terme', 'aucune idee']
-LIST_FREQUENCE = ['Quotidienne', 'Hebdomadaire', 'Occassionnelle', 'autre']
+LIST_RESEARCH = ['friendly meeting', 'serious relationship', 'no idea']
+LIST_ENGAGEMENT = ['short term', 'long term', 'no idea']
+LIST_FREQUENCY = ['Daily', 'Weekly', 'Occassional', 'other']
