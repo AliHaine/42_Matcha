@@ -19,17 +19,17 @@ class User:
         'description': 'VARCHAR(500) DEFAULT NULL',
         # categorie corps
         'poids': 'INTEGER DEFAULT NULL',
-        'CONSTRAINT check_poids': f'CHECK (poids > {MIN_POIDS} AND poids < {MAX_POIDS})',
+        'CONSTRAINT check_poids': f'CHECK (poids > {MIN_WEIGHT} AND poids < {MAX_WEIGHT})',
         'taille': 'INTEGER DEFAULT NULL',
-        'CONSTRAINT check_taille': f'CHECK (taille > {MIN_TAILLE} AND taille < {MAX_TAILLE})',
+        'CONSTRAINT check_taille': f'CHECK (taille > {MIN_HEIGHT} AND taille < {MAX_HEIGHT})',
         'corpulence': 'VARCHAR(30) DEFAULT NULL',
         'CONSTRAINT check_corpulance': f"CHECK (corpulence IN ('" + "', '".join(LIST_CORPU) + "'))",
         # categorie sante
         'fumeur': 'BOOLEAN DEFAULT NULL',
         'boit': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_boit': f"CHECK (boit IN ('" + "', '".join(LIST_BOIT) + "'))",
+        'CONSTRAINT check_boit': f"CHECK (boit IN ('" + "', '".join(LIST_DRINK) + "'))",
         'alimentation': 'VARCHAR(30) DEFAULT NULL',
-        'CONSTRAINT check_alimentation': f"CHECK (alimentation IN ('" + "', '".join(LIST_ALIM) + "'))",
+        'CONSTRAINT check_alimentation': f"CHECK (alimentation IN ('" + "', '".join(LIST_DIET) + "'))",
         # categorie relation ideale
         'recherche': 'VARCHAR(30) DEFAULT NULL',
         'CONSTRAINT check_recherche': "CHECK (recherche IN ('" + "', '".join(LIST_RECHERCHE) + "'))",
@@ -122,9 +122,9 @@ def login_user_func(userToLogin):
 def checkSanity(sanity, userId):
     if sanity['fumeur'] not in [True, False]:
         raise Exception('Invalid fumeur')
-    if sanity['boit'] not in LIST_BOIT:
+    if sanity['boit'] not in LIST_DRINK:
         raise Exception('Invalid boit')
-    if sanity['alimentation'] not in LIST_ALIM:
+    if sanity['alimentation'] not in LIST_DIET:
         raise Exception('Invalid alimentation')
     modifyElem(User, userId, sanity)
 
@@ -135,9 +135,9 @@ def modifyUserBody(bodyInfo, userId):
     taille = bodyInfo['taille']
     if type(taille).__name__ != 'int':
         raise Exception('Invalid taille')
-    if poids < MIN_POIDS or poids > MAX_POIDS:
+    if poids < MIN_WEIGHT or poids > MAX_WEIGHT:
         raise Exception('Invalid poids')
-    if taille < MIN_TAILLE or taille > MAX_TAILLE:
+    if taille < MIN_HEIGHT or taille > MAX_HEIGHT:
         raise Exception('Invalid taille')
     if bodyInfo['corpulence'] not in LIST_CORPU:
         raise Exception('Invalid corpulence')
@@ -248,6 +248,21 @@ def convertToPublicProfiles(userSet):
     profiles = []
     for user in userSet:
         userInterests = getAllUsersInterest(user[USER_ENUM['email']])
+        health = [
+            user[USER_ENUM['fumeur']],
+            user[USER_ENUM['boit']],
+            user[USER_ENUM['alimentation']]
+        ]
+        body = [
+            user[USER_ENUM['poids']],
+            user[USER_ENUM['taille']],
+            user[USER_ENUM['corpulence']]
+        ]
+        lookingFor = [
+            user[USER_ENUM['recherche']],
+            user[USER_ENUM['engagement']],
+            user[USER_ENUM['frequence']]
+        ]
         profiles.append({
             "id": user[USER_ENUM['id']],
             "firstName": user[USER_ENUM['firstName']],
@@ -256,15 +271,9 @@ def convertToPublicProfiles(userSet):
             "description": user[USER_ENUM['description']],
             "sexe": user[USER_ENUM['sexe']],
             "age": user[USER_ENUM['age']],
-            "poids": user[USER_ENUM['poids']],
-            "taille": user[USER_ENUM['taille']],
-            "corpulence": user[USER_ENUM['corpulence']],
-            "fumeur": user[USER_ENUM['fumeur']],
-            "boit": user[USER_ENUM['boit']],
-            "alimentation": user[USER_ENUM['alimentation']],
-            "recherche": user[USER_ENUM['recherche']],
-            "engagement": user[USER_ENUM['engagement']],
-            "frequence": user[USER_ENUM['frequence']],
+            "health": health,
+            "body": body,
+            "lookingFor": lookingFor,
             "interests": userInterests
         })
     return profiles

@@ -33,17 +33,17 @@ MIN_AGE = 15
 MAX_AGE = 80
 
 # pour la categorie santé
-LIST_BOIT = ['jamais', 'occasionnel', 'souvent']
-LIST_ALIM = ['vegetarien', 'vegan', 'carnivore', 'omnivore']
+LIST_DRINK = ['never', 'occasionally', 'often', 'very often']
+LIST_DIET = ['vegetarian', 'vegan', 'carnivore', 'omnivore', 'rich in protein']
 
 # pour la categorie corps
-MAX_POIDS = 300
-MIN_POIDS = 30
-MAX_TAILLE = 250
-MIN_TAILLE = 90
-LIST_CORPU = ['mince', 'normal', 'sportif', 'fort']
+MAX_WEIGHT = 300
+MIN_WEIGHT = 40
+MAX_HEIGHT = 220
+MIN_HEIGHT = 90
+LIST_CORPU = ['thin', 'normal', 'athletic', 'fort']
 
 # pour la categorie relation ideale
-LIST_RECHERCHE = ['amicale', 'amoureuse', 'aucune idee']
+LIST_RECHERCHE = ['friendly meeting', 'serious relationship', 'no idea']
 LIST_ENGAGEMENT = ['court terme', 'long terme', 'aucune idee']
 LIST_FREQUENCE = ['Quotidienne', 'Hebdomadaire', 'Occassionnelle', 'autre']

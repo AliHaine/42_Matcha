@@ -302,14 +302,14 @@ def getInterestsRoute():
 def getSanityRoute():
     return jsonify({'sanity': ['fumeur', 'boit', 'alimentation'],
                     'fumeur': [True, False],
-                    'boit': LIST_BOIT,
-                    'alimentation': LIST_ALIM})
+                    'boit': LIST_DRINK,
+                    'alimentation': LIST_DIET})
 
 @app.route('/api/getBodyInfo', methods=['GET'])
 def getBodyInfoRoute():
     return jsonify({'body_info': ['taille', 'poids', 'corpulence'],
-                    'taille': {'min': MIN_TAILLE, 'max': MAX_TAILLE},
-                    'poids': {'min': MIN_POIDS, 'max': MAX_POIDS},
+                    'taille': {'min': MIN_HEIGHT, 'max': MAX_HEIGHT},
+                    'poids': {'min': MIN_WEIGHT, 'max': MAX_WEIGHT},
                     'corpulence': LIST_CORPU})
 
 @app.route('/api/getIdealRelation', methods=['GET'])
