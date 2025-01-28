@@ -22,7 +22,7 @@ def connectDatabase():
         return
     try:
         conn = psycopg2.connect(
-                host="0.0.0.0",
+                host="localhost",
                 port=os.getenv('POSTGRES_PORT'),
                 database=os.getenv('POSTGRES_DB'),
                 user=os.getenv('POSTGRES_USER'),

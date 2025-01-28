@@ -19,12 +19,12 @@ export class RegisterComponent {
         password: new FormControl('', Validators.required),
         passwordconfirm: new FormControl('', Validators.required),
         age: new FormControl('', Validators.required),
-        sex: new FormControl('', Validators.required)
+        gender: new FormControl('male', Validators.required)
     });
 
     submit(event: Event) {
       event.preventDefault();
       console.log(this.formControlGroup.value);
-      this.apiService.postData('a', this.formControlGroup.value);
+      this.apiService.postData('/account/register', this.formControlGroup.value);
     }
 }
