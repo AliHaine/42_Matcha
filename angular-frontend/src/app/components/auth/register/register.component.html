@@ -1,1 +1,49 @@
-<p>register works!</p>
+<form class="form-style-1" [formGroup]="formControlGroup" (submit)="submit($event)">
+	<h1>Register</h1>
+	<div class="area">
+		<div>
+			<label>Lastname</label>
+			<input class="input-style-1" type="text" placeholder="Enter your lastname" formControlName='lastname'>
+		</div>
+		<div>
+			<label>Firstname</label>
+			<input class="input-style-1" type="text" placeholder="Enter your  firstname" formControlName='firstname'>
+		</div>
+	</div>
+	<div style="display: flex; flex-direction: column;">
+		<label>Email</label>
+		<input class="input-style-1" type="email" placeholder="Enter your email adress" formControlName='email'>
+	</div>
+
+	<div class="area">
+		<div>
+			<label>Password</label>
+			<input class="input-style-1" type="password" placeholder="Enter your password" formControlName='password'>
+		</div>
+		<div>
+			<label>Password confirmation</label>
+			<input class="input-style-1" type="password" placeholder="Confirm your password" formControlName='passwordconfirm'>
+		</div>
+	</div>
+	<div id="age-sex" class="area">
+		<div>
+			<label>Age</label>
+			<input class="input-style-1" type="text" id="age" placeholder="" formControlName='age'>
+		</div>
+		<div>
+			<label>Sex</label>
+			<fieldset>
+			 	 <div>
+					<input type="radio" name="sex" value="male" formControlName="sex" checked />
+					<label>Male</label>
+			  	</div>
+				<div>
+					<input type="radio" name="sex" value="female" formControlName="sex" />
+					<label>Female</label>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	<button class="button-style-1"> Register </button>
+	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
+</form>

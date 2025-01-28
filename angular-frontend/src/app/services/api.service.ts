@@ -12,11 +12,11 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
     getData(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/data`);
-  }
+      return this.http.get(`${this.baseUrl}/data`);
+    }
 
-    postData(dataToPost: any) {
-      this.http.post(`${this.baseUrl}/account/login`, dataToPost).subscribe(sub => {
+    postData(targetUrl: string, dataToPost: any) {
+      this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost).subscribe(sub => {
         console.log(sub)
       });
     }

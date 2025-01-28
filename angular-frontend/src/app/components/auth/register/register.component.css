@@ -1,0 +1,26 @@
+.area {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.area div {
+    display: flex;
+    flex-direction: column;
+}
+
+fieldset {
+    display: flex;
+}
+
+a, h1 {
+    text-align: center;
+}
+
+#age {
+    width: 30%;
+}
+
+#age-sex {
+    justify-content: center;
+}

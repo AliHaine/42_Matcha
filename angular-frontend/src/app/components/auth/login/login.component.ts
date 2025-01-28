@@ -11,16 +11,16 @@ import {EmailValidator, FormControl, FormGroup, ReactiveFormsModule, Validators}
 })
 export class LoginComponent {
 
-  apiService = inject(ApiService);
-  formControlGroup = new FormGroup({
-    email: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required),
-    checkbox: new FormControl(false)
-  });
+    apiService = inject(ApiService);
+    formControlGroup = new FormGroup({
+        email: new FormControl('', Validators.required),
+        password: new FormControl('', Validators.required),
+        checkbox: new FormControl(false)
+    });
 
-  submit(event: Event) {
-    event.preventDefault();
-    console.log(this.formControlGroup.value)
-    this.apiService.postData(this.formControlGroup.value);
-  }
+    submit(event: Event) {
+      event.preventDefault();
+      console.log(this.formControlGroup.value)
+      this.apiService.postData("/account/login", this.formControlGroup.value);
+    }
 }
