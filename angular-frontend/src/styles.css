@@ -46,10 +46,11 @@ body {
 
 .input-style-1 {
     background-color: var(--color-1);
-    line-height: 2.5em;
+    line-height: 2.8em;
     border-radius: 10px;
     border: solid var(--color-5);
     text-indent: 5px;
+    font-size: 0.9em;
 }
 
 .form-style-1 {

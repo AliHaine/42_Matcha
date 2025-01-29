@@ -1,6 +1,6 @@
-<form class="form-style-1" [formGroup]="formControlGroup" (submit)="submit($event)">
+<form *ngIf="currentStep == 0" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
-	<div class="area">
+	<div class="area-multiple">
 		<div>
 			<label>Lastname</label>
 			<input class="input-style-1" type="text" placeholder="Enter your lastname" formControlName='lastname'>
@@ -10,12 +10,12 @@
 			<input class="input-style-1" type="text" placeholder="Enter your  firstname" formControlName='firstname'>
 		</div>
 	</div>
-	<div style="display: flex; flex-direction: column;">
+	<div class="area-single">
 		<label>Email</label>
 		<input class="input-style-1" type="email" placeholder="Enter your email adress" formControlName='email'>
 	</div>
 
-	<div class="area">
+	<div class="area-multiple">
 		<div>
 			<label>Password</label>
 			<input class="input-style-1" type="password" placeholder="Enter your password" formControlName='password'>
@@ -25,13 +25,13 @@
 			<input class="input-style-1" type="password" placeholder="Confirm your password" formControlName='passwordconfirm'>
 		</div>
 	</div>
-	<div id="age-sex" class="area">
-		<div>
+	<div id="age-gender" class="area-multiple">
+		<div id="age">
 			<label>Age</label>
-			<input class="input-style-1" type="text" id="age" placeholder="" formControlName='age'>
+			<input class="input-style-1" type="text" placeholder="" formControlName='age'>
 		</div>
 		<div>
-			<label>Sex</label>
+			<label>Gender</label>
 			<fieldset>
 			 	 <div>
 					<input type="radio" name="gender" value="male" formControlName="gender" />
@@ -46,4 +46,172 @@
 	</div>
 	<button class="button-style-1"> Register </button>
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
+</form>
+
+<form *ngIf="currentStep == 1" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+	<h1>Complete your profile</h1>
+	<div>
+		<div style="display: flex; flex-direction: column;">
+			<label>City</label>
+			<input class="input-style-1" type="text" placeholder="Enter your city" formControlName='city'>
+		</div>
+	</div>
+    <h2>What are you looking for ?</h2>
+    <div class="area-multiple">
+        <div>
+            <label>Searching</label>
+            <select id="searching" formControlName='searching'>
+                <option>Friends</option>
+                <option>Love</option>
+                <option>Just talking</option>
+            </select>
+        </div>
+
+        <div>
+          <label>Commitment </label>
+          <select id="commitment" formControlName='commitment'>
+              <option>Short term</option>
+              <option>Long term</option>
+              <option>Undecided</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Contant frequency</label>
+          <select id="frequency" formControlName='frequency'>
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Occasionally</option>
+          </select>
+        </div>
+    </div>
+
+    <h2>Your shape</h2>
+    <div class="area-multiple">
+        <div>
+            <label>Weight (KG)</label>
+            <select id="weight" formControlName='weight'>
+                <option>100></option>
+                <option>91-100</option>
+                <option>81-90</option>
+                <option>71-80</option>
+                <option>61-70</option>
+                <option>51-60</option>
+                <option>50<</option>
+            </select>
+        </div>
+
+        <div>
+          <label>Size (CM)</label>
+          <select id="size" formControlName='size'>
+              <option>200></option>
+              <option>191-200</option>
+              <option>181-190</option>
+              <option>171-180</option>
+              <option>161-170</option>
+              <option>151-160</option>
+              <option>150<</option>
+          </select>
+        </div>
+
+        <div>
+          <label>shape</label>
+          <select id="shape" formControlName='shape'>
+              <option>Skinny</option>
+              <option>Normal</option>
+              <option>Sporty</option>
+              <option>Fat</option>
+          </select>
+        </div>
+    </div>
+
+    <h2>Your health</h2>
+    <div class="area-multiple">
+        <div>
+			<label>Smoking ?</label>
+			<fieldset>
+			 	 <div>
+					<input type="radio" value="yes" formControlName="smoking" />
+					<label>Yes</label>
+			  	</div>
+				<div>
+					<input type="radio" value="no" formControlName="smoking" />
+					<label>No</label>
+				</div>
+			</fieldset>
+		</div>
+
+        <div>
+          <label>Alcohol consumption</label>
+          <select id="alcohol" formControlName="alcohol">
+              <option>Never</option>
+              <option>Occasionally</option>
+              <option>Every week</option>
+              <option>Every day</option>
+          </select>
+        </div>
+
+        <div>
+          <label>diet</label>
+          <select id="diet" formControlName="diet">
+              <option>Omnivor</option>
+              <option>Vegetarian</option>
+              <option>Vegan</option>
+              <option>Rich in protein</option>
+          </select>
+        </div>
+    </div>
+	<button class="button-style-1"> Continue </button>
+</form>
+
+<form *ngIf="currentStep >= 2" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep2.value)">
+	<h1>Finish your profile</h1>
+    <div class="area-multiple">
+        <div>
+            <label>Art and culture</label>
+            <select id="art-culture" multiple formControlName='artCulture'>
+                <option>Cinema</option>
+                <option>Reading</option>
+                <option>Writing</option>
+                <option>Theater</option>
+                <option>Painting</option>
+                <option>Drawing</option>
+                <option>Museum</option>
+                <option>Photography</option>
+                <option>Music</option>
+            </select>
+        </div>
+
+        <div>
+          <label>Sport</label>
+          <select id="sport-activity" formControlName='sportActivity'>
+              <option>Bodybuilding</option>
+              <option>Team sport</option>
+              <option>Extreme sport</option>
+              <option>Aqua sport</option>
+              <option>No sport</option>
+
+          </select>
+        </div>
+
+        <div>
+          <label>Other</label>
+          <select id="other" formControlName='other'>
+              <option>Animals</option>
+              <option>Fashion</option>
+              <option>Moto</option>
+              <option>Object collection</option>
+              <option>Cooking</option>
+              <option>Cleaning</option>
+              <option>Video</option>
+              <option>Esport</option>
+          </select>
+        </div>
+    </div>
+
+    <div class="area-single">
+        <label>Description</label>
+        <input type="text" placeholder="Talk about you" formControlName="description" />
+    </div>
+	<button class="button-style-1">Finish</button>
 </form>

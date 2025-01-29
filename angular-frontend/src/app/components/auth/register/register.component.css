@@ -1,10 +1,15 @@
-.area {
+.area-single {
+    display: flex;
+    flex-direction: column;
+}
+
+.area-multiple {
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
-.area div {
+.area-multiple div {
     display: flex;
     flex-direction: column;
 }
@@ -13,7 +18,7 @@ fieldset {
     display: flex;
 }
 
-a, h1 {
+a, h1, h2 {
     text-align: center;
 }
 
@@ -21,6 +26,10 @@ a, h1 {
     width: 30%;
 }
 
-#age-sex {
-    justify-content: center;
+#age-gender {
+    justify-content: space-around;
+}
+
+#age-gender div {
+    text-align: center;
 }
