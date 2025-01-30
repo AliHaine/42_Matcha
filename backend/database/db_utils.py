@@ -90,6 +90,7 @@ def getElems(model, details=None, suppressEmpty=False):
             sqlCommand += f" WHERE {key} = '{value}'"
     if suppressEmpty == True:
         sqlCommand += ' WHERE ' + ' AND '.join([f"{column} IS NOT NULL" for column in model.columns.keys() if not column.startswith('CONSTRAINT')])
+    print(sqlCommand)
     cur.execute(sqlCommand)
     rows = cur.fetchall()
     cur.close()
@@ -98,7 +99,14 @@ def getElems(model, details=None, suppressEmpty=False):
 def modifyElem(model, elemId, modifications):
     cur = conn.cursor()
     sqlCommand = f'UPDATE {model.table_name} SET '
-    sqlCommand += ', '.join([f"{key} = '{value}'" for key, value in modifications.items()])
+    # sqlCommand += ', '.join([f"{key} = '{value}'" for key, value in modifications.items()])
+    for key, value in modifications.items():
+        if type(value) == int:
+            sqlCommand += f"{key} = {value}"
+        else:
+            sqlCommand += f"{key} = '{value}'"
+        if key != list(modifications.keys())[-1]:
+            sqlCommand += ', '
     sqlCommand += f" WHERE id = {elemId}"
     print(sqlCommand)
     cur.execute(sqlCommand)

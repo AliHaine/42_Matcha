@@ -2,14 +2,14 @@
 
 interests=$(curl -s 'localhost:8000/api/getInterests' | jq -r '.interests[]')
 sanity=$(curl -s 'localhost:8000/api/getSanity')
-alim=$(echo $sanity | jq -r '.alimentation[]')
-boit=$(echo $sanity | jq -r '.boit[]')
+alim=$(echo $sanity | jq -r '.diet[]')
+boit=$(echo $sanity | jq -r '.drink[]')
 bodyInfo=$(curl -s 'localhost:8000/api/getBodyInfo')
-corpulence=$(echo $bodyInfo | jq -r '.corpulence[]')
+corpulence=$(echo $bodyInfo | jq -r '.corpu[]')
 idealRelation=$(curl -s 'localhost:8000/api/getIdealRelation')
 engagement=$(echo $idealRelation | jq -r '.engagement[]')
-frequence=$(echo $idealRelation | jq -r '.frequence[]')
-recherche=$(echo $idealRelation | jq -r '.recherche[]')
+frequence=$(echo $idealRelation | jq -r '.frequency[]')
+recherche=$(echo $idealRelation | jq -r '.research[]')
 # Vérifier si des intérêts ont été récupérés
 if [ -z "$interests" ]; then
     echo "Aucun intérêt récupéré."

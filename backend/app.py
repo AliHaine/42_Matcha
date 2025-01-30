@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request, session, send_from_directory
 from flask_cors import CORS
-from database import connectDatabase, createTables, getElems, deleteElem, modifyElem, dropAll, databaseConnected
+from database import connectDatabase, createTables, getElems, deleteElem, modifyElem, dropAll, databaseConnected, createElem
 from models import *
 from crypting import init_bcrypt
 import sys
 from config import *
 from algo import *
 import os
+import requests
 from PIL import Image
 
 app = Flask(__name__)
@@ -26,7 +27,9 @@ def find_files_with_prefix(directory, prefix):
 
 def userIsLoggedIn():
     sessionEmail = session.get('email')
+    print(sessionEmail)
     users = getElems(User, {'email': sessionEmail})
+    print(users)
     if len(users) == 0 and sessionEmail:
         session.pop('email')
         sessionEmail = None
@@ -283,6 +286,7 @@ def modifyIdealRelationRoute():
     }
     try:
         modifyUserIdealRelation(idealRelation, user[0])
+        print("\n\n\n\nsession", session)
         return jsonify({'Success': True})
     except Exception as e:
         return jsonify({'Success': False, 'Error': str(e)})
@@ -343,10 +347,54 @@ def getMatchaRoute():
     matcha = getMatchableUsers(user[0], nbProfiles)
     return jsonify({'Success': True, 'matcha': matcha})
 
-@app.route('/api/account/location', methods=['GET'])
+@app.route('/api/account/setLocation', methods=['POST'])
 def getLocationRoute():
     if userIsLoggedIn() == False:
-        return jsonify({'Success': False, 'Error': 'you must be logged in to get location'})
+        return jsonify({'Success': False, 'Error': 'you must be logged in to set location'})
+    retMissingFields = checkMissingFields(session.get('email'))
+    if retMissingFields['Success'] == False:
+        return jsonify(retMissingFields)
+    user = getElems(User, {'email': session.get('email')})[0]
+    lon = request.args.get('lon', None)
+    lat = request.args.get('lat', None)
+    if not lon or not lat:
+        return jsonify({'Success': False, 'Error': 'You must provide lon and lat'})
+    if type(lon) == str:
+        try:
+            lon = float(lon)
+        except:
+            return jsonify({'Success': False, 'Error': 'lon must be a float'})
+    if type(lat) == str:
+        try:
+            lat = float(lat)
+        except:
+            return jsonify({'Success': False, 'Error': 'lat must be a float'})
+    if type(lon) != float or type(lat) != float:
+        return jsonify({'Success': False, 'Error': 'lon and lat must be floats'})
+    try:
+        res = requests.get(f'https://geo.api.gouv.fr/communes?lat={lat}&lon={lon}&fields=code,nom,departement,region')
+        if res.status_code != 200:
+            return jsonify({'Success': False, 'Error': 'Invalid location'})
+        data = res.json()
+        if len(data) == 0:
+            return jsonify({'Success': False, 'Error': 'Invalid location'})
+        city = data[0]
+        if city is None:
+            return jsonify({'Success': False, 'Error': 'Invalid location'})
+        cityID = checkCity(city)
+        if cityID is None:
+            return jsonify({'Success': False, 'Error': 'Invalid location'})
+        userCity = getElems(UserCity, {'user_id': user[USER_ENUM['id']]})
+        if len(userCity) == 0:
+            print("create")
+            createElem(UserCity, {'user_id': user[USER_ENUM['id']], 'city_id': cityID}, ['user_id', 'city_id'])
+        else:
+            print("modify")
+            modifyElem(UserCity, userCity[0][0], {'city_id': cityID})
+        return jsonify({'Success': True})
+    except Exception as e:
+        print("error : ", e)
+        return jsonify({'Success': False, 'Error': 'Invalid location'})
 
 @app.route('/api/profile_pics/<path:filename>', methods=['GET'])
 def getProfilePicRoute(filename):
@@ -356,7 +404,7 @@ def is_image_corrupted(file_path):
     try:
         with Image.open(file_path) as img:
             img.verify()  # Vérifie l'intégrité du fichier
-        return False  # Si aucun problème, l'image n'est pas corrompue
+        return False
     except (IOError, SyntaxError):
         return True  # L'image est corrompue
 

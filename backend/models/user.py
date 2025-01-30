@@ -114,8 +114,11 @@ def login_user_func(userToLogin):
     if len(users) == 0:
         raise Exception('User not found')
     user = users[0]
+    print(user)
+    print("email : ", email)
     if check_password(password, user[USER_ENUM['password']]) == True:
         session['email'] = email
+        print("session email : ", session['email'])
     else:
         raise Exception('Invalid password')
 

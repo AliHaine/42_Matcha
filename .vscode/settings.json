@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 6000,
+            "driver": "PostgreSQL",
+            "name": "matcha",
+            "database": "matcha",
+            "username": "admin",
+            "password": "admin/0123456789"
+        }
+    ]
+}
