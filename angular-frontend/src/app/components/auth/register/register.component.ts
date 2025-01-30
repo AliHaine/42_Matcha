@@ -15,13 +15,13 @@ export class RegisterComponent {
     currentStep: number = 0;
     apiService = inject(ApiService);
     formControlGroupStep1 = new FormGroup({
-        lastname: new FormControl('', Validators.required),
-        firstname: new FormControl('', Validators.required),
-        email: new FormControl('', Validators.required),
-        password: new FormControl('', Validators.required),
-        passwordconfirm: new FormControl('', Validators.required),
-        age: new FormControl('', Validators.required),
-        gender: new FormControl('male', Validators.required)
+        lastname: new FormControl('tes', Validators.required),
+        firstname: new FormControl('test', Validators.required),
+        email: new FormControl('test@gmail.com', Validators.required),
+        password: new FormControl('Test123-', Validators.required),
+        passwordConfirm: new FormControl('Test123-', Validators.required),
+        age: new FormControl('19', Validators.required),
+        sex: new FormControl('M', Validators.required)
     });
 
     formControlGroupStep2 = new FormGroup({

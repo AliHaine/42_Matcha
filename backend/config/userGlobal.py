@@ -6,12 +6,12 @@ PASSWORD_REQUIREMENTS = {
     'min_lowercase': 1,
     'min_digits': 1
 }
-REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'sex', 'age']
+REQUIRED_FIELDS = ['firstname', 'lastname', 'email', 'password', 'sex', 'age']
 
 USER_ENUM = {
     'id': 0,
-    'firstName': 1,
-    'lastName': 2,
+    'firstname': 1,
+    'lastname': 2,
     'sex': 3,
     'age': 4,
     'email': 5,

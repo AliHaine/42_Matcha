@@ -16,8 +16,12 @@ app.secret_key = "super secret key"
 app.config['UPLOAD_FOLDER'] = BASE_DIR + '/media'
 app.config['PROFILE_PIC_FOLDER'] = BASE_DIR + '/media/profile_pics'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+app.config["SESSION_COOKIE_SAMESITE"] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 
-CORS(app)
+
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
 
 def find_files_with_prefix(directory, prefix):
     return [
@@ -50,7 +54,7 @@ def checkMissingFields(email):
             "Missings": []
         }
         print(user)
-        if not user[USER_ENUM['firstName']] or not user[USER_ENUM['lastName']] or not user[USER_ENUM['email']] or not user[USER_ENUM['age']] or not user[USER_ENUM['sex']]:
+        if not user[USER_ENUM['firstname']] or not user[USER_ENUM['lastname']] or not user[USER_ENUM['email']] or not user[USER_ENUM['age']] or not user[USER_ENUM['sex']]:
             ret['Success'] = False
             ret['Errors'].append('Missing mandatory fields')
             ret['Missings'].append("mandatory")
@@ -91,8 +95,8 @@ def registerUserRoute():
     if userIsLoggedIn() == True:
         return jsonify({'Success': False, 'Error': 'User already logged in'})
     user = {
-        'firstName': values.get('firstName', ''),
-        'lastName': values.get('lastName', ''),
+        'firstname': values.get('firstname', ''),
+        'lastname': values.get('lastname', ''),
         'email': values.get('email', ''),
         'password': values.get('password', ''),
         'passwordConfirm': values.get('passwordConfirm', ''),
@@ -149,8 +153,8 @@ def modifyPersonnalInfoRoute():
         return jsonify(retMissingFields)
     data = request.json
     userPersonalInfo = {
-        'firstName': data.get('firstName', None),
-        'lastName': data.get('lastName', None),
+        'firstname': data.get('firstname', None),
+        'lastname': data.get('lastname', None),
         'age': data.get('age', None),
         'sex': data.get('sex', None),
         'email': data.get('email', None),
@@ -178,8 +182,8 @@ def getUserRoute():
         return jsonify(retMissingFields)
     user = getElems(User, {'email': session.get('email')})[0]
     return jsonify({'Success': True, 'user': {
-        'firstName': user[USER_ENUM['firstName']],
-        'lastName': user[USER_ENUM['lastName']],
+        'firstname': user[USER_ENUM['firstname']],
+        'lastname': user[USER_ENUM['lastname']],
         'email': user[USER_ENUM['email']],
         'description': user[USER_ENUM['description']]
     }})

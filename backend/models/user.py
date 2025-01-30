@@ -8,8 +8,8 @@ class User:
     table_name = 'users'
     columns = {
         'id': 'SERIAL PRIMARY KEY',
-        'firstName': 'VARCHAR(30) NOT NULL',
-        'lastName': 'VARCHAR(30) NOT NULL',
+        'firstname': 'VARCHAR(30) NOT NULL',
+        'lastname': 'VARCHAR(30) NOT NULL',
         'sex': 'VARCHAR(1) NOT NULL',
         'CONSTRAINT check_sex': "CHECK (sex IN ('" + "', '".join(LIST_SEX) + "'))",
         'age': 'INTEGER NOT NULL',
@@ -85,7 +85,7 @@ def emailValidator(email: str, doublonCheck=True) -> bool:
     return True
 
 def create_user(user):
-    if checkInvalidCharacters(user['firstName']) == True or checkInvalidCharacters(user['lastName']) == True:
+    if checkInvalidCharacters(user['firstname']) == True or checkInvalidCharacters(user['lastname']) == True:
         raise Exception('Invalid characters in name')
     if emailValidator(user['email']) == False:
         raise Exception('Invalid email')
@@ -117,7 +117,12 @@ def login_user_func(userToLogin):
     print(user)
     print("email : ", email)
     if check_password(password, user[USER_ENUM['password']]) == True:
+        session.permanent = True
+
         session['email'] = email
+        session.modified = True
+
+        print(session)
         print("session email : ", session['email'])
     else:
         raise Exception('Invalid password')
@@ -159,20 +164,20 @@ def modifyUserIdealRelation(relationInfo, userId):
 def modifyUserPersonnalInfo(personnalInfo, userId):
     Errors = []
     validUser = {}
-    if 'firstName' in personnalInfo:
-        firstName = personnalInfo['firstName']
-        if firstName is not None:
-            if checkInvalidCharacters(personnalInfo['firstName']) == True:
-                Errors.append('Invalid characters in firstName')
+    if 'firstname' in personnalInfo:
+        firstname = personnalInfo['firstname']
+        if firstname is not None:
+            if checkInvalidCharacters(personnalInfo['firstname']) == True:
+                Errors.append('Invalid characters in firstname')
             else:
-                validUser['firstName'] = personnalInfo['firstName']
-    if 'lastName' in personnalInfo:
-        lastName = personnalInfo['lastName']
-        if lastName is not None:
-            if checkInvalidCharacters(personnalInfo['lastName']) == True:
-                Errors.append('Invalid characters in lastName')
+                validUser['firstname'] = personnalInfo['firstname']
+    if 'lastname' in personnalInfo:
+        lastname = personnalInfo['lastname']
+        if lastname is not None:
+            if checkInvalidCharacters(personnalInfo['lastname']) == True:
+                Errors.append('Invalid characters in lastname')
             else:
-                validUser['lastName'] = personnalInfo['lastName']
+                validUser['lastname'] = personnalInfo['lastname']
     if 'email' in personnalInfo:
         email = personnalInfo['email']
         if email is not None:
@@ -242,8 +247,8 @@ def getPublicProfile(profileId):
         user[USER_ENUM['frequency']]
     ]
     return {
-        'firstName': user[USER_ENUM['firstName']],
-        'lastName': user[USER_ENUM['lastName']],
+        'firstname': user[USER_ENUM['firstname']],
+        'lastname': user[USER_ENUM['lastname']],
         'email': user[USER_ENUM['email']],
         'description': user[USER_ENUM['description']],
         'sex': user[USER_ENUM['sex']],
@@ -277,8 +282,8 @@ def convertToPublicProfiles(userSet):
         ]
         profiles.append({
             "id": user[USER_ENUM['id']],
-            "firstName": user[USER_ENUM['firstName']],
-            "lastName": user[USER_ENUM['lastName']],
+            "firstname": user[USER_ENUM['firstname']],
+            "lastname": user[USER_ENUM['lastname']],
             "email": user[USER_ENUM['email']],
             "description": user[USER_ENUM['description']],
             "sexe": user[USER_ENUM['sex']],

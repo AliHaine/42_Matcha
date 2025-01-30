@@ -13,18 +13,8 @@ export class CardService {
 
     constructor() {
 
-        const salut = this.apiService.getProfilesFromBack()
-        salut.subscribe((sub: any) => {
-            for (const key in sub['matcha']) {
-                console.log(sub['matcha'][key])
-                const currentValue = sub['matcha'][key];
-                this.profiles.push(new CardModel(currentValue['firstName'], "Metz", currentValue['description'], currentValue['']))
-                console.log(sub['matcha'][key]);
-            }
-        })
 
-
-        this.profiles.push(new CardModel("Leila 24ans, Metz",
+        /*this.profiles.push(new CardModel("Leila 24ans, Metz",
             "Loorem ipsum dolor sit amet. Et facere fugiat ad vitae adipisci eos voluptatem illum et facere ducimus!" +
             " Non mollitia quis ut dignissimos dicta est velit nemo illum et facere ducimus! Non mollitia quis ut dignissimos" +
             " dicta est velit nemo..",
@@ -102,7 +92,7 @@ export class CardService {
             new InterestModel("/icons/pharmacie.png", "Health", ["No smoker", "No alcohol", "Vegan"]),
             new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
             new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
-            "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
+            "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));*/
       }
 
       getProfile(index: number): CardModel {
@@ -110,7 +100,18 @@ export class CardService {
       }
 
       refreshProfile() {
+        console.log("sa")
+          const salut = this.apiService.getProfilesFromBack()
+        salut.subscribe((sub: any) => {
+            for (const key in sub['matcha']) {
+                console.log(sub['matcha'][key])
+                const currentValue = sub['matcha'][key];
+                this.profiles.push(new CardModel(currentValue['firstName'], "Metz", currentValue['description'], currentValue['']))
+                console.log(sub['matcha'][key]);
+            }
+        })
 
+        /*
           this.profiles.pop();
 
           this.profiles.push(new CardModel("NathanPiscineForm 18ans, Mulhouse",
@@ -123,7 +124,7 @@ export class CardService {
             new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
             "https://cdn.intra.42.fr/users/c3a0ea6cea763a36acd687089feb55ea/ngalzand.jpeg"))
 
-          console.log("refresh FUNCTION called")
+          console.log("refresh FUNCTION called")*/
       }
 
       getProfiles(): CardModel[] {

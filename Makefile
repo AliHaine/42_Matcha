@@ -17,7 +17,7 @@ frontend:
 
 flask:
 	pip install -r backend/requirements.txt
-	python backend/app.py
+	python3 backend/app.py
 
 database:
 	docker-compose -f backend/database/docker/docker-compose.yml up -d
