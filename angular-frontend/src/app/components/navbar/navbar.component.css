@@ -1,9 +1,10 @@
 nav {
+    background-color: var(--color-4);
     width: 100%;
     margin: 0;
     padding: 1vmin;
     font-size: 2.2vmin;
-    color: var(--color-5);
+    color: var(--color-1);
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -22,7 +23,7 @@ nav {
 
 #leftElements li:hover {
     transform: scale(1.1) translateY(-0.1vmin);
-    color: var(--color-1);
+    color: var(--color-2);
 }
 
 #leftElements li a {
@@ -54,11 +55,11 @@ nav {
     width: 4vmin;
     aspect-ratio: 1;
     display: inline-block;
-    background: var(--color-5);
+    background: var(--color-1);
     transition: transform 0.5s, background 0.5s;
 }
 
 .img:hover {
-    background: var(--color-1);
+    background: var(--color-2);
     transform: scale(1.1) translateY(-0.1vmin);
 }

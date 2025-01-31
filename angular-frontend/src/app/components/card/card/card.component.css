@@ -2,7 +2,7 @@
     display: flex;
     height: 220px;
     width: 700px;
-    background: var(--color-6);
+    background: var(--color-4);
     border-radius: 11px;
     color: white;
     font-size: 14px;
@@ -12,7 +12,7 @@
 }
 
 #main:hover {
-    animation: gradient 2s ease infinite
+    background: var(--color-3);
 }
 
 @keyframes gradient {
@@ -100,6 +100,6 @@
 }
 
 #description a {
-    color: var(--color-1);
+    color: var(--color-2);
     font-weight: 1000;
 }
