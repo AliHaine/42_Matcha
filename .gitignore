@@ -1,5 +1,6 @@
 **/venv
 **/__pycache__/
+matcha.session.sql
 /angular-frontend/node_modules/
 /angular-frontend/.angular/
 .idea
