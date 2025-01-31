@@ -3,7 +3,7 @@ from models import User
 import os
 from pathlib import Path
 
-LIST_INTERESTS = open(Path(__file__).parent.parent / 'config' / 'interests.txt', 'r').read().split('\n')
+LIST_INTERESTS = open(Path(__file__).parent.parent / 'config' / 'interests.txt', 'r', encoding='utf-8').read().split('\n')
 
 class UserInterests:
     table_name = 'user_interests'

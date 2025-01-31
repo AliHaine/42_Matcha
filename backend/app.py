@@ -21,7 +21,7 @@ app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = False
 
 
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200"]}}, supports_credentials=True)
 
 def find_files_with_prefix(directory, prefix):
     return [
