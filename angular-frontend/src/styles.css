@@ -40,6 +40,18 @@ body {
     border: solid var(--color-4);
 }
 
+.button-style-2 {
+    background-color: var(--color-3);
+    border-radius: 8px;
+    border: solid var(--color-4);
+    color: var(--color-1);
+}
+
+.button-style-2:hover {
+    background-color: var(--color-4);
+    border: solid var(--color-1);
+}
+
 .button-style-1:hover {
     background-color: var(--color-1);
 }
