@@ -65,7 +65,10 @@ def register_step2(data):
 
 @bp.route('/register', methods=['POST'])
 def register():
-    data = request.json
+    try:
+        data = request.json
+    except:
+        return jsonify({'success': False, 'error': 'Invalid JSON'}), 400
     step = data.get("step", 0)
     if step == 1:
         return register_step1(data)
@@ -106,9 +109,3 @@ def logout():
     jti = get_jwt()["jti"]  # Récupère l'ID unique du token
     BLACKLIST.add(jti)  # Ajoute à la liste noire
     return jsonify({"msg": "Successfully logged out"}), 200
-
-@bp.route('/me', methods=['GET'])
-@jwt_required()
-def me():
-    email = get_jwt_identity()
-    return jsonify({'success': True, 'user_email': email}), 200

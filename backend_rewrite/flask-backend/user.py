@@ -66,9 +66,12 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
                 if not isinstance(data[field], str) or not all(c in ALLOWED_CHARACTERS_BASE + " " for c in data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
+                if len(data[field]) < 2 or len(data[field]) > 20:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
             if field == "age":
-                print("age")
-                if not isinstance(data[field], int) and data[field] < 15 and data[field] > 80:
+                print("age", data[field])
+                if not isinstance(data[field], int) or data[field] < 15 or data[field] > 80:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "email":

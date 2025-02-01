@@ -40,6 +40,11 @@ CREATE TABLE users (
     description VARCHAR(500),
     -- other informations
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- unclassed informations
+    status VARCHAR(255) DEFAULT 'Inactive',
+    pictures_number INT DEFAULT 0,
+
     -- constraint setup
     CONSTRAINT firstname_not_empty CHECK (firstname <> ''),
     CONSTRAINT firstname_invalid CHECK (firstname ~ '^[a-zA-Z\s-]+$'),
@@ -61,5 +66,6 @@ CREATE TABLE users (
     CONSTRAINT smoking_invalid CHECK (smoking IN (TRUE, FALSE)),
     CONSTRAINT alcohol_invalid CHECK (alcohol IN ('Never', 'Occasionally', 'Every week', 'Every day')),
     CONSTRAINT diet_invalid CHECK (diet IN ('Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein')),
-    CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$')
+    CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$'),
+    CONSTRAINT status_invalid CHECK (status IN ('Active', 'Inactive', 'Do not disturb', 'Disconnected'))
 );
