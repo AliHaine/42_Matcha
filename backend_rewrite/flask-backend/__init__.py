@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 from datetime import timedelta
@@ -54,4 +55,8 @@ def create_app(test_config=None):
     jwt.invalid_token_loader(invalid_token_callback)
     jwt.revoked_token_loader(revoked_token_callback)
 
+    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
+                                        "methods": ["GET", "POST"],
+                                        "allow_headers": ["Content-Type", "Authorization"]
+                                        }}, supports_credentials=True)
     return app

@@ -22,7 +22,7 @@ def register_step1(data):
     }
     check = check_fields_step1(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': "".join(check['errors'])}), 400
+        return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
     dup_password = user_informations['password']
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
@@ -51,7 +51,7 @@ def register_step2(data):
     }
     check = check_fields_step2(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': "".join(check['errors'])}), 400
+        return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
     user_email = get_jwt_identity()
     del user_informations['city']
     result = update_user_fields(user_informations, user_email)

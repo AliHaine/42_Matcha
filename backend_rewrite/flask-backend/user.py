@@ -17,6 +17,7 @@ def create_user(user_informations):
         return False
 
 def update_user_fields(user_informations, user_email):
+    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description"]
     if not isinstance(user_informations, dict):
         return False
     if not isinstance(user_email, str):
@@ -26,7 +27,7 @@ def update_user_fields(user_informations, user_email):
     try:
         values = []
         for key, value in user_informations.items():
-            if key in ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description"]:
+            if key in fields_updatable:
                 values.append(value)
             else:
                 raise Exception(f"Invalid field {key}")
@@ -34,11 +35,12 @@ def update_user_fields(user_informations, user_email):
         with db.cursor() as cur:
             values_name = ""
             values_content = tuple()
-            for key in values:
-                values_name += f"{key} = %s, "
-                values_content += (values[key],)
+            for key, value in user_informations.items():
+                if key in fields_updatable:
+                    values_name += f"{key} = %s, "
+                    values_content += (value,)
             values_name = values_name[:-2]
-            values_content += (user_email)
+            values_content += (user_email,)
             cur.execute(
                 'UPDATE users SET '+ values_name + ' WHERE email = %s',
                 values_content
@@ -158,4 +160,5 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                 if not isinstance(data[field], str) or data[field] not in ["Omnivor", "Vegetarian", "Vegan", "Rich in protein"]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
+    return result
             
