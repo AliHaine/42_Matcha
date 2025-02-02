@@ -29,7 +29,7 @@
 /*---------------------------------------------*/
 
 #infos-left {
-    width: 40%;
+    width: 35%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -37,12 +37,13 @@
 }
 
 #profile-picture {
+    position: relative;
     width: 100%;
     height: 80%;
     background-color: white;
 }
 
-#profile-picture img {
+#picture {
     width: 100%;
     height: 100%;
 }
@@ -61,12 +62,56 @@
     line-height: 2em;
 }
 
+.overlayIcon {
+    height: 42px;
+}
+
+#profile-picture-icons {
+    position: absolute;
+    top: 90.2%;
+    left: 50%;
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(163, 141, 161, 0.5);
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 52px;
+    align-items: center;
+}
+
+.arrow {
+    -webkit-mask: url('/icons/arrow.png') center/contain;
+    aspect-ratio: 1;
+    display: inline-block;
+    background: var(--color-4);
+    transition: transform 0.5s, background 0.5s;
+}
+
+.arrow:hover {
+    background: var(--color-2);
+}
+
+#arrow-right {
+    position: absolute;
+    top: 43%;
+    left: 87%;
+    height: 32px;
+}
+
+#arrow-left {
+    position: absolute;
+    top: 43%;
+    left: 1.7%;
+    height: 32px;
+    transform: scale(-1, 1);
+}
+
 /*---------------------------------------------*/
 
 #infos-right {
     background-color: var(--color-3);
     box-shadow: 0 0 0.5vmin black;
-    width: 55%;
+    width: 60%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -93,9 +138,10 @@
 
 #description h2 {
     text-align: center;
+    padding-top: 2%;
 }
 
 #description p {
-    padding: 15px;
+    padding: 2%;
     font-size: 120%;
 }
