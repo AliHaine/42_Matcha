@@ -1,1 +1,13 @@
-<p>search works!</p>
+<div id="search-content">
+    <div id="refresh-button">
+        <img src="/logoicon.png" (click)="cardService.refreshProfile()">
+    </div>
+    <div id="filter-area">
+        <button class="button-style-1">Add new filter </button>
+        <button class="button-style-1">Add new filter </button>
+        <button class="button-style-1">Add new filter </button>
+    </div>
+    <div id="cards">
+        <app-card *ngFor="let card of cardService.getProfiles()" [card]="card"/>
+    </div>
+</div>
