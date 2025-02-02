@@ -39,4 +39,3 @@ Collection d’objets (timbres, pièces, etc.)
 Humour et comédie
 Cuisine
 Menage
-Test

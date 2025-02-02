@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS cities CASCADE;
+DROP TABLE IF EXISTS interests CASCADE;
+DROP TABLE IF EXISTS users_interests CASCADE;
 
 CREATE TABLE cities (
     id SERIAL PRIMARY KEY,
@@ -16,6 +18,14 @@ CREATE TABLE cities (
     CONSTRAINT departementname_not_empty CHECK (departementname <> ''),
     CONSTRAINT regionname_not_empty CHECK (regionname <> '')
 );
+
+CREATE TABLE interests (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT interestname_not_empty CHECK (name <> '')
+);
+
 CREATE TABLE users (
     -- first step register
     id SERIAL PRIMARY KEY,
@@ -68,4 +78,12 @@ CREATE TABLE users (
     CONSTRAINT diet_invalid CHECK (diet IN ('Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein')),
     CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$'),
     CONSTRAINT status_invalid CHECK (status IN ('Active', 'Inactive', 'Do not disturb', 'Disconnected'))
+);
+
+CREATE TABLE users_interests (
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    interest_id INT,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_interest_id FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
 );

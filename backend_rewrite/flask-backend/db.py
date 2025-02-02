@@ -29,6 +29,16 @@ def init_db():
         with db.cursor() as cur:
             cur.execute(f.read().decode('utf8'))
         db.commit()
+    with current_app.open_resource('interests_list.txt') as f:
+        with db.cursor() as cur:
+            for line in f:
+                line = line.decode('utf-8')
+                if len(line.strip()) == 0:
+                    continue
+                if line.startswith('#'):
+                    continue
+                cur.execute('INSERT INTO interests (name) VALUES (%s)', (line.strip(),))
+        db.commit()
 
 @click.command('init-db')
 def init_db_command():

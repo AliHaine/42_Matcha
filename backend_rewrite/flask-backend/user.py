@@ -1,4 +1,5 @@
 from .db import get_db
+from .cities import get_city_id
 import re
 ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
 
@@ -37,8 +38,15 @@ def update_user_fields(user_informations, user_email):
             values_content = tuple()
             for key, value in user_informations.items():
                 if key in fields_updatable:
-                    values_name += f"{key} = %s, "
-                    values_content += (value,)
+                    if key != "city":
+                        values_name += f"{key} = %s, "
+                        values_content += (value,)
+                    else:
+                        city_id = get_city_id(value)
+                        if city_id is None:
+                            return False
+                        values_name += f"city_id = %s, "
+                        values_content += (city_id,)
             values_name = values_name[:-2]
             values_content += (user_email,)
             cur.execute(
@@ -118,6 +126,10 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                     if "lon" not in data[field] or "lat" not in data[field]:
                         result['success'] = False
                         result['errors'].append(f"Field {field} is not valid")
+                    else:
+                        if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
+                            result['success'] = False
+                            result['errors'].append(f"Field {field} is not valid")
             if field == "searching":
                 print("searching")
                 if not isinstance(data[field], str) or data[field] not in ["Friends", "Love", "Just talking"]:
