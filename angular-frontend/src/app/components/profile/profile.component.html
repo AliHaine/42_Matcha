@@ -1,5 +1,5 @@
 <div id="profile">
-    <h1 id="header">Leila Macron's profile</h1>
+    <h1 id="header">{{this.profile().firstname}} {{this.profile().lastname}}'s profile</h1>
     <div id="profile-infos">
         <div id="infos-left">
             <div id="profile-picture">
@@ -12,7 +12,7 @@
                 <div id="arrow-left" class="arrow"> </div>
             </div>
             <div id="city-status">
-                19 years old, from Metz. Online
+                {{this.profile().age}} years old, from {{this.profile().city}}. Online
             </div>
             <div id="buttons">
                 <button class="button-style-2 button">Send message</button>
@@ -40,10 +40,7 @@
     </div>
     <div id="description">
         <h2>More about me</h2>
-        <p>
-            Auxerunt haec vulgi sordidioris audaciam, quod cum ingravesceret penuria commeatuum, famis et furoris inpulsu Eubuli cuiusdam inter suos clari domum ambitiosam ignibus subditis inflammavit rectoremque ut sibi iudicio imperiali addictum calcibus incessens et pugnis conculcans seminecem laniatu miserando discerpsit. post cuius lacrimosum interitum in unius exitio quisque imaginem periculi sui considerans documento recenti similia formidabat.
-Post haec indumentum regale quaerebatur et ministris fucandae purpurae tortis confessisque pectoralem tuniculam sine manicis textam, Maras nomine quidam inductus est ut appellant Christiani diaconus, cuius prolatae litterae scriptae Graeco sermone ad Tyrii textrini praepositum celerari speciem perurgebant quam autem non indicabant denique etiam idem ad usque discrimen vitae vexatus nihil fateri conpulsus est. non indicabant denique etiam idem ad usque discrimen vitae vexatus nihil fateri conpulsus est. non indicabant denique etiam idem ad usque discrimen vitae vexatus nihil fateri conpulsus est.
-        </p>
+        <p>{{this.profile().description}}</p>
     </div>
 
 </div>

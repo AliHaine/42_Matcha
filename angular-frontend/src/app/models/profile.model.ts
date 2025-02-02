@@ -1,6 +1,6 @@
 export class ProfileModel {
 
-    /*firstname: String;
+    firstname: String;
     lastname: String;
     age: Number;
     city: String;
@@ -11,10 +11,10 @@ export class ProfileModel {
     health: [];
     interests: [];
     picturesNumber: Number;
-    status: String;*/
+    status: String;
 
-    constructor(data: {}) {
-        /*
+    constructor(data: {[key: string]: any}) {
+
         this.firstname = data["firstname"];
         this.lastname = data["lastname"];
         this.age = data["age"];
@@ -26,7 +26,7 @@ export class ProfileModel {
         this.health = data["health"];
         this.interests = data["interests"];
         this.picturesNumber = data["picturesNumber"];
-        this.status = data["status"];*/
+        this.status = data["status"];
     }
 
 }
