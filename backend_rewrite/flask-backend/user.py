@@ -239,8 +239,11 @@ def check_fields_step3(data, fields=["interests", "description"]):
     return result
 
 @jwt_required()
-def check_registration_status():
-    user_email = get_jwt_identity()
+def check_registration_status(other_email=None):
+    if other_email is not None:
+        user_email = other_email
+    else:
+        user_email = get_jwt_identity()
     if user_email is None:
         return False
     try:

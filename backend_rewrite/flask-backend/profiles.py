@@ -1,11 +1,10 @@
-import functools
-
-from flask import Blueprint, request, jsonify, session
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from flask import Blueprint, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from .db import get_db
 
 from .decorators import registration_completed
+
+from .user import check_registration_status
 
 bp = Blueprint('profiles', __name__, url_prefix='/api/profiles')
 
@@ -67,3 +66,19 @@ def me():
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'}), 404
     return jsonify({'success': True, 'user': convert_to_public_profile(user)}), 200
+
+@bp.route('/<int:id>', methods=['GET'])
+@jwt_required()
+@registration_completed
+def get_profile(id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = %s", (id,))
+    user = cursor.fetchone()
+    if user is None:
+        return jsonify({'success': False, 'error': 'User not found'}), 404
+    result = check_registration_status(user["email"])
+    if result is True:
+        return jsonify({'success': True, 'user': convert_to_public_profile(user)}), 200
+    else:
+        return jsonify({'success': False, 'error': f'User {user["id"]} did not complete the registration'}), 400
