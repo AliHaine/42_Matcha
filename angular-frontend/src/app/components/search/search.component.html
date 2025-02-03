@@ -3,11 +3,14 @@
         <img src="/logoicon.png" (click)="cardService.refreshProfile()">
     </div>
     <div id="filter-area">
-        <button class="button-style-1">Add new filter </button>
-        <button class="button-style-1">Add new filter </button>
-        <button class="button-style-1">Add new filter </button>
+        <button class="filter-button button-style-2">Add new filter </button>
     </div>
     <div id="cards">
-        <app-card *ngFor="let card of cardService.getProfiles()" [card]="card"/>
+        <app-card *ngFor="let card of cardService.getSearchProfiles() | paginate: { itemsPerPage: 2, currentPage: p }"
+                  [card]="card">
+        </app-card>
+    </div>
+    <div id="pagination">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 </div>

@@ -1,11 +1,8 @@
-<div>
+<div id="home-content">
     <div id="refresh-button">
         <img src="/logoicon.png" (click)="cardService.refreshProfile()">
     </div>
     <div id="cards">
         <app-card *ngFor="let card of cardService.getProfiles()" [card]="card"/>
-    </div>
-    <div id="pagination">
-
     </div>
 </div>

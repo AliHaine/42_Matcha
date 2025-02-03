@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    height: 90vh;
 }
 
 #refresh-button {
@@ -11,17 +12,15 @@
 }
 
 #refresh-button img {
-    padding-top: 15%;
     height: 100%;
     width: 100%;
+    box-sizing: border-box;
 }
 
 #cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2vmin;
-    align-self: center;
-    justify-self: center;
     grid-column-gap: 6vmin;
 }
 
@@ -30,6 +29,5 @@
 }
 
 .filter-button {
-
+    line-height: 2.2em;
 }
-

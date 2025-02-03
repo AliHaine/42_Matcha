@@ -10,6 +10,7 @@ export class CardService {
 
     apiService = inject(ApiService);
     private profiles: CardModel[] = [];
+    private searchProfiles: CardModel[] = [];
 
     constructor() {
 
@@ -93,6 +94,8 @@ export class CardService {
             new InterestModel("/icons/body.png", "Body", ["Weight 58kg", "Size 166cm", "Sporty"]),
             new InterestModel("/icons/search.png", "Looking for", ["Friendly meeting", "Short-term commitment", "Casual contact"])],
             "https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg"));
+
+        this.searchProfiles = this.profiles.slice(0, this.profiles.length - 2);
       }
 
       getProfile(index: number): CardModel {
@@ -129,5 +132,9 @@ export class CardService {
 
       getProfiles(): CardModel[] {
           return this.profiles;
+      }
+
+      getSearchProfiles(): CardModel[] {
+        return this.searchProfiles;
       }
 }
