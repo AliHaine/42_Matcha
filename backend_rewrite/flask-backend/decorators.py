@@ -18,15 +18,26 @@ def registration_completed(f):
             if user is None:
                 return jsonify({'success': False, 'error': 'User not found'}), 404
 
-            step1_fields = ["firstname", "lastname", "email", "password", "age", "gender"]
-            for field in step1_fields:
-                if field not in user or user[field] is None:
-                    return jsonify({'success': False, 'error': "Step 1 is not completed", "step": 1}), 400
-
-            step2_fields = ["city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
-            for field in step2_fields:
-                if field not in user or user[field] is None:
-                    return jsonify({'success': False, 'error': "Step 2 is not completed", "step": 2}), 400
+            if user['registration_completed'] == True:
+                return f(*args, **kwargs)
+            else:
+                step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
+                step2_fields = ['city_id', 'searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
+                step3_fields = ['description']
+                for field in step1_fields:
+                    if user[field] is None:
+                        return jsonify({'success': False, 'error': 'Registration not completed', 'step':1}), 400
+                for field in step2_fields:
+                    if user[field] is None:
+                        return jsonify({'success': False, 'error': 'Registration not completed', 'step':2}), 400
+                for field in step3_fields:
+                    if user[field] is None:
+                        return jsonify({'success': False, 'error': 'Registration not completed', 'step':3}), 400
+                cur.execute('SELECT * FROM users_interests WHERE user_id = %s', (user['id'],))
+                interests = cur.fetchall()
+                if len(interests) == 0:
+                    return jsonify({'success': False, 'error': 'Registration not completed', 'step':3}), 400
+                cur.execute('UPDATE users SET registration_completed = TRUE WHERE email = %s', (user_mail,))
         return f(*args, **kwargs)
 
     return decorated_function

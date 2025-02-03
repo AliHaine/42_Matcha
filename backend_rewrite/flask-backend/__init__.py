@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+from .db import get_db
 from datetime import timedelta
 
 from .jwt_handler import missing_token_callback, expired_token_callback, invalid_token_callback, revoked_token_callback
@@ -22,8 +23,14 @@ def create_app(test_config=None):
         JWT_BLACKLIST_ENABLED=True,
         JWT_BLACKLIST_TOKEN_CHECKS=['access'],
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
+        BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
     )
-
+    app.app_context().push()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT name FROM interests')
+        result = cur.fetchall()
+        app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)

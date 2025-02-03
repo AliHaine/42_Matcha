@@ -1,7 +1,9 @@
 from .db import get_db
 from .cities import get_city_id
 import re
+from flask_jwt_extended import jwt_required, get_jwt_identity
 ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+from flask import current_app
 
 def create_user(user_informations):
     try:
@@ -17,8 +19,31 @@ def create_user(user_informations):
         print("Failed to create user (func : create_user, file : user.py). Error : ", e)
         return False
 
+def update_interests(interests, user_email):
+    for interest in interests:
+        if interest not in current_app.config['AVAILABLE_INTERESTS']:
+            return False
+    try:
+        db = get_db()
+        with db.cursor() as cur:
+            cur.execute('SELECT id FROM users WHERE email = %s', (user_email,))
+            user = cur.fetchone()
+            if user is None:
+                return False
+            user_id = user['id']
+            cur.execute('DELETE FROM users_interests WHERE user_id = %s', (user_id,))
+            for interest in interests:
+                cur.execute('SELECT id FROM interests WHERE name = %s', (interest,))
+                interest_id = cur.fetchone()['id']
+                cur.execute('INSERT INTO users_interests (user_id, interest_id) VALUES (%s, %s)', (user_id, interest_id))
+        db.commit()
+        return True
+    except Exception as e:
+        print("Failed to update interests (func : update_interests, file : user.py). Error : ", e)
+        return False
+
 def update_user_fields(user_informations, user_email):
-    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description"]
+    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests"]
     if not isinstance(user_informations, dict):
         return False
     if not isinstance(user_email, str):
@@ -38,15 +63,19 @@ def update_user_fields(user_informations, user_email):
             values_content = tuple()
             for key, value in user_informations.items():
                 if key in fields_updatable:
-                    if key != "city":
-                        values_name += f"{key} = %s, "
-                        values_content += (value,)
-                    else:
+                    if key == "city":
                         city_id = get_city_id(value)
                         if city_id is None:
                             return False
                         values_name += f"city_id = %s, "
                         values_content += (city_id,)
+                    elif key == "interests":
+                        res = update_interests(value, user_email)
+                        if res == False:
+                            return False
+                    else:
+                        values_name += f"{key} = %s, "
+                        values_content += (value,)
             values_name = values_name[:-2]
             values_content += (user_email,)
             cur.execute(
@@ -176,4 +205,64 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
-            
+
+def check_fields_step3(data, fields=["interests", "description"]):
+    result = {
+        'success': True,
+        'errors': []
+    }
+    for field in fields:
+        if field not in data:
+            result['success'] = False
+            result['errors'].append(f"Field {field} is missing")
+        else:
+            if field == "interests":
+                print("interests")
+                if not isinstance(data[field], list):
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+                else:
+                    print(data[field])
+                    if len(data[field]) == 0:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid (not enough interests)")
+                    for interest in data[field]:
+                        if interest not in current_app.config['AVAILABLE_INTERESTS']:
+                            result['success'] = False
+                            result['errors'].append(f"Field {field} is not valid")
+            if field == "description":
+                print("description")
+                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 500:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+    return result
+
+@jwt_required()
+def check_registration_status():
+    user_email = get_jwt_identity()
+    if user_email is None:
+        return False
+    try:
+        with get_db().cursor() as cur:
+            cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+            user = cur.fetchone()
+            if user is None:
+                return False
+            if user['registration_complete'] == True:
+                return True
+            else:
+                for key, value in user.items():
+                    if value is None:
+                        return False
+                cur.execute('SELECT * FROM users_interests WHERE user_id = %s', (user['id'],))
+                user_interests = cur.fetchone()
+                if user_interests is None:
+                    return False
+                for key, value in user_interests.items():
+                    if value is None:
+                        return False
+                cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
+                return True
+    except Exception as e:
+        print("Failed to check registration status (func : check_registration_status, file : user.py). Error : ", e)
+        return False

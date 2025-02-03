@@ -54,6 +54,7 @@ CREATE TABLE users (
     -- unclassed informations
     status VARCHAR(255) DEFAULT 'Inactive',
     pictures_number INT DEFAULT 0,
+    registration_complete BOOLEAN DEFAULT FALSE,
 
     -- constraint setup
     CONSTRAINT firstname_not_empty CHECK (firstname <> ''),
