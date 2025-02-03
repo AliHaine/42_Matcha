@@ -10,7 +10,7 @@ a {
 }
 
 body {
-	background: linear-gradient(-45deg, #898596, var(--color-3), var(--color-4));
+	background: var(--color-background-1);
     animation: gradient 15s ease infinite;
 	background-size: 400% 400%;
 
@@ -29,7 +29,7 @@ body {
 }
 
 .text-hover-style-1:hover {
-    color: var(--color-1);
+    color: var(--color-2);
 }
 
 .button-style-1 {
@@ -37,7 +37,19 @@ body {
     line-height: 3em;
     background-color: var(--color-2);
     border-radius: 10px;
-    border: solid var(--color-5);
+    border: solid var(--color-4);
+}
+
+.button-style-2 {
+    background-color: var(--color-3);
+    border-radius: 8px;
+    border: solid var(--color-4);
+    color: var(--color-1);
+}
+
+.button-style-2:hover {
+    background-color: var(--color-4);
+    border: solid var(--color-1);
 }
 
 .button-style-1:hover {
@@ -48,15 +60,15 @@ body {
     background-color: var(--color-1);
     line-height: 2.8em;
     border-radius: 10px;
-    border: solid var(--color-5);
+    border: solid var(--color-4);
     text-indent: 5px;
     font-size: 0.9em;
 }
 
 .form-style-1 {
     padding: 1%;
-    background-color: rgba(var(--color-rgb-5), 0.3);
-    color: var(--color-5);
+    background-color: var(--color-4);
+    color: var(--color-1);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -69,11 +81,10 @@ body {
 }
 
 :root {
-    --color-1: #E9C5C5;
-    --color-2: #C8A8B3;
-    --color-3: #A38DA1;
-    --color-4: #7B758C;
-    --color-5: #0d172d;
-    --color-6: rgb(26, 41, 50);
+    --color-background-1: #ECE0EF;
+    --color-1: #FBEAFF;
+    --color-2: #F3C5FF;
+    --color-3: #845EC2;
+    --color-4: #563B83;
     --color-rgb-5: 13, 23, 45;
 }

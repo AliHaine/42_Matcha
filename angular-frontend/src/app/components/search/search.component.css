@@ -1,8 +1,13 @@
+#search-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 #refresh-button {
     height: 10vmin;
     width: 12vmin;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 #refresh-button img {
@@ -23,3 +28,8 @@
 #cards div {
     margin-right: 10px;
 }
+
+.filter-button {
+
+}
+

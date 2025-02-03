@@ -11,8 +11,4 @@ import {NgForOf} from "@angular/common";
 })
 export class HomeComponent{
   cardService = inject(CardService);
-
-  constructor() {
-    console.log("home called")
-  }
 }

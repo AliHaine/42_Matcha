@@ -1,0 +1,46 @@
+<div id="profile">
+    <h1 id="header">{{this.profile().firstname}} {{this.profile().lastname}}'s profile</h1>
+    <div id="profile-infos">
+        <div id="infos-left">
+            <div id="profile-picture">
+                <img id="picture" src="https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg">
+                <div id="profile-picture-icons">
+                    <img class="overlayIcon giftIcon" src="/icons/gift.png">
+                    <img class="overlayIcon heartIcon" src="/icons/heart.png">
+                </div>
+                <div id="arrow-right" class="arrow"> </div>
+                <div id="arrow-left" class="arrow"> </div>
+            </div>
+            <div id="city-status">
+                {{this.profile().age}} years old, from {{this.profile().city}}. Online
+            </div>
+            <div id="buttons">
+                <button class="button-style-2 button">Send message</button>
+                <button class="button-style-2 button">Report</button>
+            </div>
+        </div>
+        <div id="infos-right">
+            <div>
+                <h3>Looking for</h3>
+                <p>I want to meet friends in a long term relation with occasional contact</p>
+            </div>
+            <div>
+                <h3>Health</h3>
+                <p>Im vegan, I don’t smoke and drink alcohol occasionally  </p>
+            </div>
+            <div>
+                <h3>Shape</h3>
+                <p>My shape is skinny, I’m 150 CM tall and weigh 53 KG</p>
+            </div>
+            <div>
+                <h3>Interests</h3>
+                <p>Im interested by music, blabla, blabla, blabla, blabla</p>
+            </div>
+        </div>
+    </div>
+    <div id="description">
+        <h2>More about me</h2>
+        <p>{{this.profile().description}}</p>
+    </div>
+
+</div>
