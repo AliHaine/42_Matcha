@@ -50,6 +50,6 @@ export class RegisterComponent {
       event.preventDefault();
       this.currentStep++;
       console.log(values);
-      this.apiService.postData('/account/register', values);
+      this.apiService.postData('/auth/register', values);
     }
 }

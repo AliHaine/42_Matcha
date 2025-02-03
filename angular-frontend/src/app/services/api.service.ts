@@ -16,8 +16,7 @@ export class ApiService {
     }
 
     postData(targetUrl: string, dataToPost: any) {
-      this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost, { withCredentials: true, observe: 'response' }).subscribe(sub => {
-          console.log(sub.headers);
+      this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost, { withCredentials: true}).subscribe(sub => {
           console.log(sub)
           console.log(document.cookie);
 

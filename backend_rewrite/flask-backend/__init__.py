@@ -24,6 +24,8 @@ def create_app(test_config=None):
         JWT_BLACKLIST_TOKEN_CHECKS=['access'],
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
         BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
+        PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), '/uploads/profile_pictures'),
+        PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
     )
     app.app_context().push()
     db = get_db()
@@ -64,8 +66,5 @@ def create_app(test_config=None):
     jwt.invalid_token_loader(invalid_token_callback)
     jwt.revoked_token_loader(revoked_token_callback)
 
-    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
-                                        "methods": ["GET", "POST"],
-                                        "allow_headers": ["Content-Type", "Authorization"]
-                                        }}, supports_credentials=True)
+    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200", '*'],"methods": ["GET", "POST"],"allow_headers": ["Content-Type", "Authorization"]}}, supports_credentials=True)
     return app
