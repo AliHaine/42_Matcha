@@ -30,7 +30,7 @@ def create_app(test_config=None):
         JWT_BLACKLIST_TOKEN_CHECKS=['access'],
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
         BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
-        PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), '/uploads/profile_pictures'),
+        PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads/profile_pictures'),
         PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
     )
     app.app_context().push()

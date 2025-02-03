@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .db import get_db
 from PIL import Image
+import os
 
 from .decorators import registration_completed
 
@@ -88,19 +89,17 @@ def get_profile(id):
 @jwt_required()
 @registration_completed
 def profile_pictures():
-    if request.method == 'PUT':
-        print(request.files)
-        if 'picture' not in request.files:
-            return jsonify({'success': False, 'error': 'No file part'}), 400
-        file = request.files['picture']
-        if file.filename == '':
-            return jsonify({'success': False, 'error': 'No selected file'}), 400
-        if file and file.filename.split('.')[-1] in current_app.config['PROFILE_PIC_EXTENSIONS']:
-            if is_image_corrupted(file):
-                return jsonify({'success': False, 'error': 'Corrupted image'}), 400
-            current_user = get_jwt_identity()
-            db = get_db()
-            try:
+    try:
+        if request.method == 'PUT':
+            print(request.files)
+            if 'picture' not in request.files:
+                return jsonify({'success': False, 'error': 'No file part'}), 400
+            file = request.files['picture']
+            if file.filename == '':
+                return jsonify({'success': False, 'error': 'No selected file'}), 400
+            if file and file.filename.split('.')[-1] in current_app.config['PROFILE_PIC_EXTENSIONS']:
+                db = get_db()
+                current_user = get_jwt_identity()
                 with db.cursor() as cursor:
                     cursor.execute("SELECT * FROM users WHERE email = %s", (current_user,))
                     user = cursor.fetchone()
@@ -110,16 +109,79 @@ def profile_pictures():
                         return jsonify({'success': False, 'error': 'User already has 5 pictures'}), 400
                     filename = f"{user['id']}_{user['pictures_number']}.{file.filename.split('.')[-1]}"
                     file.save(f"{current_app.config['PROFILE_PICTURES_DIR']}/{filename}")
+                    if is_image_corrupted(f"{current_app.config['PROFILE_PICTURES_DIR']}/{filename}"):
+                        os.remove(f"{current_app.config['PROFILE_PICTURES_DIR']}/{filename}")
+                        return jsonify({'success': False, 'error': 'Corrupted image'}), 400
                     cursor.execute("UPDATE users SET pictures_number = pictures_number + 1 WHERE email = %s", (current_user,))
                     db.commit()
-            except Exception as e:
-                print(e)
-                return jsonify({'success': False, 'error': 'Failed to update user pictures'}), 400
-    elif request.method == 'GET':
-        return jsonify({'success': False, 'error': 'not implemented yet'}), 200
-    elif request.method == 'DELETE':
-        return jsonify({'success': False, 'error': 'not implemented yet'}), 200
+                    return jsonify({'success': True}), 200
+        elif request.method == 'GET':
+            user_id = request.args.get('user_id', None)
+            photo_number = request.args.get('photo_number', None)
+            if user_id is None:
+                return jsonify({'success': False, 'error': 'No user id provided'}), 400
+            if photo_number is None:
+                return jsonify({'success': False, 'error': 'No photo number provided'}), 400
+            try:
+                if isinstance(user_id, str):
+                    user_id = int(user_id)
+                if isinstance(photo_number, str):
+                    photo_number = int(photo_number)
+                filename = f"{user_id}_{photo_number}"
+                file = find_file_without_extension(current_app.config['PROFILE_PICTURES_DIR'], filename)
+                if file is None:
+                    return jsonify({'success': False, 'error': 'No file found'}), 404
+                return send_from_directory(current_app.config['PROFILE_PICTURES_DIR'], f"{filename}.{file.split('.')[-1]}")
+            except:
+                return jsonify({'success': False, 'error': 'Invalid user id or photo number'}), 400
 
+        elif request.method == 'DELETE':
+            file_number = request.args.get('file_number')
+            if isinstance(file_number, str):
+                try:
+                    file_number = int(file_number)
+                except:
+                    return jsonify({'success': False, 'error': 'Invalid file number'}), 400
+            if file_number is None:
+                return jsonify({'success': False, 'error': 'No file number provided'}), 400
+            if file_number < 0 or file_number > 4:
+                return jsonify({'success': False, 'error': 'Invalid file number'}), 400
+            db = get_db()
+            current_user = get_jwt_identity()
+            with db.cursor() as cursor:
+                cursor.execute("SELECT * FROM users WHERE email = %s", (current_user,))
+                user = cursor.fetchone()
+                if user is None:
+                    return jsonify({'success': False, 'error': 'User not found'}), 404
+                if file_number >= user['pictures_number']:
+                    return jsonify({'success': False, 'error': 'No picture at this index'}), 400
+                filename = f"{user['id']}_{file_number}"
+                file = find_file_without_extension(current_app.config['PROFILE_PICTURES_DIR'], filename)
+                os.remove(file)
+                cursor.execute("UPDATE users SET pictures_number = pictures_number - 1 WHERE email = %s", (current_user,))
+                db.commit()
+                realign_photos(user['id'], file_number)
+                return jsonify({'success': True}), 200
+            return jsonify({'success': False, 'error': 'An error occured'}), 400
+        else:
+            return jsonify({'success': False, 'error': 'Invalid method'}), 400
+    except Exception as e:
+        print("exception in profile-picture endpoit", e)
+        return jsonify({'success': False, 'error': 'An error occured'}), 400
+        
+def find_file_without_extension(directory, filename):
+    for file in os.listdir(directory):
+        if file.startswith(filename + "."):  # Vérifie si le fichier commence par le bon nom
+            return os.path.join(directory, file)
+    return None
+
+def realign_photos(user_id, file_number):
+    for i in range(file_number, 4):
+        old_file = find_file_without_extension(current_app.config['PROFILE_PICTURES_DIR'], f"{user_id}_{i+1}")
+        if old_file is None:
+            break
+        new_file = os.path.join(current_app.config['PROFILE_PICTURES_DIR'], f"{user_id}_{i}.{old_file.split('.')[-1]}")
+        os.rename(old_file, new_file)
 
 def is_image_corrupted(image):
     try:
