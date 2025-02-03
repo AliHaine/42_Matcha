@@ -490,4 +490,4 @@ if __name__ == '__main__':
     init_bcrypt(app)
     init_interests()
     print(BASE_DIR)
-    app.run(debug=True, host='localhost', port=8000)
+    app.run(debug=True, host='localhost', port=5000)

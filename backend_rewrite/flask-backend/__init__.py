@@ -12,6 +12,12 @@ from .jwt_handler import missing_token_callback, expired_token_callback, invalid
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app, resources={r"/api/*": {
+    "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Ajout de OPTIONS
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
+}})
     app.config.from_mapping(
         SECRET_KEY='dev',
         # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
@@ -66,5 +72,5 @@ def create_app(test_config=None):
     jwt.invalid_token_loader(invalid_token_callback)
     jwt.revoked_token_loader(revoked_token_callback)
 
-    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200", '*'],"methods": ["GET", "POST"],"allow_headers": ["Content-Type", "Authorization"]}}, supports_credentials=True)
     return app
+
