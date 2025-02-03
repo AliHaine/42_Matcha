@@ -33,6 +33,7 @@ def update_interests(interests, user_email):
             user_id = user['id']
             cur.execute('DELETE FROM users_interests WHERE user_id = %s', (user_id,))
             for interest in interests:
+                print("adding interest", interest)
                 cur.execute('SELECT id FROM interests WHERE name = %s', (interest,))
                 interest_id = cur.fetchone()['id']
                 cur.execute('INSERT INTO users_interests (user_id, interest_id) VALUES (%s, %s)', (user_id, interest_id))

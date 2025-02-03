@@ -16,9 +16,9 @@ def convert_to_public_profile(user):
     db = get_db()
     if cityID is not None:
         with db.cursor() as cursor:
-            cursor.execute("SELECT name FROM cities WHERE id = %s", (cityID,))
+            cursor.execute("SELECT cityname FROM cities WHERE id = %s", (cityID,))
             cityElement = cursor.fetchone()
-            # city = cityElement['cityname']
+            city = cityElement['cityname']
     lookingFor = []
     lookingFor.append(user['searching'])
     lookingFor.append(user['commitment'])
@@ -31,6 +31,14 @@ def convert_to_public_profile(user):
     health.append(user['smoking'])
     health.append(user['alcohol'])
     health.append(user['diet'])
+    interests = []
+    with db.cursor() as cursor:
+        cursor.execute("SELECT interest_id FROM users_interests WHERE user_id = %s", (user['id'],))
+        interestsList = cursor.fetchall()
+        for interest in interestsList:
+            cursor.execute("SELECT name FROM interests WHERE id = %s", (interest['interest_id'],))
+            interestElement = cursor.fetchone()
+            interests.append(interestElement['name'])
     return {
         'id': user['id'],
         'firstname': user['firstname'],
@@ -42,7 +50,7 @@ def convert_to_public_profile(user):
         'lookingFor': lookingFor,
         'shape': shape,
         'health': health,
-        'interests': [],
+        'interests': interests,
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
     }

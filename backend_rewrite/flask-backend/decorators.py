@@ -18,7 +18,7 @@ def registration_completed(f):
             if user is None:
                 return jsonify({'success': False, 'error': 'User not found'}), 404
 
-            if user['registration_completed'] == True:
+            if user['registration_complete'] == True:
                 return f(*args, **kwargs)
             else:
                 step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
@@ -37,7 +37,7 @@ def registration_completed(f):
                 interests = cur.fetchall()
                 if len(interests) == 0:
                     return jsonify({'success': False, 'error': 'Registration not completed', 'step':3}), 400
-                cur.execute('UPDATE users SET registration_completed = TRUE WHERE email = %s', (user_mail,))
+                cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_mail,))
         return f(*args, **kwargs)
 
     return decorated_function
