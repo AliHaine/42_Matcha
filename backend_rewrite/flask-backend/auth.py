@@ -43,18 +43,18 @@ def register_step1(data):
     }
     check = check_fields_step1(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
+        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
     dup_password = user_informations['password']
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
-        response = login_user(user_informations['email'], dup_password)
+        response = login_user(user_informations['email'], dup_password, registering=True)
         print(response)
         if response is None or response['success'] == False:
-            return jsonify({'success': False, 'error': 'Failed to login'}), 400
+            return jsonify({'success': False, 'error': 'Failed to login'})
         else:
-            return jsonify({'success': True, 'access_token': response['access_token']}), 200
+            return jsonify({'success': True, 'access_token': response['access_token']})
     else:
-        return jsonify({'success': False, 'error': 'Failed to create user'}), 400
+        return jsonify({'success': False, 'error': 'Failed to create user'})
 
 @jwt_required()
 def register_step2(data):
@@ -72,39 +72,37 @@ def register_step2(data):
     }
     check = check_fields_step2(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
+        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
     user_email = get_jwt_identity()
     del user_informations['city']
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
     if result == True:
-        return jsonify({'success': True}), 200
+        return jsonify({'success': True})
     else:
-        return jsonify({'success': False, 'error': 'Failed to update user fields'}), 400
+        return jsonify({'success': False, 'error': 'Failed to update user fields'})
 
 @jwt_required()
 def register_step3(data):
-    print("\n\n\nREGISTER 3\n\n\ndata : ", data)
     interests = data.get('artCulture', [])
-    print("interests : ", interests)
-    interests.append(data.get('sportActivity', ''))
-    print("interests : ", interests)
-    interests.append(data.get('other', ''))
-    print("interests : ", interests)
+    if 'sportActivity' in data:
+        interests.append(data.get('sportActivity', None))
+    if 'other' in data:
+        interests.append(data.get('other', None))
     user_informations = {
         'interests': interests,
         'description': data.get('description', ''),
     }
     check = check_fields_step3(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
+        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
     if result == True:
-        return jsonify({'success': True}), 200
+        return jsonify({'success': True})
     else:
-        return jsonify({'success': False, 'error': 'Failed to update user fields'}), 400
+        return jsonify({'success': False, 'error': 'Failed to update user fields'})
     
 
 @bp.route('/register', methods=['POST'])
@@ -113,12 +111,12 @@ def register():
         data = request.json
     except Exception as e:
         print("crash at json conversion :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'}), 400
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
     step = data.get("step", 0)
     if step == 2 or step == 3:
         result = check_registration_status()
         if result == True:
-            return jsonify({'success': False, 'error': 'User already completed the registration'}), 400
+            return jsonify({'success': False, 'error': 'User already completed the registration'})
     if step == 1:
         return register_step1(data)
     elif step == 2:
@@ -126,21 +124,41 @@ def register():
     elif step == 3:
         return register_step3(data)
     else:
-        return jsonify({'success': False, 'error': 'Invalid step'}), 400
+        return jsonify({'success': False, 'error': 'Invalid step'})
     
     
 
-def login_user(email, password):
+def login_user(email, password, registering=False):
     check = check_fields_step1({'email': email, 'password': password}, ['email', 'password'], email_exists_check=False)
     if check['success'] == False:
         return {'success': False, 'error': "".join(check['errors'])}
     db = get_db()
+    missing_steps = []
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email = %s', (email,))
         user = cur.fetchone()
+        step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
+        for field in step1_fields:
+            if user[field] is None:
+                missing_steps.append(1)
+                break
+        step2_fields = ['searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
+        for field in step2_fields:
+            if user[field] is None:
+                missing_steps.append(2)
+                break
+        step3_fields = ['description']
+        for field in step3_fields:
+            if user[field] is None:
+                missing_steps.append(3)
+                break
+        
     if user is None or not check_password_hash(user['password'], password):
         return {'success': False, 'error': 'Invalid email or password'}
     access_token = create_access_token(identity=user['email'])
+    if registering == False:
+        if len(missing_steps) > 0:
+            return {'success': False, 'error': 'Registration not completed', 'missing_steps': missing_steps, 'access_token': access_token}
     return {'success': True, 'access_token': access_token}
 
 @bp.route('/login', methods=['POST'])
@@ -150,7 +168,9 @@ def login():
     password = data.get('password', '')
     response = login_user(email, password)
     if response is None or response['success'] == False:
-        return jsonify({'success': False, 'error': 'Failed to login'}), 400
+        if 'missing_steps' in response:
+            return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
+        return jsonify({'success': False, 'error': 'Failed to login'})
     else:
         return jsonify({'success': True, 'access_token': response['access_token']})
 
@@ -160,4 +180,4 @@ def logout():
     jti = get_jwt()["jti"]  # Récupère l'ID unique du token
     BLACKLIST.add(jti)  # Ajoute à la liste noire
     save_blacklist()
-    return jsonify({"msg": "Successfully logged out"}), 200
+    return jsonify({"msg": "Successfully logged out"})

@@ -230,7 +230,7 @@ def check_fields_step3(data, fields=["interests", "description"]):
                     for interest in data[field]:
                         if interest not in current_app.config['AVAILABLE_INTERESTS']:
                             result['success'] = False
-                            result['errors'].append(f"Field {field} is not valid")
+                            result['errors'].append(f"Field {field}/{interest} is not valid")
             if field == "description":
                 print("description")
                 if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 500:
