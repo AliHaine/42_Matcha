@@ -84,9 +84,13 @@ def register_step2(data):
 
 @jwt_required()
 def register_step3(data):
+    print("\n\n\nREGISTER 3\n\n\ndata : ", data)
     interests = data.get('artCulture', [])
-    interests += data.get('sportActivity', [])
-    interests += data.get('other', [])
+    print("interests : ", interests)
+    interests.append(data.get('sportActivity', ''))
+    print("interests : ", interests)
+    interests.append(data.get('other', ''))
+    print("interests : ", interests)
     user_informations = {
         'interests': interests,
         'description': data.get('description', ''),
@@ -106,7 +110,6 @@ def register_step3(data):
 @bp.route('/register', methods=['POST'])
 def register():
     try:
-        print(request.headers)
         data = request.json
     except Exception as e:
         print("crash at json conversion :", e)
