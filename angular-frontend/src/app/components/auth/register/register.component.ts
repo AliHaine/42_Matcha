@@ -1,5 +1,13 @@
 import {Component, inject} from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {
+    AbstractControl,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    ValidationErrors,
+    ValidatorFn,
+    Validators
+} from "@angular/forms";
 import {RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {NgIf} from "@angular/common";
@@ -12,17 +20,18 @@ import {NgIf} from "@angular/common";
 })
 export class RegisterComponent {
 
-    currentStep: number = 0;
+    currentStep: number = 1;
     apiService = inject(ApiService);
+
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
         firstname: new FormControl('test', Validators.required),
-        email: new FormControl('test@gmail.com', Validators.required),
+        email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
         password: new FormControl('Test123-', Validators.required),
         passwordConfirm: new FormControl('Test123-', Validators.required),
-        age: new FormControl(19, Validators.required),
+        age: new FormControl('', [Validators.required, Validators.min(15), Validators.max(80)]),
         gender: new FormControl('M', Validators.required)
-    });
+    }, { validators: passwordValidator });
 
     formControlGroupStep2 = new FormGroup({
         city: new FormControl('', Validators.required),
@@ -34,7 +43,7 @@ export class RegisterComponent {
         size: new FormControl('', Validators.required),
         shape: new FormControl('', Validators.required),
 
-        smoking: new FormControl(false, Validators.required),
+        smoking: new FormControl(false, Validators.requiredTrue),
         alcohol: new FormControl('', Validators.required),
         diet: new FormControl('', Validators.required),
     });
@@ -48,11 +57,25 @@ export class RegisterComponent {
 
     submit(event: Event, values: any) {
       event.preventDefault();
-      values['step'] = ++this.currentStep;
+      //values['step'] = ++this.currentStep;
+        console.log(this.formControlGroupStep1.invalid);
       console.log(values);
-      if (this.currentStep === 1)
+      /*if (this.currentStep === 1)
         this.apiService.authentication('/auth/register', values);
       else
-        this.apiService.postData('/auth/register', values);
+        this.apiService.postData('/auth/register', values);*/
     }
 }
+
+export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const password: string = <string>control.get('password')?.value;
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[1-9]/.test(password)) {
+        return {"securityError": true};
+    }
+
+    if (password !== <string>control.get('passwordConfirm')?.value) {
+        return {"confirmationError": true};
+    }
+
+    return null;
+};

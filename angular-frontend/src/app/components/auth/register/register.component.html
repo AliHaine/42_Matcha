@@ -1,4 +1,4 @@
-<form *ngIf="currentStep == 0" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
+<form *ngIf="currentStep == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
 	<div class="area-multiple">
 		<div>
@@ -44,11 +44,11 @@
 			</fieldset>
 		</div>
 	</div>
-	<button class="button-style-1"> Register </button>
+	<button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
 
-<form *ngIf="currentStep == 1" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+<form *ngIf="currentStep == 2" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
 	<h1>Complete your profile</h1>
 	<div>
 		<div style="display: flex; flex-direction: column;">
@@ -164,7 +164,7 @@
 	<button class="button-style-1"> Continue </button>
 </form>
 
-<form *ngIf="currentStep >= 2" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
+<form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
 	<h1>Finish your profile</h1>
     <div class="area-multiple">
         <div>
