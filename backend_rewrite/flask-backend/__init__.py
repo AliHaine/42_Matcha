@@ -20,7 +20,6 @@ def create_app(test_config=None):
 }})
     app.config.from_mapping(
         SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         DATABASE_HOST='localhost',
         DATABASE_USER='admin',
         DATABASE_PASSWORD='admin/0123456789',
@@ -34,8 +33,13 @@ def create_app(test_config=None):
         PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
     )
     app.app_context().push()
-    db = get_db()
-    with db.cursor() as cur:
+    # initialize the database
+    from . import db
+    db.init_app(app)
+
+    
+    database = get_db()
+    with database.cursor() as cur:
         cur.execute('SELECT name FROM interests')
         result = cur.fetchall()
         app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
@@ -52,14 +56,14 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import db
-    db.init_app(app)
 
+    # registering blueprints (routes)
     from . import auth
     from . import profiles
     app.register_blueprint(auth.bp)
     app.register_blueprint(profiles.bp)
 
+    # registering jwt and its callbacks
     jwt = JWTManager(app)
     @jwt.token_in_blocklist_loader
     def check_if_token_is_revoked(jwt_header, jwt_payload):
