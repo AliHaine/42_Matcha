@@ -247,11 +247,13 @@ def check_registration_status(other_email=None):
     if user_email is None:
         return False
     try:
-        with get_db().cursor() as cur:
+        db = get_db()
+        with db.cursor() as cur:
             cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
             user = cur.fetchone()
             if user is None:
                 return False
+            print("checking this user registration status :", user)
             if user['registration_complete'] == True:
                 return True
             else:
@@ -266,6 +268,7 @@ def check_registration_status(other_email=None):
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
+                db.commit()
                 return True
     except Exception as e:
         print("Failed to check registration status (func : check_registration_status, file : user.py). Error : ", e)

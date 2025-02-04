@@ -75,6 +75,7 @@ def register_step2(data):
         return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
+    check_registration_status()
     if result == True:
         return jsonify({'success': True}), 200
     else:
@@ -94,7 +95,11 @@ def register_step3(data):
         return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
-    return jsonify({'success': True}), 200
+    check_registration_status()
+    if result == True:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to update user fields'}), 400
     
 
 @bp.route('/register', methods=['POST'])

@@ -6,7 +6,8 @@ up:
 	$(MAKE) flask
 
 down:
-	 docker-compose -f backend/database/docker/docker-compose.yml down
+	docker-compose -f backend_rewrite/tools/database/docker-compose.yml down
+#	 docker-compose -f backend/database/docker/docker-compose.yml down
 
 backend:
 	$(MAKE) database
@@ -21,4 +22,5 @@ flask:
 #	python3 backend/app.py
 
 database:
-	docker-compose -f backend/database/docker/docker-compose.yml up -d
+	docker-compose -f backend_rewrite/tools/database/docker-compose.yml up -d
+#	docker-compose -f backend/database/docker/docker-compose.yml up -d
