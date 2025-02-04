@@ -149,17 +149,17 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
         else:
             if field == "city":
                 print("city")
-                if not isinstance(data[field], dict):
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-                else:
-                    if "lon" not in data[field] or "lat" not in data[field]:
-                        result['success'] = False
-                        result['errors'].append(f"Field {field} is not valid")
-                    else:
-                        if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
-                            result['success'] = False
-                            result['errors'].append(f"Field {field} is not valid")
+#                 if not isinstance(data[field], dict):
+#                     result['success'] = False
+#                     result['errors'].append(f"Field {field} is not valid")
+#                 else:
+#                     if "lon" not in data[field] or "lat" not in data[field]:
+#                         result['success'] = False
+#                         result['errors'].append(f"Field {field} is not valid")
+#                     else:
+#                         if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
+#                             result['success'] = False
+#                             result['errors'].append(f"Field {field} is not valid")
             if field == "searching":
                 print("searching")
                 if not isinstance(data[field], str) or data[field] not in ["Friends", "Love", "Just talking"]:
@@ -265,6 +265,8 @@ def check_registration_status(other_email=None):
                 if user_interests is None:
                     return False
                 for key, value in user_interests.items():
+                    if key == 'city_id':
+                        continue
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))

@@ -20,8 +20,8 @@ export class RegisterComponent {
         email: new FormControl('test@gmail.com', Validators.required),
         password: new FormControl('Test123-', Validators.required),
         passwordConfirm: new FormControl('Test123-', Validators.required),
-        age: new FormControl('19', Validators.required),
-        sex: new FormControl('M', Validators.required)
+        age: new FormControl(19, Validators.required),
+        gender: new FormControl('M', Validators.required)
     });
 
     formControlGroupStep2 = new FormGroup({
@@ -34,7 +34,7 @@ export class RegisterComponent {
         size: new FormControl('', Validators.required),
         shape: new FormControl('', Validators.required),
 
-        smoking: new FormControl('', Validators.required),
+        smoking: new FormControl(false, Validators.required),
         alcohol: new FormControl('', Validators.required),
         diet: new FormControl('', Validators.required),
     });
@@ -48,8 +48,11 @@ export class RegisterComponent {
 
     submit(event: Event, values: any) {
       event.preventDefault();
-      this.currentStep++;
+      values['step'] = ++this.currentStep;
       console.log(values);
-      this.apiService.postData('/auth/register', values);
+      if (this.currentStep === 1)
+        this.apiService.authentication('/auth/register', values);
+      else
+        this.apiService.postData('/auth/register', values);
     }
 }

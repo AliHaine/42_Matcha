@@ -74,6 +74,7 @@ def register_step2(data):
     if check['success'] == False:
         return jsonify({'success': False, 'error': ", ".join(check['errors'])}), 400
     user_email = get_jwt_identity()
+    del user_informations['city']
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
     if result == True:
@@ -105,6 +106,7 @@ def register_step3(data):
 @bp.route('/register', methods=['POST'])
 def register():
     try:
+        print(request.headers)
         data = request.json
     except Exception as e:
         print("crash at json conversion :", e)

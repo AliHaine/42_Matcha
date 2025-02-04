@@ -34,11 +34,11 @@
 			<label>Gender</label>
 			<fieldset>
 			 	 <div>
-					<input type="radio" name="sex" value="M" formControlName="sex" />
+					<input type="radio" name="gender" value="M" formControlName="gender" />
 					<label>Male</label>
 			  	</div>
 				<div>
-					<input type="radio" name="sex" value="F" formControlName="sex" />
+					<input type="radio" name="gender" value="F" formControlName="gender" />
 					<label>Female</label>
 				</div>
 			</fieldset>
@@ -91,26 +91,26 @@
         <div>
             <label>Weight (KG)</label>
             <select id="weight" formControlName='weight'>
-                <option>100></option>
+                <option>> 100</option>
                 <option>91-100</option>
                 <option>81-90</option>
                 <option>71-80</option>
                 <option>61-70</option>
                 <option>51-60</option>
-                <option>50<</option>
+                <option>< 50</option>
             </select>
         </div>
 
         <div>
           <label>Size (CM)</label>
           <select id="size" formControlName='size'>
-              <option>200></option>
+              <option>> 200</option>
               <option>191-200</option>
               <option>181-190</option>
               <option>171-180</option>
               <option>161-170</option>
               <option>151-160</option>
-              <option>150<</option>
+              <option>< 150</option>
           </select>
         </div>
 
@@ -131,11 +131,11 @@
 			<label>Smoking ?</label>
 			<fieldset>
 			 	 <div>
-					<input type="radio" value="yes" formControlName="smoking" />
+					<input type="radio" value=true formControlName="smoking" />
 					<label>Yes</label>
 			  	</div>
 				<div>
-					<input type="radio" value="no" formControlName="smoking" />
+					<input type="radio" value=false formControlName="smoking" />
 					<label>No</label>
 				</div>
 			</fieldset>
@@ -164,7 +164,7 @@
 	<button class="button-style-1"> Continue </button>
 </form>
 
-<form *ngIf="currentStep >= 2" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep2.value)">
+<form *ngIf="currentStep >= 2" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
 	<h1>Finish your profile</h1>
     <div class="area-multiple">
         <div>

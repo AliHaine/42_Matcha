@@ -21,6 +21,6 @@ export class LoginComponent {
     submit(event: Event) {
       event.preventDefault();
       console.log(this.formControlGroup.value)
-      this.apiService.postData("/account/login", this.formControlGroup.value);
+      this.apiService.postData("/auth/login", this.formControlGroup.value);
     }
 }
