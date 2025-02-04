@@ -39,9 +39,6 @@ def init_db():
                     continue
                 cur.execute('INSERT INTO interests (name) VALUES (%s)', (line.strip(),))
         db.commit()
-    
-    from .auth import BLACKLIST
-    BLACKLIST.clear()
 
 @click.command('init-db')
 def init_db_command():
