@@ -22,7 +22,7 @@ def registration_completed(f):
                 return f(*args, **kwargs)
             else:
                 step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
-                step2_fields = ['city_id', 'searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
+                step2_fields = ['searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
                 step3_fields = ['description']
                 for field in step1_fields:
                     if user[field] is None:
