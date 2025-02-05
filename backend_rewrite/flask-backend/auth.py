@@ -136,6 +136,8 @@ def login_user(email, password, registering=False):
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email = %s', (email,))
         user = cur.fetchone()
+        if user is None:
+            return {'success': False, 'error':'User not found'}
         step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
         for field in step1_fields:
             if user[field] is None:

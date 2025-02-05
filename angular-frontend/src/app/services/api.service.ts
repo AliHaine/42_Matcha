@@ -11,8 +11,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-    getData(): Observable<any> {
-      return this.http.get(`${this.baseUrl}/data`);
+    getData(targetUrl: string, paramsToSend: any): Observable<any> {
+      return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, headers: {'Authorization': `Bearer ${this.getAccessToken()}`}});
     }
 
     postData(targetUrl: string, dataToPost: any): Observable<any> {

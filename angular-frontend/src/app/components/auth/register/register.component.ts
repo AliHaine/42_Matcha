@@ -20,7 +20,7 @@ import {NgIf} from "@angular/common";
 })
 export class RegisterComponent {
 
-    currentStep: number = 1;
+    currentStep: number = 3;
     apiService = inject(ApiService);
     router = inject(Router)
 
@@ -76,9 +76,8 @@ export class RegisterComponent {
 
 export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password: string = <string>control.get('password')?.value;
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[1-9]/.test(password)) {
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[1-9]/.test(password))
         return {"securityError": true};
-    }
 
     if (password !== <string>control.get('passwordConfirm')?.value) {
         return {"confirmationError": true};

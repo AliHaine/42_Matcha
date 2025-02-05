@@ -33,3 +33,16 @@ a, h1, h2 {
 #age-gender div {
     text-align: center;
 }
+
+fieldset {
+    display: flex;
+    flex-direction: column;
+}
+
+.test {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Ensures both input and label are vertically aligned */
+    gap: 5px;
+    background-color: red;
+}

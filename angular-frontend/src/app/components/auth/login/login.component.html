@@ -11,6 +11,6 @@
 		</div>
 		<a class="text-hover-style-1" routerLink="/">Forgot password</a>
 	</div>
-	<button class="button-style-1"> Login </button>
+	<button class="button-style-1" [disabled]="formControlGroup.invalid">Login</button>
 	<a class="text-hover-style-1" routerLink="/auth/register">Create account</a>
 </form>

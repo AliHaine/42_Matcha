@@ -167,20 +167,46 @@
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
 	<h1>Finish your profile</h1>
     <div class="area-multiple">
-        <div>
+
+        <fieldset>
             <label>Art and culture</label>
-            <select id="art-culture" multiple formControlName='artCulture'>
-                <option>Cinema</option>
-                <option>Reading</option>
-                <option>Writing</option>
-                <option>Theater</option>
-                <option>Painting</option>
-                <option>Drawing</option>
-                <option>Museum</option>
-                <option>Photography</option>
-                <option>Music</option>
-            </select>
-        </div>
+            <div class="test">
+                <input type="checkbox" id="cinema" name="cinema" />
+                <label for="cinema">Cinema</label>
+            </div>
+            <div>
+                <input type="checkbox" id="reading" name="reading" />
+                <label for="reading">Reading</label>
+            </div>
+            <div>
+                <input type="checkbox" id="writing" name="writing" />
+                <label for="writing">Writing</label>
+            </div>
+            <div>
+                <input type="checkbox" id="theater" name="theater" />
+                <label for="theater">Theater</label>
+            </div>
+            <div>
+                <input type="checkbox" id="painting" name="painting" />
+                <label for="painting">Painting</label>
+            </div>
+            <div>
+                <input type="checkbox" id="drawing" name="drawing" />
+                <label for="drawing">Drawing</label>
+            </div>
+            <div>
+                <input type="checkbox" id="museum" name="museum" />
+                <label for="museum">Museum</label>
+            </div>
+            <div>
+                <input type="checkbox" id="photography" name="photography" />
+                <label for="photography">Photography</label>
+            </div>
+            <div>
+                <input type="checkbox" id="music" name="music" />
+                <label for="music">Music</label>
+            </div>
+        </fieldset>
 
         <div>
           <label>Sport</label>
@@ -190,7 +216,6 @@
               <option>Extreme sport</option>
               <option>Aqua sport</option>
               <option>No sport</option>
-
           </select>
         </div>
 
