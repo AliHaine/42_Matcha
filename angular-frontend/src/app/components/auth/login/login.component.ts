@@ -14,7 +14,7 @@ export class LoginComponent {
     apiService = inject(ApiService);
     router = inject(Router)
     formControlGroup = new FormGroup({
-        email: new FormControl('', Validators.required),
+        email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', Validators.required),
         checkbox: new FormControl(false)
     });

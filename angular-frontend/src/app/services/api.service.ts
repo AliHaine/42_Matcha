@@ -12,18 +12,11 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
     getData(targetUrl: string, paramsToSend: any): Observable<any> {
-      return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, headers: {'Authorization': `Bearer ${this.getAccessToken()}`}});
+      return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend });
     }
 
     postData(targetUrl: string, dataToPost: any): Observable<any> {
-      if (this.getAccessToken() !== "null")
-        return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost, {'headers': {'Authorization': `Bearer ${this.getAccessToken()}`}})
-      else
-        return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost)
-    }
-
-    getProfilesFromBack() {
-      return this.http.get(`${this.baseUrl}/matcha`);
+        return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost);
     }
 
     saveAccessToken(token: string) {
@@ -32,10 +25,5 @@ export class ApiService {
 
     removeAccessToken() {
       localStorage.removeItem('access_token');
-    }
-
-    getAccessToken(): string {
-      const auth = localStorage.getItem('access_token');
-      return auth ? auth : "null";
     }
 }
