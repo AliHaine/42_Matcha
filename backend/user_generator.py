@@ -35,9 +35,9 @@ def get_data_to_send(result):
     data_to_send['firstname'] = result[0]['name']['first']
     data_to_send['lastname'] = result[0]['name']['last']
     data_to_send['age'] = result[0]['dob']['age']
-    data_to_send['sex'] = result[0]['gender'][0].upper()
+    data_to_send['gender'] = result[0]['gender'][0].upper()
     data_to_send['email']= f"{data_to_send['firstname']}.{data_to_send['lastname']}.{data_to_send['age']}@gmail.com"
-    data_to_send['password'] = "Pamda666!"
+    data_to_send['password'] = "Panda666!"
     data_to_send['description'] = "default descritiopn"
     get_commitment(data_to_send)
     return data_to_send
@@ -50,7 +50,7 @@ def execute_sql(data_to_send):
     """, (
         data_to_send['firstname'],
         data_to_send['lastname'],
-        data_to_send['sex'],
+        data_to_send['gender'],
         data_to_send['age'],
         data_to_send['email'],
         data_to_send['password'],

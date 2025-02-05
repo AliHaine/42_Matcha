@@ -15,8 +15,13 @@ backend:
 frontend:
 	cd angular-frontend && npm install && npx ng serve
 
-flask:
+flask-bash:
 	@bash -c "cd backend_rewrite && pwd && ./tools/launchBackend.sh"
+
+flask:
+	pip install -r backend_rewrite/requirements.txt
+	python -m flask --app backend_rewrite/flask-backend init-db
+	python -m flask --app backend_rewrite/flask-backend run --debug
 
 database:
 	docker-compose -f backend_rewrite/tools/database/docker-compose.yml up -d

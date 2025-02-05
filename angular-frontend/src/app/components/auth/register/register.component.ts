@@ -8,7 +8,7 @@ import {
     ValidatorFn,
     Validators
 } from "@angular/forms";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {NgIf} from "@angular/common";
 
@@ -22,6 +22,7 @@ export class RegisterComponent {
 
     currentStep: number = 1;
     apiService = inject(ApiService);
+    router = inject(Router)
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -29,7 +30,7 @@ export class RegisterComponent {
         email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
         password: new FormControl('Test123-', Validators.required),
         passwordConfirm: new FormControl('Test123-', Validators.required),
-        age: new FormControl('', [Validators.required, Validators.min(15), Validators.max(80)]),
+        age: new FormControl(19, [Validators.required, Validators.min(15), Validators.max(80)]),
         gender: new FormControl('M', Validators.required)
     }, { validators: passwordValidator });
 
@@ -43,7 +44,7 @@ export class RegisterComponent {
         size: new FormControl('', Validators.required),
         shape: new FormControl('', Validators.required),
 
-        smoking: new FormControl(false, Validators.requiredTrue),
+        smoking: new FormControl('', Validators.required),
         alcohol: new FormControl('', Validators.required),
         diet: new FormControl('', Validators.required),
     });
@@ -57,13 +58,19 @@ export class RegisterComponent {
 
     submit(event: Event, values: any) {
       event.preventDefault();
-      //values['step'] = ++this.currentStep;
-        console.log(this.formControlGroupStep1.invalid);
+      values['step'] = this.currentStep;
       console.log(values);
-      /*if (this.currentStep === 1)
-        this.apiService.authentication('/auth/register', values);
-      else
-        this.apiService.postData('/auth/register', values);*/
+      this.apiService.postData('/auth/register', values).subscribe(response => {
+          if (!response['success']) {
+              console.log("Error from back " + response)
+              return;
+          }
+          if (this.currentStep === 1)
+              this.apiService.saveAccessToken(response['access_token'])
+          if (this.currentStep === 3)
+            this.router.navigate([''])
+          this.currentStep++
+      });
     }
 }
 

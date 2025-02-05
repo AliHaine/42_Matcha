@@ -14,7 +14,6 @@ export class ProfileModel {
     status: String;
 
     constructor(data: {[key: string]: any}) {
-
         this.firstname = data["firstname"];
         this.lastname = data["lastname"];
         this.age = data["age"];

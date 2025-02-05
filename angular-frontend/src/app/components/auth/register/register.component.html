@@ -131,11 +131,11 @@
 			<label>Smoking ?</label>
 			<fieldset>
 			 	 <div>
-					<input type="radio" value=true formControlName="smoking" />
+					<input type="radio" [value]=true formControlName="smoking" />
 					<label>Yes</label>
 			  	</div>
 				<div>
-					<input type="radio" value=false formControlName="smoking" />
+					<input type="radio" [value]=false formControlName="smoking" />
 					<label>No</label>
 				</div>
 			</fieldset>
@@ -161,7 +161,7 @@
           </select>
         </div>
     </div>
-	<button class="button-style-1"> Continue </button>
+	<button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
 </form>
 
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">

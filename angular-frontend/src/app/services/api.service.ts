@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {map, Observable, tap} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +15,11 @@ export class ApiService {
       return this.http.get(`${this.baseUrl}/data`);
     }
 
-    postData(targetUrl: string, dataToPost: any) {
-      this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost, { 'headers': {'Authorization': `Bearer ${this.getAccessToken()}`}}).subscribe(sub => {
-          console.log(sub);
-      });
-    }
-
-    authentication(targetUrl: string, dataToPost: any) {
-      this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost).pipe(
-          tap((sub: any) => {
-            this.saveAccessToken(sub['access_token'])
-          })
-      ).subscribe()
+    postData(targetUrl: string, dataToPost: any): Observable<any> {
+      if (this.getAccessToken() !== "null")
+        return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost, {'headers': {'Authorization': `Bearer ${this.getAccessToken()}`}})
+      else
+        return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost)
     }
 
     getProfilesFromBack() {
