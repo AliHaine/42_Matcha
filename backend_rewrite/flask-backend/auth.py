@@ -28,11 +28,6 @@ def save_blacklist():
 BLACKLIST = load_blacklist()
 
 def register_step1(data):
-    if verify_jwt_in_request(optional=True):
-        print("verify_jwt_in_request")
-        jti = get_jwt()["jti"]  # Récupère l'ID unique du token
-        BLACKLIST.add(jti)
-        save_blacklist()
     user_informations = {
         'firstname': data.get('firstname', ''),
         'lastname': data.get('lastname', ''),
@@ -86,9 +81,9 @@ def register_step2(data):
 def register_step3(data):
     interests = data.get('artCulture', [])
     if 'sportActivity' in data:
-        interests.append(data.get('sportActivity', None))
+        interests.append(data.get('sportActivity', ''))
     if 'other' in data:
-        interests.append(data.get('other', None))
+        interests.append(data.get('other', ''))
     user_informations = {
         'interests': interests,
         'description': data.get('description', ''),
