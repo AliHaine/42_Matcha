@@ -27,7 +27,6 @@ def matcha():
     nb_profiles = request.args.get('nb_profiles', 1)
     if isinstance(nb_profiles, str):
         try:
-            print("\n\n\ntry to convert",nb_profiles end="\n\n\n\n")
             nb_profiles = int(nb_profiles)
         except Exception as e:
             return jsonify({'success': False, 'error': 'Invalid parameters'})
