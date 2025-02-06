@@ -34,11 +34,11 @@
 			<label>Gender</label>
 			<fieldset>
 			 	 <div>
-					<input type="radio" name="gender" value="M" formControlName="gender" />
+					<input type="radio" value="M" formControlName="gender" />
 					<label>Male</label>
 			  	</div>
 				<div>
-					<input type="radio" name="gender" value="F" formControlName="gender" />
+					<input type="radio" value="F" formControlName="gender" />
 					<label>Female</label>
 				</div>
 			</fieldset>
@@ -166,60 +166,40 @@
 
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
 	<h1>Finish your profile</h1>
-    <div class="area-multiple">
-
-        <fieldset>
+    <div id="checkbox-area">
+        <fieldset formArrayName="artCulture">
             <label>Art and culture</label>
-            <div class="test">
-                <input type="checkbox" id="cinema" name="cinema" />
-                <label for="cinema">Cinema</label>
-            </div>
-            <div>
-                <input type="checkbox" id="reading" name="reading" />
-                <label for="reading">Reading</label>
-            </div>
-            <div>
-                <input type="checkbox" id="writing" name="writing" />
-                <label for="writing">Writing</label>
-            </div>
-            <div>
-                <input type="checkbox" id="theater" name="theater" />
-                <label for="theater">Theater</label>
-            </div>
-            <div>
-                <input type="checkbox" id="painting" name="painting" />
-                <label for="painting">Painting</label>
-            </div>
-            <div>
-                <input type="checkbox" id="drawing" name="drawing" />
-                <label for="drawing">Drawing</label>
-            </div>
-            <div>
-                <input type="checkbox" id="museum" name="museum" />
-                <label for="museum">Museum</label>
-            </div>
-            <div>
-                <input type="checkbox" id="photography" name="photography" />
-                <label for="photography">Photography</label>
-            </div>
-            <div>
-                <input type="checkbox" id="music" name="music" />
-                <label for="music">Music</label>
+            <div *ngFor="let item of this.formControlGroupStep3.get('artCulture')?.value; let i = index">
+                <input type="checkbox" [id]=item [name]=item [formControlName]=i />
+                <label [for]=item>{{item}}</label>
             </div>
         </fieldset>
 
-        <div>
+        <fieldset>
           <label>Sport</label>
-          <select id="sport-activity" formControlName='sportActivity'>
-              <option>Bodybuilding</option>
-              <option>Team sport</option>
-              <option>Extreme sport</option>
-              <option>Aqua sport</option>
-              <option>No sport</option>
-          </select>
-        </div>
+            <div>
+                <input type="checkbox" id="Bodybuilding" name="Bodybuilding" />
+                <label for="Bodybuilding">bodybuilding</label>
+            </div>
+            <div>
+                <input type="checkbox" id="team-sport" name="team-sport" />
+                <label for="team-sport">Team sport</label>
+            </div>
+            <div>
+                <input type="checkbox" id="extreme-sport" name="extreme-sport" />
+                <label for="extreme-sport">Extreme sport</label>
+            </div>
+            <div>
+                <input type="checkbox" id="aqua-sport" name="aqua-sport" />
+                <label for="aqua-sport">Aqua sport</label>
+            </div>
+            <div>
+                <input type="checkbox" id="no-sport" name="no-sport" />
+                <label for="no-sport">No sport</label>
+            </div>
+        </fieldset>
 
-        <div>
+        <fieldset>
           <label>Other</label>
           <select id="other" formControlName='other'>
               <option>Animals</option>
@@ -231,7 +211,7 @@
               <option>Video</option>
               <option>Esport</option>
           </select>
-        </div>
+        </fieldset>
     </div>
 
     <div class="area-single">

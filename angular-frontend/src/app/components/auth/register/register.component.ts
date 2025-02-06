@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {
-    AbstractControl,
+    AbstractControl, FormArray,
     FormControl,
     FormGroup,
     ReactiveFormsModule,
@@ -10,19 +10,22 @@ import {
 } from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
+import {RegisterService} from "../../../services/register.service";
 
 @Component({
-  selector: 'app-register',
-    imports: [ReactiveFormsModule, RouterLink, NgIf],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+    selector: 'app-register',
+    imports: [ReactiveFormsModule, RouterLink, NgIf, NgForOf],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css'
 })
+
 export class RegisterComponent {
 
     currentStep: number = 3;
     apiService = inject(ApiService);
     router = inject(Router)
+    registerService = inject(RegisterService);
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -49,17 +52,30 @@ export class RegisterComponent {
         diet: new FormControl('', Validators.required),
     });
 
-    formControlGroupStep3 = new FormGroup({
-        artCulture: new FormControl('', Validators.required),
-        sportActivity: new FormControl('', Validators.required),
-        other: new FormControl('', Validators.required),
+    formControlGroupStep3: FormGroup = new FormGroup({
         description: new FormControl('', Validators.required),
     });
+
+    constructor() {
+        for (const key in this.registerService.INTERESTS) {
+            this.formControlGroupStep3.addControl(key, new FormArray([new FormControl(false)]))
+            const currentController: FormArray = this.formControlGroupStep3.get(key)?.value;
+            this.registerService.INTERESTS[key].forEach(() => {
+                currentController.push(new FormControl(false))
+            });
+        }
+    }
 
     submit(event: Event, values: any) {
       event.preventDefault();
       values['step'] = this.currentStep;
       console.log(values);
+      if (this.currentStep === 3) {
+          console.log(values)
+          console.log(values['artCulture'])
+          return;
+      }
+
       this.apiService.postData('/auth/register', values).subscribe(response => {
           if (!response['success']) {
               console.log("Error from back " + response)

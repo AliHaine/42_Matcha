@@ -34,15 +34,13 @@ a, h1, h2 {
     text-align: center;
 }
 
-fieldset {
+#checkbox-area {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.test {
+#checkbox-area fieldset {
     display: flex;
-    flex-direction: row;
-    align-items: center; /* Ensures both input and label are vertically aligned */
-    gap: 5px;
-    background-color: red;
+    flex-direction: column;
 }
