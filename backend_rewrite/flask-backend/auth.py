@@ -11,6 +11,7 @@ from .user import create_user, check_fields_step1, check_fields_step2, check_fie
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
+from .decorators import registration_completed
 
 BLACKLIST_FILE = current_app.config["BASE_DIR"] + '/settings/blacklist.json'
 
@@ -182,3 +183,17 @@ def logout():
     BLACKLIST.add(jti)  # Ajoute à la liste noire
     save_blacklist()
     return jsonify({"msg": "Successfully logged out"})
+
+
+@bp.route('/verify_token', methods=['GET'])
+@jwt_required()
+@registration_completed
+def verify_token():
+    user_email = get_jwt_identity()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+    return jsonify({'success': True}), 200
