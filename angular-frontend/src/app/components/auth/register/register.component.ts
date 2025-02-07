@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {
     AbstractControl, FormArray,
     FormControl,
@@ -26,6 +26,7 @@ export class RegisterComponent {
     apiService = inject(ApiService);
     router = inject(Router)
     registerService = inject(RegisterService);
+    interests = signal<{ [key: string]: string[] }>({});
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -53,17 +54,21 @@ export class RegisterComponent {
     });
 
     formControlGroupStep3: FormGroup = new FormGroup({
+        culture: new FormArray([]),
+        sport: new FormArray([]),
+        other: new FormArray([]),
         description: new FormControl('', Validators.required),
     });
 
     constructor() {
         for (const key in this.registerService.INTERESTS) {
-            this.formControlGroupStep3.addControl(key, new FormArray([new FormControl(false)]))
-            const currentController: FormArray = this.formControlGroupStep3.get(key)?.value;
+            const currentController = this.formControlGroupStep3.get(key) as FormArray;
             this.registerService.INTERESTS[key].forEach(() => {
-                currentController.push(new FormControl(false))
+                currentController.push(new FormControl(false));
             });
         }
+
+        console.log(this.formControlGroupStep3.get("culture")?.value)
     }
 
     submit(event: Event, values: any) {
@@ -72,7 +77,7 @@ export class RegisterComponent {
       console.log(values);
       if (this.currentStep === 3) {
           console.log(values)
-          console.log(values['artCulture'])
+          console.log(values['culture'])
           return;
       }
 
@@ -88,6 +93,8 @@ export class RegisterComponent {
           this.currentStep++
       });
     }
+
+    protected readonly RegisterService = RegisterService;
 }
 
 export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {

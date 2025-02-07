@@ -1,3 +1,4 @@
+<script src="../../../services/register.service.ts"></script>
 <form *ngIf="currentStep == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
 	<div class="area-multiple">
@@ -165,53 +166,21 @@
 </form>
 
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
-	<h1>Finish your profile</h1>
+    <h1>Finish your profile</h1>
     <div id="checkbox-area">
-        <fieldset formArrayName="artCulture">
+        <fieldset formArrayName="culture">
             <label>Art and culture</label>
-            <div *ngFor="let item of this.formControlGroupStep3.get('artCulture')?.value; let i = index">
-                <input type="checkbox" [id]=item [name]=item [formControlName]=i />
-                <label [for]=item>{{item}}</label>
+            <div *ngFor="let item of interests()?.['cultulre']; let i = index">
+                <input
+                    type="checkbox" [id]="'culture'+i"
+                    [name]="'culture'+i"
+                    [formControlName]=i
+                />
+                <label [for]="'culture'+i">{{item}}</label>
             </div>
         </fieldset>
 
-        <fieldset>
-          <label>Sport</label>
-            <div>
-                <input type="checkbox" id="Bodybuilding" name="Bodybuilding" />
-                <label for="Bodybuilding">bodybuilding</label>
-            </div>
-            <div>
-                <input type="checkbox" id="team-sport" name="team-sport" />
-                <label for="team-sport">Team sport</label>
-            </div>
-            <div>
-                <input type="checkbox" id="extreme-sport" name="extreme-sport" />
-                <label for="extreme-sport">Extreme sport</label>
-            </div>
-            <div>
-                <input type="checkbox" id="aqua-sport" name="aqua-sport" />
-                <label for="aqua-sport">Aqua sport</label>
-            </div>
-            <div>
-                <input type="checkbox" id="no-sport" name="no-sport" />
-                <label for="no-sport">No sport</label>
-            </div>
-        </fieldset>
 
-        <fieldset>
-          <label>Other</label>
-          <select id="other" formControlName='other'>
-              <option>Animals</option>
-              <option>Fashion</option>
-              <option>Moto</option>
-              <option>Object collection</option>
-              <option>Cooking</option>
-              <option>Cleaning</option>
-              <option>Video</option>
-              <option>Esport</option>
-          </select>
-        </fieldset>
     </div>
 
     <div class="area-single">

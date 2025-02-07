@@ -1,40 +1,17 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
+import {ApiService} from "./api.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
 
-  INTERESTS: { [key: string]: string[] } = {
-        "culture": [
-            'Cinema',
-            'Reading',
-            'Writing',
-            'Theater',
-            'Painting',
-            'Drawing',
-            'Museum',
-            'photography',
-            'music',
-        ],
-        "sport": [
-            'Bodybuilding',
-            'Team-sport',
-            'Extreme-sport',
-            'Aqua-sport',
-            'No-sport',
-        ],
-        "other": [
-            'Animals',
-            'Fashion',
-            'Moto',
-            'Collection',
-            'Cooking',
-            'Cleaning',
-            'Video',
-            'Esport',
-        ]
-    }
+    apiService = inject(ApiService);
+    INTERESTS = signal<{ [key: string]: string[] }>({});
 
-  constructor() { }
+    constructor() {
+        this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
+            this.INTERESTS.set(data["interests"]);
+        });
+    }
 }
