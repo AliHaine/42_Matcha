@@ -12,6 +12,6 @@ pip install -r requirements.txt
 read -p "Do you want to init the db ? [y/n]: " userInput
 userInput=$(echo $userInput | tr '[:upper:]' '[:lower:]')
 if [ "$userInput" = "y" ]; then
-    flask --app flask-backend init-db
+    flask --app flask_backend init-db
 fi
-flask --app flask-backend run --debug
+flask --app flask_backend run --debug

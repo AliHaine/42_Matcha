@@ -20,8 +20,8 @@ flask-bash:
 
 flask:
 	pip install -r backend_rewrite/requirements.txt
-	python3 -m flask --app backend_rewrite/flask-backend init-db
-	python3 -m flask --app backend_rewrite/flask-backend run --debug
+	python3 -m flask --app backend_rewrite/flask_backend init-db
+	python3 -m flask --app backend_rewrite/flask_backend run --debug
 
 database:
 	docker-compose -f backend_rewrite/tools/database/docker-compose.yml up -d

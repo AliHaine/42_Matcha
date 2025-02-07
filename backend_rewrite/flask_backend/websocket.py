@@ -13,11 +13,18 @@ def handle_disconnect():
 
 @socketio.on('message')
 def handle_chat_message(data):
-    print("Message reçu :", data)
+    print("Message reçu :", data, type(data))
     try:
-        data = json.loads(data)
+        if type(data) == str:
+            print("Message reçu (str) :", data, type(data))
+            data = json.loads(data)
         print("Message reçu (décodé) :", data, type(data))
         emit('response', {'data': f"Message reçu :"}, broadcast=True)
     except Exception as e:
         print("Erreur de décodage JSON :", e)
         emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
+
+@socketio.on('my event')
+def handle_my_event(data):
+    print("Event reçu :", data)
+    emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
