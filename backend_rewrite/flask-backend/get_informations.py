@@ -26,10 +26,11 @@ def get_interests_list():
                     sport.append(r['name'])
                 else:
                     other.append(r['name'])
-            interestsReturn = []
-            interestsReturn.append(artCulture)
-            interestsReturn.append(sport)
-            interestsReturn.append(other)
+            interestsReturn = {
+                'Culture': artCulture,
+                'Sport': sport,
+                'Other': other
+            }
             return jsonify({'success':True, 'interests': interestsReturn})
     except Exception as e:
         print("Failed to get interests list from database", e)
