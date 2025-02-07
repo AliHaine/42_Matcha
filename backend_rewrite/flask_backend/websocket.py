@@ -1,5 +1,6 @@
 from flask_socketio import emit
 from . import socketio
+import json
 
 @socketio.on('connect')
 def handle_connect():
@@ -10,7 +11,13 @@ def handle_connect():
 def handle_disconnect():
     print("Un client s'est déconnecté")
 
-@socketio.on('chat_message')
+@socketio.on('message')
 def handle_chat_message(data):
     print("Message reçu :", data)
-    emit('response', {'data': f"Message reçu : {data}"}, broadcast=True)
+    try:
+        data = json.loads(data)
+        print("Message reçu (décodé) :", data, type(data))
+        emit('response', {'data': f"Message reçu :"}, broadcast=True)
+    except Exception as e:
+        print("Erreur de décodage JSON :", e)
+        emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)

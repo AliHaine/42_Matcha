@@ -14,6 +14,7 @@ import sys
 from .jwt_handler import missing_token_callback, expired_token_callback, invalid_token_callback, revoked_token_callback
 
 socketio = SocketIO(cors_allowed_origins="*")
+from . import websocket
 
 def create_app(test_config=None):
     # create and configure the app
@@ -76,9 +77,9 @@ def create_app(test_config=None):
     app.register_blueprint(research.bp)
     app.register_blueprint(matcha.bp)
 
-    @app.route('/')
-    def hello():
-        return 'Hello, World!'
+    # @app.route('/')
+    # def hello():
+    #     return 'Hello, World!'
 
     # registering jwt and its callbacks
     jwt = JWTManager(app)
@@ -93,6 +94,5 @@ def create_app(test_config=None):
     jwt.invalid_token_loader(invalid_token_callback)
     jwt.revoked_token_loader(revoked_token_callback)
     socketio.init_app(app, async_mode='eventlet')
-    from . import websocket
     return app
 
