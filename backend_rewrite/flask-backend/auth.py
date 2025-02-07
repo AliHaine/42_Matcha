@@ -84,11 +84,11 @@ def register_step2(data):
 
 @jwt_required()
 def register_step3(data):
-    interests = data.get('artCulture', [])
-    if 'sportActivity' in data:
-        interests.append(data.get('sportActivity', ''))
-    if 'other' in data:
-        interests.append(data.get('other', ''))
+    interests = data.get('Culture', [])
+    if 'Sport' in data:
+        interests.extend(data.get('Sport', []))
+    if 'Other' in data:
+        interests.extend(data.get('Other', []))
     user_informations = {
         'interests': interests,
         'description': data.get('description', ''),
