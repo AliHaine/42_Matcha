@@ -1,4 +1,4 @@
-### art and culture category
+#artCulture
 Cinema
 Reading
 Writing
@@ -8,7 +8,7 @@ Drawing
 Museum
 Photography
 Music
-### sports category
+#sport
 Bodybuilding
 Team sport
 Extreme sport
@@ -18,7 +18,7 @@ Running
 Fitness
 Hiking
 Cycling
-### others
+#other
 Animals
 Fashion
 Cars and motorcycles

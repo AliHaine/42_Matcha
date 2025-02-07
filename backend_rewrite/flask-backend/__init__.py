@@ -70,10 +70,12 @@ def create_app(test_config=None):
             from . import profiles
             from . import research
             from . import matcha
+            from . import get_informations
             app.register_blueprint(auth.bp)
             app.register_blueprint(profiles.bp)
             app.register_blueprint(research.bp)
             app.register_blueprint(matcha.bp)
+            app.register_blueprint(get_informations.bp)
 
             # registering jwt and its callbacks
             jwt = JWTManager(app)
