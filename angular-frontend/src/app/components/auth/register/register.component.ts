@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {
     AbstractControl, FormArray,
     FormControl,
@@ -26,7 +26,6 @@ export class RegisterComponent {
     apiService = inject(ApiService);
     router = inject(Router)
     registerService = inject(RegisterService);
-    interests = signal<{ [key: string]: string[] }>({});
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -61,14 +60,16 @@ export class RegisterComponent {
     });
 
     constructor() {
-        for (const key in this.registerService.INTERESTS) {
-            const currentController = this.formControlGroupStep3.get(key) as FormArray;
-            this.registerService.INTERESTS[key].forEach(() => {
-                currentController.push(new FormControl(false));
-            });
-        }
-
-        console.log(this.formControlGroupStep3.get("culture")?.value)
+        effect(() => {
+            for (const key in this.registerService.INTERESTS()) {
+                const currentController = this.formControlGroupStep3.get(key.toLowerCase()) as FormArray;
+                this.registerService.INTERESTS()[key].forEach(() => {
+                    currentController.push(new FormControl(false));
+                });
+                console.log(currentController)
+            }
+            console.log("update")
+        });
     }
 
     submit(event: Event, values: any) {
@@ -94,7 +95,15 @@ export class RegisterComponent {
       });
     }
 
-    protected readonly RegisterService = RegisterService;
+    getFromAsArray(): FormArray[] {
+        const t: FormArray[] = []
+        for (const form in this.formControlGroupStep3.controls) {
+            if (form !== "description")
+                console.log(form)
+            t.push(<FormArray>this.formControlGroupStep3.get(form));
+        }
+        return t;
+    }
 }
 
 export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
