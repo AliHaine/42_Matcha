@@ -168,18 +168,17 @@
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
     <h1>Finish your profile</h1>
     <div id="checkbox-area">
-        <fieldset formArrayName="culture">
-            <label>Art and culture</label>
-            <div *ngFor="let item of getFromAsArray().controls; let i = index">
+        <fieldset *ngFor="let formArrayName of this.getGroupForm3()" [formArrayName]=formArrayName>
+            <label>{{formArrayName}}</label>
+              <div *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
                 <input
-                    type="checkbox" [id]="'culture' + i"
-                    [formControlName]="i"
+                    type="checkbox" [id]="formArrayName + i"
+                    [formControlName]=i
                 />
-                <label [for]="'culture' + i">{{registerService.INTERESTS()['Culture'].at(i)}}</label>
-            </div>
+                <label [for]="formArrayName + i">{{registerService.INTERESTS()[formArrayName].at(i)}}</label>
+              </div>
         </fieldset>
     </div>
-
     <div class="area-single">
         <label>Description</label>
         <input type="text" placeholder="Talk about you" formControlName="description" />

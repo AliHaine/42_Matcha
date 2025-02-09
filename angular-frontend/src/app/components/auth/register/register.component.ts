@@ -53,22 +53,19 @@ export class RegisterComponent {
     });
 
     formControlGroupStep3: FormGroup = new FormGroup({
-        culture: new FormArray([]),
-        sport: new FormArray([]),
-        other: new FormArray([]),
+        // Interests forms are automatically generated in the constructor
         description: new FormControl('', Validators.required),
-    });
+    } as { [key:string]: any });
 
     constructor() {
         effect(() => {
             for (const key in this.registerService.INTERESTS()) {
-                const currentController = this.formControlGroupStep3.get(key.toLowerCase()) as FormArray;
+                this.formControlGroupStep3.addControl(key, new FormArray([]));
+                const currentController = this.formControlGroupStep3.get(key) as FormArray;
                 this.registerService.INTERESTS()[key].forEach(() => {
                     currentController.push(new FormControl(false));
                 });
-                console.log(currentController)
             }
-            console.log("update")
         });
     }
 
@@ -95,14 +92,12 @@ export class RegisterComponent {
       });
     }
 
-    getFromAsArray(): FormArray[] {
-        const t: FormArray[] = []
-        for (const form in this.formControlGroupStep3.controls) {
-            if (form !== "description")
-                console.log(form)
-            t.push(<FormArray>this.formControlGroupStep3.get(form));
-        }
-        return t;
+    getFromArray(name: string): FormArray {
+        return this.formControlGroupStep3.get(name) as FormArray;
+    }
+
+    getGroupForm3(): string[] {
+        return Object.keys(this.formControlGroupStep3.controls).filter((key) => key != "description");
     }
 }
 
