@@ -28,6 +28,8 @@ export class LoginComponent {
             this.apiService.saveAccessToken(res['access_token']);
             this.authService.login();
             this.router.navigate([''])
+        } else {
+            console.log(res);
         }
       });
     }
