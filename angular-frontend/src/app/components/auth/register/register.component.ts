@@ -12,6 +12,7 @@ import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
     selector: 'app-register',
@@ -22,7 +23,7 @@ import {RegisterService} from "../../../services/register.service";
 
 export class RegisterComponent {
 
-    currentStep: number = 3;
+    currentStep: number = 1;
     apiService = inject(ApiService);
     router = inject(Router)
     registerService = inject(RegisterService);
@@ -72,12 +73,9 @@ export class RegisterComponent {
     submit(event: Event, values: any) {
       event.preventDefault();
       values['step'] = this.currentStep;
-      console.log(values);
-      if (this.currentStep === 3) {
-          console.log(values)
-          console.log(values['culture'])
-          return;
-      }
+
+      if (this.currentStep === 3)
+          this.setupInterests(values);
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
           if (!response['success']) {
@@ -98,6 +96,19 @@ export class RegisterComponent {
 
     getGroupForm3(): string[] {
         return Object.keys(this.formControlGroupStep3.controls).filter((key) => key != "description");
+    }
+
+    setupInterests(values: any) {
+        for (const key in values) {
+              const index: string[] = [];
+              if (key === "description" || key == "step")
+                  continue;
+              for (let i = 0; i < values[key].length; i++) {
+              if (values[key].at(i) === true)
+                  index.push(<string>this.registerService.INTERESTS()[key].at(i));
+            }
+            values[key] = index;
+        }
     }
 }
 

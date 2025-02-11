@@ -23,6 +23,10 @@ export class ApiService {
       localStorage.setItem('access_token', token);
     }
 
+    getAccessToken(): string | null {
+      return localStorage.getItem('access_token');
+    }
+
     removeAccessToken() {
       localStorage.removeItem('access_token');
     }

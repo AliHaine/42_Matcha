@@ -2,6 +2,7 @@ import {Component, inject} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {EmailValidator, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,7 @@ import {EmailValidator, FormControl, FormGroup, ReactiveFormsModule, Validators}
 })
 export class LoginComponent {
 
+    authService = inject(AuthService);
     apiService = inject(ApiService);
     router = inject(Router)
     formControlGroup = new FormGroup({
@@ -24,6 +26,7 @@ export class LoginComponent {
         this.apiService.postData("/auth/login", this.formControlGroup.value).subscribe(res => {
         if (res['success']) {
             this.apiService.saveAccessToken(res['access_token']);
+            this.authService.login();
             this.router.navigate([''])
         }
       });
