@@ -39,7 +39,7 @@ def matcha():
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'})
     with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE id != %s ORDER BY id ASC', (user["id"],))
+        cur.execute('SELECT * FROM users WHERE id != %s AND registration_complete = TRUE ORDER BY id ASC', (user["id"],))
         users = cur.fetchall()
         print("before convert",users, end="\n\n")
         users = [convert_to_public_profile(u) for u in users]
