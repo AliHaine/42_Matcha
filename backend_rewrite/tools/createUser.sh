@@ -31,6 +31,6 @@ do
     accessToken=$(echo $response | jq -r '.access_token')
     curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75}, \"searching\":\"Friends\",\"commitment\":\"Short term\",\"frequency\":\"Daily\",\"weight\":\"< 50\",\"size\":\"< 150\",\"shape\":\"Skinny\",\"alcohol\":\"Never\",\"smoking\":false, \"diet\":\"Omnivor\"}"
     random_interests=$(shuf -e "${all_interests[@]}" -n 3 | jq -R . | jq -s .)
-    curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":3,\"artCulture\":$random_interests, \"description\":\"Lorem ipsum\"}"
+    curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":3,\"Culture\":$random_interests, \"description\":\"Lorem ipsum\"}"
     echo "Utilisateur créé avec succès. Access Token : $accessToken"
 done
