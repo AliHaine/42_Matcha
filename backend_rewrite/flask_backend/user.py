@@ -162,32 +162,32 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
 #                             result['errors'].append(f"Field {field} is not valid")
             if field == "searching":
                 print("searching")
-                if not isinstance(data[field], str) or data[field] not in ["Friends", "Love", "Just talking"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "commitment":
                 print("commitment")
-                if not isinstance(data[field], str) or data[field] not in ["Short term", "Long term", "Undecided"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['commitment']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "frequency":
                 print("frequency")
-                if not isinstance(data[field], str) or data[field] not in ["Daily", "Weekly", "Occasionally"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['frequency']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "weight":
                 print("weight")
-                if not isinstance(data[field], str) or data[field] not in ["< 50", "51-60", "61-70", "71-80", "81-90", "91-100", "> 100"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['weight']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "size":
                 print("size")
-                if not isinstance(data[field], str) or data[field] not in ["< 150", "151-160", "161-170", "171-180", "181-190", "191-200", "> 200"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['size']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "shape":
                 print("shape")
-                if not isinstance(data[field], str) or data[field] not in ["Skinny", "Normal", "Sporty", "Fat"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['shape']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "smoking":
@@ -197,7 +197,7 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                     result['errors'].append(f"Field {field} is not valid")
             if field == "alcohol":
                 print("alcohol")
-                if not isinstance(data[field], str) or data[field] not in ["Never", "Occasionally", "Every week", "Every day"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['alcohol']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "diet":

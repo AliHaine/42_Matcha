@@ -2,10 +2,9 @@ import functools
 import os
 import json
 
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, jsonify, current_app
 from .db import get_db
 
-from .decorators import registration_completed
 
 bp = Blueprint('get_informations', __name__, url_prefix='/api/getInformations')
 
@@ -35,3 +34,7 @@ def get_interests_list():
     except Exception as e:
         print("Failed to get interests list from database", e)
         return jsonify({'success':False, 'error': 'failed to get and parse interests'})
+
+@bp.route('/register', methods=['GET'])
+def get_register_info():
+    return jsonify({'success': True, 'registerInfo': current_app.config['CONSTRAINTS']})
