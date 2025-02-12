@@ -24,3 +24,9 @@ input[type="checkbox"] {
 a, h1 {
     text-align: center;
 }
+
+#error {
+    color: var(--color-error);
+    font-weight: bold;
+    text-align: center;
+}
