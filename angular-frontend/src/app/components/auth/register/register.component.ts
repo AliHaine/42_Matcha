@@ -27,6 +27,8 @@ export class RegisterComponent {
     apiService = inject(ApiService);
     router = inject(Router)
     registerService = inject(RegisterService);
+    authService = inject(AuthService);
+    errorMessage: string = "";
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -79,14 +81,17 @@ export class RegisterComponent {
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
           if (!response['success']) {
-              console.log("Error from back " + response)
+              this.errorMessage = response['error'];
               return;
           }
           if (this.currentStep === 1)
               this.apiService.saveAccessToken(response['access_token'])
-          if (this.currentStep === 3)
-            this.router.navigate([''])
+          if (this.currentStep === 3) {
+              this.authService.login();
+              this.router.navigate([''])
+          }
           this.currentStep++
+          this.errorMessage = "";
       });
     }
 

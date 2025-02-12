@@ -12,6 +12,7 @@ export const routes: Routes = [
     { path: 'page/:name', component: PageComponent },
     { path: 'search', component: SearchComponent, canActivate: [authGuard] },
     { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+    { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
     { path: 'auth/login', component: LoginComponent },
     { path: 'auth/register', component: RegisterComponent },
     { path: '**', redirectTo: ''},
