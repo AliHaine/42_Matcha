@@ -1,0 +1,25 @@
+#chat {
+    background-color: var(--color-4);
+    color: var(--color-1);
+    margin: 0;
+    position: absolute;
+    display: flex;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 80%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+    scrollbar-color: var(--color-4) var(--color-1);
+    box-shadow: 0 0 1.5vmin black;
+}
+
+#chat-area {
+    width: 75%;
+    background-color: red;
+}
+
+#chat-list {
+    width: 25%;
+    background-color: blue;
+}
