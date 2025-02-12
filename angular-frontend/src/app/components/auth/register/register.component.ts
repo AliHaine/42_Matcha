@@ -1,6 +1,6 @@
-import {Component, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {
-    AbstractControl,
+    AbstractControl, FormArray,
     FormControl,
     FormGroup,
     ReactiveFormsModule,
@@ -10,19 +10,25 @@ import {
 } from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
+import {RegisterService} from "../../../services/register.service";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
-  selector: 'app-register',
-    imports: [ReactiveFormsModule, RouterLink, NgIf],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+    selector: 'app-register',
+    imports: [ReactiveFormsModule, RouterLink, NgIf, NgForOf],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css'
 })
+
 export class RegisterComponent {
 
-    currentStep: number = 3;
+    currentStep: number = 1;
     apiService = inject(ApiService);
     router = inject(Router)
+    registerService = inject(RegisterService);
+    authService = inject(AuthService);
+    errorMessage: string = "";
 
     formControlGroupStep1 = new FormGroup({
         lastname: new FormControl('tes', Validators.required),
@@ -49,28 +55,65 @@ export class RegisterComponent {
         diet: new FormControl('', Validators.required),
     });
 
-    formControlGroupStep3 = new FormGroup({
-        artCulture: new FormControl('', Validators.required),
-        sportActivity: new FormControl('', Validators.required),
-        other: new FormControl('', Validators.required),
+    formControlGroupStep3: FormGroup = new FormGroup({
+        // Interests forms are automatically generated in the constructor
         description: new FormControl('', Validators.required),
-    });
+    } as { [key:string]: any });
+
+    constructor() {
+        effect(() => {
+            for (const key in this.registerService.INTERESTS()) {
+                this.formControlGroupStep3.addControl(key, new FormArray([]));
+                const currentController = this.formControlGroupStep3.get(key) as FormArray;
+                this.registerService.INTERESTS()[key].forEach(() => {
+                    currentController.push(new FormControl(false));
+                });
+            }
+        });
+    }
 
     submit(event: Event, values: any) {
       event.preventDefault();
       values['step'] = this.currentStep;
-      console.log(values);
+
+      if (this.currentStep === 3)
+          this.setupInterests(values);
+
       this.apiService.postData('/auth/register', values).subscribe(response => {
           if (!response['success']) {
-              console.log("Error from back " + response)
+              this.errorMessage = response['error'];
               return;
           }
           if (this.currentStep === 1)
               this.apiService.saveAccessToken(response['access_token'])
-          if (this.currentStep === 3)
-            this.router.navigate([''])
+          if (this.currentStep === 3) {
+              this.authService.login();
+              this.router.navigate([''])
+          }
           this.currentStep++
+          this.errorMessage = "";
       });
+    }
+
+    getFromArray(name: string): FormArray {
+        return this.formControlGroupStep3.get(name) as FormArray;
+    }
+
+    getGroupForm3(): string[] {
+        return Object.keys(this.formControlGroupStep3.controls).filter((key) => key != "description");
+    }
+
+    setupInterests(values: any) {
+        for (const key in values) {
+              const index: string[] = [];
+              if (key === "description" || key == "step")
+                  continue;
+              for (let i = 0; i < values[key].length; i++) {
+              if (values[key].at(i) === true)
+                  index.push(<string>this.registerService.INTERESTS()[key].at(i));
+            }
+            values[key] = index;
+        }
     }
 }
 

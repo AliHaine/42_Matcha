@@ -258,6 +258,8 @@ def check_registration_status(other_email=None):
                 return True
             else:
                 for key, value in user.items():
+                    if key == 'city_id':
+                        continue
                     if value is None:
                         return False
                 cur.execute('SELECT * FROM users_interests WHERE user_id = %s', (user['id'],))
@@ -265,8 +267,6 @@ def check_registration_status(other_email=None):
                 if user_interests is None:
                     return False
                 for key, value in user_interests.items():
-                    if key == 'city_id':
-                        continue
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))

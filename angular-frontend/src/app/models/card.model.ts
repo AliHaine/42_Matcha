@@ -7,6 +7,7 @@ export class CardModel {
     description: string;
     interests: InterestModel[];
     profilePicturePath: string;
+    userId: number;
 
     constructor(data: { [key: string]: any }) {
         this.firstname = data['firstname'];
@@ -20,6 +21,7 @@ export class CardModel {
             new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
         ];
         this.profilePicturePath = data['picturesNumber'] === 0 ? "defaultpp.jpg" : "defaultpp.jpg";
+        this.userId = data['id'];
     }
 
     getInterestFromIndex(index: number): InterestModel {

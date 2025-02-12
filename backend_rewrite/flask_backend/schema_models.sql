@@ -22,6 +22,7 @@ CREATE TABLE cities (
 CREATE TABLE interests (
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL,
+    category VARCHAR(250),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT interestname_not_empty CHECK (name <> '')
 );

@@ -4,7 +4,7 @@
 
 #checkbox-forgot-area {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
 }
 
 #checkbox-area {
@@ -22,5 +22,11 @@ input[type="checkbox"] {
 }
 
 a, h1 {
+    text-align: center;
+}
+
+#error {
+    color: var(--color-error);
+    font-weight: bold;
     text-align: center;
 }

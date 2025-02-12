@@ -1,3 +1,4 @@
+<script src="../../../services/register.service.ts"></script>
 <form *ngIf="currentStep == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
 	<div class="area-multiple">
@@ -34,16 +35,17 @@
 			<label>Gender</label>
 			<fieldset>
 			 	 <div>
-					<input type="radio" name="gender" value="M" formControlName="gender" />
+					<input type="radio" value="M" formControlName="gender" />
 					<label>Male</label>
 			  	</div>
 				<div>
-					<input type="radio" name="gender" value="F" formControlName="gender" />
+					<input type="radio" value="F" formControlName="gender" />
 					<label>Female</label>
 				</div>
 			</fieldset>
 		</div>
 	</div>
+    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
@@ -161,82 +163,28 @@
           </select>
         </div>
     </div>
+    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
 </form>
 
 <form *ngIf="currentStep >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
-	<h1>Finish your profile</h1>
-    <div class="area-multiple">
-
-        <fieldset>
-            <label>Art and culture</label>
-            <div class="test">
-                <input type="checkbox" id="cinema" name="cinema" />
-                <label for="cinema">Cinema</label>
-            </div>
-            <div>
-                <input type="checkbox" id="reading" name="reading" />
-                <label for="reading">Reading</label>
-            </div>
-            <div>
-                <input type="checkbox" id="writing" name="writing" />
-                <label for="writing">Writing</label>
-            </div>
-            <div>
-                <input type="checkbox" id="theater" name="theater" />
-                <label for="theater">Theater</label>
-            </div>
-            <div>
-                <input type="checkbox" id="painting" name="painting" />
-                <label for="painting">Painting</label>
-            </div>
-            <div>
-                <input type="checkbox" id="drawing" name="drawing" />
-                <label for="drawing">Drawing</label>
-            </div>
-            <div>
-                <input type="checkbox" id="museum" name="museum" />
-                <label for="museum">Museum</label>
-            </div>
-            <div>
-                <input type="checkbox" id="photography" name="photography" />
-                <label for="photography">Photography</label>
-            </div>
-            <div>
-                <input type="checkbox" id="music" name="music" />
-                <label for="music">Music</label>
-            </div>
+    <h1>Finish your profile</h1>
+    <div id="checkbox-area">
+        <fieldset *ngFor="let formArrayName of this.getGroupForm3()" [formArrayName]=formArrayName>
+            <label>{{formArrayName}}</label>
+              <div *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
+                <input
+                    type="checkbox" [id]="formArrayName + i"
+                    [formControlName]=i
+                />
+                <label [for]="formArrayName + i">{{registerService.INTERESTS()[formArrayName].at(i)}}</label>
+              </div>
         </fieldset>
-
-        <div>
-          <label>Sport</label>
-          <select id="sport-activity" formControlName='sportActivity'>
-              <option>Bodybuilding</option>
-              <option>Team sport</option>
-              <option>Extreme sport</option>
-              <option>Aqua sport</option>
-              <option>No sport</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Other</label>
-          <select id="other" formControlName='other'>
-              <option>Animals</option>
-              <option>Fashion</option>
-              <option>Moto</option>
-              <option>Object collection</option>
-              <option>Cooking</option>
-              <option>Cleaning</option>
-              <option>Video</option>
-              <option>Esport</option>
-          </select>
-        </div>
     </div>
-
     <div class="area-single">
         <label>Description</label>
         <input type="text" placeholder="Talk about you" formControlName="description" />
     </div>
+    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1">Finish</button>
 </form>

@@ -31,13 +31,15 @@ def init_db():
         db.commit()
     with current_app.open_resource('interests_list.txt') as f:
         with db.cursor() as cur:
+            category = None
             for line in f:
                 line = line.decode('utf-8')
                 if len(line.strip()) == 0:
                     continue
                 if line.startswith('#'):
+                    category = line[1:].strip()
                     continue
-                cur.execute('INSERT INTO interests (name) VALUES (%s)', (line.strip(),))
+                cur.execute('INSERT INTO interests (name, category) VALUES (%s, %s)', (line.strip(), category,))
         db.commit()
 
 @click.command('init-db')
