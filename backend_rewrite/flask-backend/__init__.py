@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import Flask
 from flask_cors import CORS
@@ -10,6 +11,39 @@ from datetime import timedelta
 import sys
 
 from .jwt_handler import missing_token_callback, expired_token_callback, invalid_token_callback, revoked_token_callback
+
+def export_constraints(app, cur):
+    table_name = "users"
+    columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
+    constraints = {}
+
+    # Requête pour récupérer la définition de la contrainte CHECK
+    query = f"""
+    SELECT pg_get_constraintdef(oid) 
+    FROM pg_constraint 
+    WHERE contype = 'c' 
+    AND conrelid = %s::regclass
+    AND pg_get_constraintdef(oid) LIKE %s;
+    """
+    for column_name in columns_names:
+        cur.execute(query, (table_name, f'%{column_name}%'))
+        result = cur.fetchone()
+
+        if result:
+            constraint_def = result["pg_get_constraintdef"]
+
+            match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
+            if match:
+                values = match.group(1).split(", ")
+                values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
+                constraints[column_name] = values
+            else:
+                print("Aucune liste explicite trouvée.")
+        else:
+            print("Aucune contrainte CHECK trouvée.")
+    app.config['CONSTRAINTS'] = constraints
+
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -47,6 +81,8 @@ def create_app(test_config=None):
                     cur.execute('SELECT name FROM interests')
                     result = cur.fetchall()
                     app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
+                    export_constraints(app, cur)
+                    print(app.config['CONSTRAINTS'])
             except Exception as e:
                 print("Failed to get interests list from database", e)
                 app.config['AVAILABLE_INTERESTS'] = []

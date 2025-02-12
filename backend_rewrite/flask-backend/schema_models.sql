@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS cities CASCADE;
 DROP TABLE IF EXISTS interests CASCADE;
 DROP TABLE IF EXISTS users_interests CASCADE;
+DROP TABLE IF EXISTS user_views CASCADE;
 
 CREATE TABLE cities (
     id SERIAL PRIMARY KEY,
@@ -38,22 +39,22 @@ CREATE TABLE users (
     gender VARCHAR(1) NOT NULL,
     -- second step register
     city_id INT,  -- Rendre la ville obligatoire
-    searching VARCHAR(255),
-    commitment VARCHAR(255),
-    frequency VARCHAR(255),
-    weight VARCHAR(255),
-    size VARCHAR(255),
-    shape VARCHAR(255),
+    searching VARCHAR(13),
+    commitment VARCHAR(11),
+    frequency VARCHAR(13),
+    weight VARCHAR(7),
+    size VARCHAR(8),
+    shape VARCHAR(7),
     smoking BOOLEAN,
-    alcohol VARCHAR(255),
-    diet VARCHAR(255),
+    alcohol VARCHAR(13),
+    diet VARCHAR(16),
     -- third step register
     description VARCHAR(500),
     -- other informations
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- unclassed informations
-    status VARCHAR(255) DEFAULT 'Inactive',
+    status VARCHAR(13) DEFAULT 'Disconnected',
     pictures_number INT DEFAULT 0,
     registration_complete BOOLEAN DEFAULT FALSE,
 
@@ -79,7 +80,7 @@ CREATE TABLE users (
     CONSTRAINT alcohol_invalid CHECK (alcohol IN ('Never', 'Occasionally', 'Every week', 'Every day')),
     CONSTRAINT diet_invalid CHECK (diet IN ('Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein')),
     CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$'),
-    CONSTRAINT status_invalid CHECK (status IN ('Active', 'Inactive', 'Do not disturb', 'Disconnected'))
+    CONSTRAINT status_invalid CHECK (status IN ('Connected', 'Disconnected'))
 );
 
 CREATE TABLE users_interests (
@@ -89,3 +90,24 @@ CREATE TABLE users_interests (
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_interest_id FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
 );
+
+CREATE TABLE user_views(
+    id SERIAL PRIMARY KEY,
+    viewer_id INT,
+    viewed_id INT,
+    liked BOOLEAN DEFAULT FALSE,
+    blocked BOOLEAN DEFAULT FALSE,
+    report BOOLEAN DEFAULT FALSE,
+    last_view TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_viewer_id FOREIGN KEY (viewer_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_viewed_id FOREIGN KEY (viewed_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE waiting_notifications(
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    message VARCHAR(250),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
