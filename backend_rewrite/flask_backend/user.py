@@ -187,7 +187,7 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "diet":
-                if not isinstance(data[field], str) or data[field] not in ["Omnivor", "Vegetarian", "Vegan", "Rich in protein"]:
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['diet']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
@@ -215,7 +215,7 @@ def check_fields_step3(data, fields=["interests", "description"]):
                             result['success'] = False
                             result['errors'].append(f"Field {field}/{interest} is not valid")
             if field == "description":
-                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 500:
+                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 1500:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
@@ -235,7 +235,6 @@ def check_registration_status(other_email=None):
             user = cur.fetchone()
             if user is None:
                 return False
-            print("checking this user registration status :", user)
             if user['registration_complete'] == True:
                 return True
             else:

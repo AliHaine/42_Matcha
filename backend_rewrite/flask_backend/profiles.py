@@ -94,7 +94,6 @@ def get_profile(id):
                     cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                     user_view = cursor.fetchone()
                     if user_view is None:
-                        print("updating user views", user_view)
                         cursor.execute("INSERT INTO user_views (viewer_id, viewed_id) VALUES (%s, %s)", (user_getting["id"], user["id"],))
                     else:
                         cursor.execute("UPDATE user_views SET last_view = NOW() WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))

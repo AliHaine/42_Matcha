@@ -14,4 +14,6 @@ userInput=$(echo $userInput | tr '[:upper:]' '[:lower:]')
 if [ "$userInput" = "y" ]; then
     flask --app flask_backend init-db
 fi
-flask --app flask_backend run --debug
+python3 run.py
+deactivate
+echo "Backend stopped"
