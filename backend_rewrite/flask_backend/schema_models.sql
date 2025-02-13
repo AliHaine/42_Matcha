@@ -55,7 +55,8 @@ CREATE TABLE users (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- unclassed informations
-    status VARCHAR(13) DEFAULT 'Disconnected',
+    status BOOLEAN DEFAULT FALSE,
+    active_connections INT DEFAULT 0,
     pictures_number INT DEFAULT 0,
     registration_complete BOOLEAN DEFAULT FALSE,
 
@@ -81,7 +82,10 @@ CREATE TABLE users (
     CONSTRAINT alcohol_invalid CHECK (alcohol IN ('Never', 'Occasionally', 'Every week', 'Every day')),
     CONSTRAINT diet_invalid CHECK (diet IN ('Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein')),
     CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$'),
-    CONSTRAINT status_invalid CHECK (status IN ('Connected', 'Disconnected'))
+    CONSTRAINT status_invalid CHECK (status IN (TRUE, FALSE)),
+    CONSTRAINT registration_complete_invalid CHECK (registration_complete IN (TRUE, FALSE)),
+    CONSTRAINT active_connections_invalid CHECK (active_connections >= 0),
+    CONSTRAINT pictures_number_invalid CHECK (pictures_number >= 0)
 );
 
 CREATE TABLE users_interests (

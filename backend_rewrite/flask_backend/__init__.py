@@ -84,6 +84,8 @@ def create_app(test_config=None):
             result = cur.fetchall()
             app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
             export_constraints(app, cur)
+            cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
+            database.commit()
     except Exception as e:
         print("Failed to get interests list from database", e)
         app.config['AVAILABLE_INTERESTS'] = []

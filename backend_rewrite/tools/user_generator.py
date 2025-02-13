@@ -10,7 +10,7 @@ cursor = connection.cursor()
 link = "https://randomuser.me/api/?nat=fr"
 
 
-interests = requests.get("http://10.13.1.10:5000/api/getInformations/interests").json()['interests']["Other"]
+interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']["Other"]
 def get_interests(number):
     return sample(interests, number)
 
