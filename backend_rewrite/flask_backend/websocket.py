@@ -1,11 +1,33 @@
-from flask_socketio import emit
+from flask_socketio import emit, disconnect
+from flask import request
 from . import socketio
+from flask_jwt_extended import decode_token
+from .db import get_db
 import json
 
 @socketio.on('connect')
 def handle_connect():
-    print("Un client est connecté")
-    emit('message', {'data': 'Bienvenue !'})
+    token = request.args.get('access_token', None)
+    if not token:
+        print("Connexion refusée : Pas de token JWT")
+        disconnect()
+        return
+
+    try:
+        decoded_token = decode_token(token)
+        user_email = decoded_token['sub']
+        db = get_db()
+        with db.cursor() as cur:
+            cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+            user = cur.fetchone()
+            if user is None:
+                print("Connexion refusée : Utilisateur non trouvé")
+                disconnect()
+                return
+        print(f"Utilisateur {user_email} connecté via WebSocket")
+    except Exception as e:
+        print(f"Erreur de décodage du JWT : {e}")
+        disconnect()
 
 @socketio.on('disconnect')
 def handle_disconnect():

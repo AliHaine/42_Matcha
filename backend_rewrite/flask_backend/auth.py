@@ -48,7 +48,6 @@ def register_step1(data):
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
         response = login_user(user_informations['email'], dup_password, registering=True)
-        print(response)
         if response is None or response['success'] == False:
             return jsonify({'success': False, 'error': 'Failed to login'})
         else:

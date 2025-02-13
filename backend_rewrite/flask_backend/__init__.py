@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import Flask
 from flask_cors import CORS
@@ -16,11 +17,42 @@ from .jwt_handler import missing_token_callback, expired_token_callback, invalid
 socketio = SocketIO(cors_allowed_origins="*")
 from . import websocket
 
+def export_constraints(app, cur):
+    table_name = "users"
+    columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
+    constraints = {}
+
+    # Requête pour récupérer la définition de la contrainte CHECK
+    query = f"""
+    SELECT pg_get_constraintdef(oid) 
+    FROM pg_constraint 
+    WHERE contype = 'c' 
+    AND conrelid = %s::regclass
+    AND pg_get_constraintdef(oid) LIKE %s;
+    """
+    for column_name in columns_names:
+        cur.execute(query, (table_name, f'%{column_name}%'))
+        result = cur.fetchone()
+
+        if result:
+            constraint_def = result["pg_get_constraintdef"]
+
+            match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
+            if match:
+                values = match.group(1).split(", ")
+                values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
+                constraints[column_name] = values
+            else:
+                print("Aucune liste explicite trouvée.")
+        else:
+            print("Aucune contrainte CHECK trouvée.")
+    app.config['CONSTRAINTS'] = constraints
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     CORS(app, resources={r"/api/*": {
-    "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
+    "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "*"],
     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Ajout de OPTIONS
     "allow_headers": ["Content-Type", "Authorization"],
     "supports_credentials": True
@@ -49,6 +81,7 @@ def create_app(test_config=None):
             cur.execute('SELECT name FROM interests')
             result = cur.fetchall()
             app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
+            export_constraints(app, cur)
     except Exception as e:
         print("Failed to get interests list from database", e)
         app.config['AVAILABLE_INTERESTS'] = []

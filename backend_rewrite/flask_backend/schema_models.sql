@@ -49,7 +49,7 @@ CREATE TABLE users (
     alcohol VARCHAR(13),
     diet VARCHAR(16),
     -- third step register
-    description VARCHAR(500),
+    description VARCHAR(1500),
     -- other informations
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

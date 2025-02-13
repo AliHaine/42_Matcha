@@ -10,7 +10,7 @@ cursor = connection.cursor()
 link = "https://randomuser.me/api/?nat=fr"
 
 
-interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']["Other"]
+interests = requests.get("http://10.13.1.10:5000/api/getInformations/interests").json()['interests']["Other"]
 def get_interests(number):
     return sample(interests, number)
 
@@ -51,7 +51,6 @@ def get_data_to_send(result):
 ## registration_complete | boolean                     |           |          | false
 
 def execute_sql(data_to_send):
-    print(data_to_send)
     cursor.execute("""
         INSERT INTO users (firstname, lastname, gender, age, email, password, description, weight, size, shape, smoking, alcohol, diet, searching, commitment, frequency, registration_complete) 
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
@@ -80,4 +79,3 @@ for i in range(int(sys.argv[1])):
     user_response = get_user()
     data_to_send = get_data_to_send(user_response)
     execute_sql(data_to_send)
-    print("New user created")
