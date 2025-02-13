@@ -13,7 +13,7 @@
             {{card().firstname}} {{card().age}} years old, {{card().city}}
         </div>
         <div id="description">
-            {{card().description}} <a href="google.com">SEE MORE</a>
+            {{card().description}} <a [routerLink]="'/profile/'+ card().userId">SEE MORE</a>
         </div>
         <div id="details">
             <app-interest [interest]="card().getInterestFromIndex(0)"/>
