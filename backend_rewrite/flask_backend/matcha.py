@@ -41,18 +41,14 @@ def matcha():
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE id != %s AND registration_complete = TRUE ORDER BY id ASC', (user["id"],))
         users = cur.fetchall()
-        print("before convert",users, end="\n\n")
         users = [convert_to_public_profile(u) for u in users]
-        print("after convert :",users, end="\n\n")
     users_send = []
     for i in range(0, nb_profiles):
         if len(users) == 0:
             break
         rand = os.urandom(1)[0]
         if rand >= len(users) and rand > 0 and len(users) > 0:
-            print(rand)
             rand = rand % len(users)
         users_send.append(users[rand])
         users.pop(rand)
-    print(users_send)
     return jsonify({'success': True, 'result': users_send}), 200

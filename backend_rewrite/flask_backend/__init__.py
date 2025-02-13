@@ -5,12 +5,17 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+from flask_socketio import SocketIO
+
 from .db import get_db
 from datetime import timedelta
 
 import sys
 
 from .jwt_handler import missing_token_callback, expired_token_callback, invalid_token_callback, revoked_token_callback
+
+socketio = SocketIO(cors_allowed_origins="*")
+from . import websocket
 
 def export_constraints(app, cur):
     table_name = "users"
@@ -43,13 +48,11 @@ def export_constraints(app, cur):
             print("Aucune contrainte CHECK trouvée.")
     app.config['CONSTRAINTS'] = constraints
 
-
-
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     CORS(app, resources={r"/api/*": {
-    "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
+    "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "*"],
     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Ajout de OPTIONS
     "allow_headers": ["Content-Type", "Authorization"],
     "supports_credentials": True
@@ -72,59 +75,59 @@ def create_app(test_config=None):
     # initialize the database
     from . import db
     db.init_app(app)
+    try:
+        database = get_db()
+        with database.cursor() as cur:
+            cur.execute('SELECT name FROM interests')
+            result = cur.fetchall()
+            app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
+            export_constraints(app, cur)
+    except Exception as e:
+        print("Failed to get interests list from database", e)
+        app.config['AVAILABLE_INTERESTS'] = []
+        print("Did you initialize the database ?\n\n")
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
 
-    if len(sys.argv) > 1:
-        if "run" in sys.argv:
-            try:
-                database = get_db()
-                with database.cursor() as cur:
-                    cur.execute('SELECT name FROM interests')
-                    result = cur.fetchall()
-                    app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
-                    export_constraints(app, cur)
-                    print(app.config['CONSTRAINTS'])
-            except Exception as e:
-                print("Failed to get interests list from database", e)
-                app.config['AVAILABLE_INTERESTS'] = []
-                print("Did you initialize the database ?\n\n")
-            if test_config is None:
-                # load the instance config, if it exists, when not testing
-                app.config.from_pyfile('config.py', silent=True)
-            else:
-                # load the test config if passed in
-                app.config.from_mapping(test_config)
-
-            # ensure the instance folder exists
-            try:
-                os.makedirs(app.instance_path)
-            except OSError:
-                pass
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
 
-            # registering blueprints (routes)
-            from . import auth
-            from . import profiles
-            from . import research
-            from . import matcha
-            from . import get_informations
-            app.register_blueprint(auth.bp)
-            app.register_blueprint(profiles.bp)
-            app.register_blueprint(research.bp)
-            app.register_blueprint(matcha.bp)
-            app.register_blueprint(get_informations.bp)
+    # registering blueprints (routes)
+    from . import auth
+    from . import profiles
+    from . import research
+    from . import matcha
+    from . import get_informations
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(profiles.bp)
+    app.register_blueprint(research.bp)
+    app.register_blueprint(matcha.bp)
+    app.register_blueprint(get_informations.bp)
 
-            # registering jwt and its callbacks
-            jwt = JWTManager(app)
-            @jwt.token_in_blocklist_loader
-            def check_if_token_is_revoked(jwt_header, jwt_payload):
-                from .auth import BLACKLIST
-                return jwt_payload["jti"] in BLACKLIST
-            app.config['JWT_BLACKLIST_ENABLED'] = True
-            app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-            jwt.unauthorized_loader(missing_token_callback)
-            jwt.expired_token_loader(expired_token_callback)
-            jwt.invalid_token_loader(invalid_token_callback)
-            jwt.revoked_token_loader(revoked_token_callback)
+    # @app.route('/')
+    # def hello():
+    #     return 'Hello, World!'
 
+    # registering jwt and its callbacks
+    jwt = JWTManager(app)
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(jwt_header, jwt_payload):
+        from .auth import BLACKLIST
+        return jwt_payload["jti"] in BLACKLIST
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+    jwt.unauthorized_loader(missing_token_callback)
+    jwt.expired_token_loader(expired_token_callback)
+    jwt.invalid_token_loader(invalid_token_callback)
+    jwt.revoked_token_loader(revoked_token_callback)
+    socketio.init_app(app, async_mode='eventlet')
     return app
 

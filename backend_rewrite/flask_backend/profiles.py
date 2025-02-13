@@ -145,7 +145,6 @@ def get_profile(id):
 def profile_pictures():
     try:
         if request.method == 'PUT':
-            print(request.files)
             if 'picture' not in request.files:
                 return jsonify({'success': False, 'error': 'No file part'})
             file = request.files['picture']

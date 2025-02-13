@@ -33,7 +33,6 @@ def update_interests(interests, user_email):
             user_id = user['id']
             cur.execute('DELETE FROM users_interests WHERE user_id = %s', (user_id,))
             for interest in interests:
-                print("adding interest", interest)
                 cur.execute('SELECT id FROM interests WHERE name = %s', (interest,))
                 interest_id = cur.fetchone()['id']
                 cur.execute('INSERT INTO users_interests (user_id, interest_id) VALUES (%s, %s)', (user_id, interest_id))
@@ -100,7 +99,6 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
             result['errors'].append(f"Field {field} is missing")
         else:
             if field == "firstname" or field == "lastname":
-                print("firstname or lastname")
                 if not isinstance(data[field], str) or not all(c in ALLOWED_CHARACTERS_BASE + " " for c in data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
@@ -108,12 +106,10 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "age":
-                print("age", data[field])
                 if not isinstance(data[field], int) or data[field] < 15 or data[field] > 80:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "email":
-                print("email")
                 email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
                 if not isinstance(data[field], str) or not re.match(email_regex, data[field]):
                     result['success'] = False
@@ -126,12 +122,10 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
                             result['success'] = False
                             result['errors'].append(f"Field {field} is already used")
             if field == "password":
-                print("password")
                 if not isinstance(data[field], str) or len(data[field]) < 8 or not any(c.isupper() for c in data[field]) or not any(c.islower() for c in data[field]) or not any(c.isdigit() for c in data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "gender":
-                print("gender")
                 if not isinstance(data[field], str) or data[field] not in ["M", "F"]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
@@ -148,7 +142,7 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
             result['errors'].append(f"Field {field} is missing")
         else:
             if field == "city":
-                print("city")
+                pass
 #                 if not isinstance(data[field], dict):
 #                     result['success'] = False
 #                     result['errors'].append(f"Field {field} is not valid")
@@ -161,47 +155,38 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
 #                             result['success'] = False
 #                             result['errors'].append(f"Field {field} is not valid")
             if field == "searching":
-                print("searching")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "commitment":
-                print("commitment")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['commitment']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "frequency":
-                print("frequency")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['frequency']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "weight":
-                print("weight")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['weight']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "size":
-                print("size")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['size']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "shape":
-                print("shape")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['shape']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "smoking":
-                print("smoking")
                 if not isinstance(data[field], bool) or data[field] not in [True, False]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "alcohol":
-                print("alcohol")
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['alcohol']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "diet":
-                print("diet")
                 if not isinstance(data[field], str) or data[field] not in ["Omnivor", "Vegetarian", "Vegan", "Rich in protein"]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
@@ -218,12 +203,10 @@ def check_fields_step3(data, fields=["interests", "description"]):
             result['errors'].append(f"Field {field} is missing")
         else:
             if field == "interests":
-                print("interests")
                 if not isinstance(data[field], list):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
                 else:
-                    print(data[field])
                     if len(data[field]) == 0:
                         result['success'] = False
                         result['errors'].append(f"Field {field} is not valid (not enough interests)")
@@ -232,7 +215,6 @@ def check_fields_step3(data, fields=["interests", "description"]):
                             result['success'] = False
                             result['errors'].append(f"Field {field}/{interest} is not valid")
             if field == "description":
-                print("description")
                 if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 500:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
