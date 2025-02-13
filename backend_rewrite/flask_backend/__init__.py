@@ -73,8 +73,10 @@ def create_app(test_config=None):
     )
     app.app_context().push()
     # initialize the database
-    from . import db
-    db.init_app(app)
+    if 'init-db' in sys.argv:
+        from . import db
+        db.init_app(app)
+        return app
     try:
         database = get_db()
         with database.cursor() as cur:
