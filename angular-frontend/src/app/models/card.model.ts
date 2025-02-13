@@ -20,7 +20,8 @@ export class CardModel {
             new InterestModel("/icons/body.png", "Shape", data['shape']),
             new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
         ];
-        this.profilePicturePath = data['picturesNumber'] === 0 ? "defaultpp.jpg" : "defaultpp.jpg";
+        this.profilePicturePath = data['profilePicturePath'];
+        //this.profilePicturePath = data['picturesNumber'] === 0 ? "defaultpp.jpg" : "defaultpp.jpg";
         this.userId = data['id'];
     }
 

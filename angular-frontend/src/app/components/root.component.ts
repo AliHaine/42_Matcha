@@ -4,6 +4,7 @@ import {FooterComponent} from "./footer/footer.component";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {AuthService} from "../services/auth.service";
 import {NgIf} from "@angular/common";
+import {WebsocketService} from "../services/websocket.service";
 
 @Component({
   selector: 'app-root',
@@ -25,4 +26,5 @@ import {NgIf} from "@angular/common";
 export class RootComponent {
   protected readonly inject = inject;
   authService = inject(AuthService);
+  websocketService = inject(WebsocketService);
 }

@@ -7,7 +7,7 @@ import {map, Observable, tap} from 'rxjs';
 })
 
 export class ApiService {
-  private baseUrl = 'http://127.0.0.1:5000/api';
+  private baseUrl = 'http://10.13.1.10:5000/api';
 
   constructor(private http: HttpClient) { }
 
