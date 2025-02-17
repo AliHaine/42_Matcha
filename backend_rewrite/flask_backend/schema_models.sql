@@ -49,8 +49,10 @@ CREATE TABLE users (
     smoking BOOLEAN,
     alcohol VARCHAR(13),
     diet VARCHAR(16),
+    hetero BOOLEAN DEFAULT FALSE,
     -- third step register
     description VARCHAR(1500),
+    -- interests are stored in another table
     -- other informations
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

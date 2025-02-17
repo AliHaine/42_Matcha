@@ -43,7 +43,7 @@ def update_interests(interests, user_email):
         return False
 
 def update_user_fields(user_informations, user_email):
-    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests"]
+    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
     if not isinstance(user_informations, dict):
         return False
     if not isinstance(user_email, str):
@@ -122,7 +122,28 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
                             result['success'] = False
                             result['errors'].append(f"Field {field} is already used")
             if field == "password":
-                if not isinstance(data[field], str) or len(data[field]) < 8 or not any(c.isupper() for c in data[field]) or not any(c.islower() for c in data[field]) or not any(c.isdigit() for c in data[field]):
+                PASSWORD_ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-/!@#$%^&*()_+"
+                if not isinstance(data[field], str) or len(data[field]) < 8:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+                lower = 0
+                upper = 0
+                digit = 0
+                special = 0
+                for c in data[field]:
+                    if c not in PASSWORD_ALLOWED_CHARACTERS:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid")
+                        break
+                    if c.islower():
+                        lower += 1
+                    if c.isupper():
+                        upper += 1
+                    if c.isdigit():
+                        digit += 1
+                    if c in "/!@#$%^&*()_+":
+                        special += 1
+                if lower == 0 or upper == 0 or digit == 0 or special == 0:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "gender":
@@ -154,39 +175,47 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
 #                         if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
 #                             result['success'] = False
 #                             result['errors'].append(f"Field {field} is not valid")
-            if field == "searching":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "commitment":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['commitment']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "frequency":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['frequency']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "weight":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['weight']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "size":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['size']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "shape":
-                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['shape']:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-            if field == "smoking":
+            elif field == "hetero":
                 if not isinstance(data[field], bool) or data[field] not in [True, False]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
-            if field == "alcohol":
+            elif field == "searching":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "commitment":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['commitment']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "frequency":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['frequency']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "weight":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['weight']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "size":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['size']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "shape":
+                if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['shape']:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "smoking":
+                if not isinstance(data[field], bool) or data[field] not in [True, False]:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "smoking":
+                if not isinstance(data[field], bool) or data[field] not in [True, False]:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+            elif field == "alcohol":
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['alcohol']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
-            if field == "diet":
+            elif field == "diet":
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['diet']:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
