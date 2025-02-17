@@ -14,14 +14,12 @@ export class CardService {
 
     constructor() {
 
-        /*this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
-            console.log(result);
+        this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
             for (const data of result["result"]) {
                 this.profiles.push(new CardModel(data));
-                console.log(data);
             }
-        });*/
-
+        });
+/*
         this.profiles.push(new CardModel({
             'firstname': "Enzo",
             'age': "17",
@@ -116,7 +114,7 @@ export class CardService {
             "shape": ["Weight 58kg", "Size 166cm", "Sporty"],
             "lookingFor": ["Friendly meeting", "Short-term commitment", "Casual contact"],
             'profilePicturePath': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7iSFR6QIn17S_j89EPHXhfRZmv3FS3OuUzQ&s'
-        }));
+        }));*/
 
 
         this.searchProfiles = this.profiles.slice(0, this.profiles.length - 2);
