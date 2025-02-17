@@ -48,6 +48,7 @@ def convert_to_public_profile(user):
         'city': city,
         'gender': user['gender'],
         'description': user['description'],
+        'hetero': user['hetero'],
         'lookingFor': lookingFor,
         'shape': shape,
         'health': health,
@@ -56,7 +57,7 @@ def convert_to_public_profile(user):
         'status': user['status'],
     }
 
-@bp.route('/me', methods=['GET'])
+@bp.route('/me', methods=['GET', 'POST'])
 @jwt_required()
 @registration_completed
 def me():
@@ -67,7 +68,23 @@ def me():
     user = cursor.fetchone()
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'})
-    return jsonify({'success': True, 'user': convert_to_public_profile(user)}), 200
+    if request.method == 'GET':
+        return jsonify({'success': True, 'user': convert_to_public_profile(user)})
+    elif request.method == 'POST':
+        try:
+            data = request.json
+        except:
+            return jsonify({'success': False, 'error': 'Invalid JSON'})
+        user_informations = {}
+        from .user import FIELDS_UPDATABLE
+        for field in FIELDS_UPDATABLE:
+            user_informations[field] = data.get(field, None)
+        check = check_registration_status(user["email"])
+        if check is False:
+            return jsonify({'success': False, 'error': 'User did not complete the registration'})
+        else:
+            return jsonify({'success': False, 'error': 'The post method is not implemented yet'})
+            
 
 @bp.route('/<int:id>', methods=['GET', 'POST'])
 @jwt_required()

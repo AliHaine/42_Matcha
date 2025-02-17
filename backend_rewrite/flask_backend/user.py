@@ -5,6 +5,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
 from flask import current_app
 
+FIELDS_UPDATABLE = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
+STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender"]
+STEP2_FIELDS = ["city", "hetero", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
+STEP3_FIELDS = ["interests", "description"]
 def create_user(user_informations):
     try:
         db = get_db()
@@ -43,7 +47,6 @@ def update_interests(interests, user_email):
         return False
 
 def update_user_fields(user_informations, user_email):
-    fields_updatable = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
     if not isinstance(user_informations, dict):
         return False
     if not isinstance(user_email, str):
@@ -53,7 +56,7 @@ def update_user_fields(user_informations, user_email):
     try:
         values = []
         for key, value in user_informations.items():
-            if key in fields_updatable:
+            if key in FIELDS_UPDATABLE:
                 values.append(value)
             else:
                 raise Exception(f"Invalid field {key}")
@@ -62,7 +65,7 @@ def update_user_fields(user_informations, user_email):
             values_name = ""
             values_content = tuple()
             for key, value in user_informations.items():
-                if key in fields_updatable:
+                if key in FIELDS_UPDATABLE:
                     if key == "city":
                         city_id = get_city_id(value)
                         if city_id is None:
@@ -88,7 +91,7 @@ def update_user_fields(user_informations, user_email):
         print("Failed to update user fields (func : update_user_fields, file : user.py). Error : ", e)
         return False
 
-def check_fields_step1(data, fields=["firstname", "lastname", "email", "password", "age", "gender"], email_exists_check=True):
+def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
     result = {
         'success': True,
         'errors': []
@@ -152,7 +155,7 @@ def check_fields_step1(data, fields=["firstname", "lastname", "email", "password
                     result['errors'].append(f"Field {field} is not valid")
     return result
 
-def check_fields_step2(data, fields=["city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]):
+def check_fields_step2(data, fields=STEP2_FIELDS):
     result = {
         'success': True,
         'errors': []
@@ -221,7 +224,7 @@ def check_fields_step2(data, fields=["city", "searching", "commitment", "frequen
                     result['errors'].append(f"Field {field} is not valid")
     return result
 
-def check_fields_step3(data, fields=["interests", "description"]):
+def check_fields_step3(data, fields=STEP3_FIELDS):
     result = {
         'success': True,
         'errors': []
