@@ -31,6 +31,19 @@
 			<label>Age</label>
 			<input class="input-style-1" type="number" placeholder="" formControlName='age'>
 		</div>
+        <div>
+            <label>Sexual orientation</label>
+            <fieldset>
+                <div>
+                    <input type="radio" [value]=true formControlName="hetero" />
+                    <label>Heterosexual</label>
+                </div>
+                <div>
+                    <input type="radio" [value]=false formControlName="hetero" />
+                    <label>Other</label>
+                </div>
+            </fieldset>
+        </div>
 		<div>
 			<label>Gender</label>
 			<fieldset>

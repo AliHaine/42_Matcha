@@ -6,8 +6,8 @@ ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-
 from flask import current_app
 
 FIELDS_UPDATABLE = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
-STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender"]
-STEP2_FIELDS = ["city", "hetero", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
+STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender", "hetero"]
+STEP2_FIELDS = ["city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
 STEP3_FIELDS = ["interests", "description"]
 def create_user(user_informations):
     try:
@@ -124,6 +124,10 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
                         if user is not None:
                             result['success'] = False
                             result['errors'].append(f"Field {field} is already used")
+            if field == "hetero":
+                if not isinstance(data[field], bool) or data[field] not in [True, False]:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
             if field == "password":
                 PASSWORD_ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-/!@#$%^&*()_+"
                 if not isinstance(data[field], str) or len(data[field]) < 8:
@@ -144,7 +148,7 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
                         upper += 1
                     if c.isdigit():
                         digit += 1
-                    if c in "/!@#$%^&*()_+":
+                    if c in "-/!@#$%^&*()_+":
                         special += 1
                 if lower == 0 or upper == 0 or digit == 0 or special == 0:
                     result['success'] = False
@@ -178,10 +182,6 @@ def check_fields_step2(data, fields=STEP2_FIELDS):
 #                         if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
 #                             result['success'] = False
 #                             result['errors'].append(f"Field {field} is not valid")
-            elif field == "hetero":
-                if not isinstance(data[field], bool) or data[field] not in [True, False]:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
             elif field == "searching":
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
                     result['success'] = False

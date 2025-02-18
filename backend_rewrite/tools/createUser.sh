@@ -15,7 +15,7 @@ done < <(echo "$json_data" | jq -r '.interests[][]')
 
 max_jobs=100
 count=0 
-max_loop=1000
+max_loop=100
 
 if (( max_loop % 2 != 0 )); then
     ((max_loop++))
@@ -72,7 +72,7 @@ while (( remaining > 0 )); do
             password="Panda666!"
 
             echo "Création de $email"
-            response=$(curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -d "{\"step\":1,\"firstname\":\"$firstName\",\"lastname\":\"$lastName\",\"gender\":\"$gender\",\"age\":$age,\"email\":\"$email\",\"password\":\"$password\"}")
+            response=$(curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -d "{\"step\":1,\"firstname\":\"$firstName\",\"lastname\":\"$lastName\",\"hetero\":false,\"gender\":\"$gender\",\"age\":$age,\"email\":\"$email\",\"password\":\"$password\"}")
 
             accessToken=$(echo "$response" | jq -r '.access_token')
 
@@ -82,7 +82,7 @@ while (( remaining > 0 )); do
                 exit 1
             fi
 
-            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":false, \"searching\":\"Friends\",\"commitment\":\"Short term\",\"frequency\":\"Daily\",\"weight\":\"< 50\",\"size\":\"< 150\",\"shape\":\"Skinny\",\"alcohol\":\"Never\",\"smoking\":false, \"diet\":\"Omnivor\"}"
+            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75}, \"searching\":\"Friends\",\"commitment\":\"Short term\",\"frequency\":\"Daily\",\"weight\":\"< 50\",\"size\":\"< 150\",\"shape\":\"Skinny\",\"alcohol\":\"Never\",\"smoking\":false, \"diet\":\"Omnivor\"}"
 
             random_interests=$(shuf -e "${all_interests[@]}" -n 3 | jq -R . | jq -s .)
 
