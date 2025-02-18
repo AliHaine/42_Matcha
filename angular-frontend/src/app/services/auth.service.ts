@@ -13,18 +13,8 @@ export class AuthService {
 
   constructor() {
     const token: string | null = this.apiService.getAccessToken();
-    if (token === null) {
-      this.router.navigate(['/auth/login']);
-    } else {
-      this.apiService.getData("/auth/verify_token", {}).subscribe(result => {
-        if (result["success"] === true) {
-          this.login();
-          this.router.navigate(['']);
-        }
-        //console.log(result)
-      })
-    }
-
+    if (token !== null)
+        this.login();
   }
 
   isLogin(): boolean {
