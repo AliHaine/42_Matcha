@@ -26,15 +26,15 @@
             </div>
             <div>
                 <h3>Health</h3>
-                <p>Im vegan, I don’t smoke and drink alcohol occasionally  </p>
+                <p>Im vegan, I don’t smoke and drink alcohol {{this.profile().health.at(1)}}  </p>
             </div>
             <div>
                 <h3>Shape</h3>
-                <p>My shape is skinny, I’m 150 CM tall and weigh 53 KG</p>
+                <p>My shape is {{this.profile().shape.at(2)}}, I’m {{this.profile().shape.at(0)}} CM tall and weigh {{this.profile().shape.at(1)}} KG</p>
             </div>
             <div>
                 <h3>Interests</h3>
-                <p>Im interested by music, blabla, blabla, blabla, blabla</p>
+                <p>Im interested by {{this.profile().interests.at(0)}}, {{this.profile().interests.at(1)}}, {{this.profile().interests.at(2)}}, {{this.profile().interests.at(3)}}</p>
             </div>
         </div>
     </div>

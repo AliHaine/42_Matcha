@@ -1,9 +1,9 @@
 export class InterestModel {
     categoryIconPath: String;
     categoryName: String
-    interests: [string, string, string];
+    interests: string[];
 
-    constructor(categoryIconPath: String, categoryName: String, interests: [string, string, string]) {
+    constructor(categoryIconPath: String, categoryName: String, interests: string[]) {
         this.categoryIconPath = categoryIconPath;
         this.categoryName = categoryName;
         this.interests = interests;

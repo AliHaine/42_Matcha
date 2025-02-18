@@ -19,7 +19,6 @@ export class CardComponent {
   apiService = inject(ApiService);
 
   likeUser() {
-    console.log(this.card().userId);
     this.apiService.postData(`/profiles/${this.card().userId}`, {action: 'like',}).subscribe((response) => {
       console.log(response);
     })
