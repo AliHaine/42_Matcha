@@ -48,6 +48,16 @@ def export_constraints(app, cur):
             print("Aucune contrainte CHECK trouvée.")
     app.config['CONSTRAINTS'] = constraints
 
+def init_cities():
+    from .db import get_db
+    database = get_db()
+    with database.cursor() as cur:
+        cur.execute('SELECT * FROM cities')
+        result = cur.fetchall()
+        if len(result) == 0:
+            from .cities import get_city_id
+            get_city_id({'lat': 47.75, 'lon': 7.3})
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -86,6 +96,7 @@ def create_app(test_config=None):
             export_constraints(app, cur)
             cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
             database.commit()
+            init_cities()
     except Exception as e:
         print("Failed to get interests list from database", e)
         app.config['AVAILABLE_INTERESTS'] = []

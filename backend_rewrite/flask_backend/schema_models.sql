@@ -40,7 +40,7 @@ CREATE TABLE users (
     age INT NOT NULL,
     gender VARCHAR(1) NOT NULL,
     -- second step register
-    city_id INT,  -- Rendre la ville obligatoire
+    city_id INT DEFAULT 1,  -- Rendre la ville obligatoire
     searching VARCHAR(13),
     commitment VARCHAR(11),
     frequency VARCHAR(13),
