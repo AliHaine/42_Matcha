@@ -1,7 +1,6 @@
 #!/bin/bash
 
 json_data=$(curl -s 'localhost:5000/api/getInformations/interests')
-
 # Vérifier si les données sont vides
 if [ -z "$json_data" ]; then
     echo "Aucun intérêt récupéré."
@@ -13,9 +12,43 @@ while IFS= read -r interest; do
     all_interests+=("$interest")
 done < <(echo "$json_data" | jq -r '.interests[][]')
 
+json_data=$(curl -s 'localhost:5000/api/getInformations/register')
+alcohol_possibility=()
+while IFS= read -r alcohol; do
+    alcohol_possibility+=("$alcohol")
+done < <(echo "$json_data" | jq -r '.registerInfo.alcohol[]')
+commitment_possibility=()
+while IFS= read -r commitment; do
+    commitment_possibility+=("$commitment")
+done < <(echo "$json_data" | jq -r '.registerInfo.commitment[]')
+diet_possibility=()
+while IFS= read -r diet; do
+    diet_possibility+=("$diet")
+done < <(echo "$json_data" | jq -r '.registerInfo.diet[]')
+frequency_possibility=()
+while IFS= read -r frequency; do
+    frequency_possibility+=("$frequency")
+done < <(echo "$json_data" | jq -r '.registerInfo.frequency[]')
+searching_possibility=()
+while IFS= read -r searching; do
+    searching_possibility+=("$searching")
+done < <(echo "$json_data" | jq -r '.registerInfo.searching[]')
+shape_possibility=()
+while IFS= read -r shape; do
+    shape_possibility+=("$shape")
+done < <(echo "$json_data" | jq -r '.registerInfo.shape[]')
+size_possibility=()
+while IFS= read -r size; do
+    size_possibility+=("$size")
+done < <(echo "$json_data" | jq -r '.registerInfo.size[]')
+weight_possibility=()
+while IFS= read -r weight; do
+    weight_possibility+=("$weight")
+done < <(echo "$json_data" | jq -r '.registerInfo.weight[]')
+
 max_jobs=100
 count=0 
-max_loop=1000
+max_loop=100
 
 if (( max_loop % 2 != 0 )); then
     ((max_loop++))
@@ -81,8 +114,18 @@ while (( remaining > 0 )); do
                 increment_failed_count
                 exit 1
             fi
+            heteroChoice=$(shuf -e "true" "false" -n 1)
+            searchingChoice=$(shuf -e "${searching_possibility[@]}" -n 1)
+            commitmentChoice=$(shuf -e "${commitment_possibility[@]}" -n 1)
+            frequencyChoice=$(shuf -e "${frequency_possibility[@]}" -n 1)
+            weightChoice=$(shuf -e "${weight_possibility[@]}" -n 1)
+            sizeChoice=$(shuf -e "${size_possibility[@]}" -n 1)
+            shapeChoice=$(shuf -e "${shape_possibility[@]}" -n 1)
+            alcoholChoice=$(shuf -e "${alcohol_possibility[@]}" -n 1)
+            dietChoice=$(shuf -e "${diet_possibility[@]}" -n 1)
+            smokingChoice=$(shuf -e "true" "false" -n 1)
 
-            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":false, \"searching\":\"Friends\",\"commitment\":\"Short term\",\"frequency\":\"Daily\",\"weight\":\"< 50\",\"size\":\"< 150\",\"shape\":\"Skinny\",\"alcohol\":\"Never\",\"smoking\":false, \"diet\":\"Omnivor\"}"
+            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
 
             random_interests=$(shuf -e "${all_interests[@]}" -n 3 | jq -R . | jq -s .)
 
