@@ -28,25 +28,33 @@ def handle_connect():
                 return
             cur.execute('UPDATE users SET status = TRUE, active_connections = active_connections + 1 WHERE email = %s', (user_email,))
             db.commit()
-            connected_users[request.sid] = user["id"]
+            connected_users[request.sid] = {}
+            connected_users[request.sid]['id'] = user['id']
         print(f"Utilisateur {user_email} connecté via WebSocket")
+        available_chats = []
+        with db.cursor() as cur:
+            cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user["id"],))
+            for row in cur.fetchall():
+                available_chats.append(row["user2"])
+        connected_users[request.sid]['available_chats'] = available_chats
+        emit('init', {'data': f"Connecté en tant que {user_email}", 'available_chats':available_chats})
     except Exception as e:
         print(f"Erreur de décodage du JWT : {e}")
         disconnect()
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    user_id = connected_users.get(request.sid, None)
-    if user_id is None:
+    user_elems = connected_users.get(request.sid, None)
+    if user_elems is None:
         print("Déconnexion refusée : Utilisateur non trouvé")
         return
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('UPDATE users SET active_connections = active_connections - 1 WHERE id = %s', (user_id,))
-        cur.execute('UPDATE users SET status = FALSE WHERE active_connections = 0 AND id = %s', (user_id,))
+        cur.execute('UPDATE users SET active_connections = active_connections - 1 WHERE id = %s', (user_elems["id"],))
+        cur.execute('UPDATE users SET status = FALSE WHERE active_connections = 0 AND id = %s', (user_elems["id"],))
         db.commit()
         del connected_users[request.sid]
-    print(f"Utilisateur {user_id} déconnecté via WebSocket")
+    print(f"Utilisateur {user_elems['id']} déconnecté via WebSocket")
 
 @socketio.on('message')
 def handle_chat_message(data):

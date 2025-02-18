@@ -13,7 +13,7 @@ export class WebsocketService {
   constructor() {
     console.log('Socket.IO Service Initialized');
 
-    this.websocket = io('ws://10.13.1.10:5000', {
+    this.websocket = io('ws://127.0.0.1:5000', {
       transports: ['websocket'],
       query: { 'access_token': this.apiService.getAccessToken() },
     });

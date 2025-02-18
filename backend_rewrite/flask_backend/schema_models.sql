@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS interests CASCADE;
 DROP TABLE IF EXISTS users_interests CASCADE;
 DROP TABLE IF EXISTS user_views CASCADE;
 DROP TABLE IF EXISTS waiting_notifications CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
 
 CREATE TABLE cities (
     id SERIAL PRIMARY KEY,
@@ -95,7 +96,8 @@ CREATE TABLE users_interests (
     user_id INT,
     interest_id INT,
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_interest_id FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
+    CONSTRAINT fk_interest_id FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_interest UNIQUE (user_id, interest_id)
 );
 
 CREATE TABLE user_views(
@@ -106,9 +108,12 @@ CREATE TABLE user_views(
     blocked BOOLEAN DEFAULT FALSE,
     report BOOLEAN DEFAULT FALSE,
     last_view TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_chat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_viewer_id FOREIGN KEY (viewer_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_viewed_id FOREIGN KEY (viewed_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_viewed_id FOREIGN KEY (viewed_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT unique_view UNIQUE (viewer_id, viewed_id),
+    CONSTRAINT not_same_user CHECK (viewer_id <> viewed_id)
 );
 
 CREATE TABLE waiting_notifications(
@@ -117,4 +122,14 @@ CREATE TABLE waiting_notifications(
     message VARCHAR(250),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)
+);
+
+CREATE TABLE messages(
+    id SERIAL PRIMARY KEY,
+    sender_id INT,
+    receiver_id INT,
+    message VARCHAR(1500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
