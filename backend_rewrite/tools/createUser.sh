@@ -131,7 +131,7 @@ while (( remaining > 0 )); do
 
             curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":3,\"Culture\":$random_interests, \"description\":\"Lorem ipsum\"}"
 
-            echo "Utilisateur $email créé avec succès."
+            echo "Utilisateur $email créé avec succès. Token : $accessToken"
         ) &  # Exécuter en parallèle
 
         count=$((count + 1))
