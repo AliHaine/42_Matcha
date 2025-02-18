@@ -35,6 +35,7 @@ BLACKLIST = load_blacklist()
 def register_step1(data):
     user_informations = {
         'firstname': data.get('firstname', ''),
+        'hetero': data.get('hetero', None),
         'lastname': data.get('lastname', ''),
         'email': data.get('email', ''),
         'password': data.get('password', ''),
@@ -59,7 +60,6 @@ def register_step1(data):
 def register_step2(data):
     user_informations = {
         'city': data.get('city', {}),
-        'hetero': data.get('hetero', None),
         'searching': data.get('searching', ''),
         'commitment': data.get('commitment', ''),
         'frequency': data.get('frequency', ''),

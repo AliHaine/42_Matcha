@@ -37,6 +37,7 @@ export class RegisterComponent {
         password: new FormControl('Test123-', Validators.required),
         passwordConfirm: new FormControl('Test123-', Validators.required),
         age: new FormControl(19, [Validators.required, Validators.min(15), Validators.max(80)]),
+        hetero: new FormControl(true, Validators.required),
         gender: new FormControl('M', Validators.required)
     }, { validators: passwordValidator });
 
