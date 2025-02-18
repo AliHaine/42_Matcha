@@ -19,7 +19,11 @@ export class SearchComponent {
   cardService = inject(CardService)
   activeFilter = []
   p: number = 1;
-  collection: any[] = this.cardService.getSearchProfiles();
+  collection: any[] = [];
+
+  constructor() {
+    this.cardService.getSearchProfiles(6, 1);
+  }
 
   addFilter() {
 
@@ -27,5 +31,10 @@ export class SearchComponent {
 
   removeFilter() {
 
+  }
+
+  onPageChange(event: number) {
+    this.p = event;
+    this.cardService.getSearchProfiles(6, event);
   }
 }

@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {CardModel} from "../models/card.model";
 import {InterestModel} from "../models/interest.model";
 import {ApiService} from "./api.service";
@@ -10,7 +10,7 @@ export class CardService {
 
     apiService = inject(ApiService);
     private profiles: CardModel[] = [];
-    private searchProfiles: CardModel[] = [];
+    searchProfiles = signal<CardModel[]>([]);
 
     constructor() {
 
@@ -116,12 +116,6 @@ export class CardService {
             'profilePicturePath': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7iSFR6QIn17S_j89EPHXhfRZmv3FS3OuUzQ&s'
         }));*/
 
-
-        this.searchProfiles = this.profiles.slice(0, this.profiles.length - 2);
-      }
-
-      getProfile(index: number): CardModel {
-        return <CardModel>this.profiles.at(index);
       }
 
       refreshProfile() {
@@ -132,7 +126,13 @@ export class CardService {
           return this.profiles;
       }
 
-      getSearchProfiles(): CardModel[] {
-        return this.searchProfiles;
+      getSearchProfiles(profile_per_page: number, page: number): CardModel[] {
+        this.searchProfiles.set([]);
+        this.apiService.getData('/research', {"profile_per_page": profile_per_page, "page": page}).subscribe(result => {
+            for (const data of result["result"]) {
+                this.searchProfiles().push(new CardModel(data));
+            }
+        })
+        return this.searchProfiles();
       }
 }
