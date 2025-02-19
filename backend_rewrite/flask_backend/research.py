@@ -72,5 +72,5 @@ def research():
     if len(users) % profile_per_page != 0:
         max_page += 1
 
-    return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page})
+    return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page, 'profile_per_page': profile_per_page})
 
