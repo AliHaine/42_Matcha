@@ -68,5 +68,9 @@ def research():
         end = start + profile_per_page
         for user in users[start:end]:
             research_results.append(convert_to_public_profile(user))
-    return jsonify({'success': True, 'result':research_results}), 200
+    max_page = len(users) // profile_per_page
+    if len(users) % profile_per_page != 0:
+        max_page += 1
+
+    return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page})
 
