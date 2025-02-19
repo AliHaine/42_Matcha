@@ -9,8 +9,6 @@ export class CardService {
 
     apiService = inject(ApiService);
     private profiles: ProfileModel[] = [];
-    searchProfiles = signal<ProfileModel[]>([]);
-    maxPages: number = 1;
 
     constructor() {
 
@@ -129,17 +127,5 @@ export class CardService {
 
       getProfiles(): ProfileModel[] {
           return this.profiles;
-      }
-
-      getSearchProfiles(profile_per_page: number, page: number): ProfileModel[] {
-        this.searchProfiles.set([]);
-        this.apiService.getData('/research', {"profile_per_page": profile_per_page, "page": page}).subscribe(result => {
-            for (const data of result["result"]) {
-                this.searchProfiles().push(new ProfileModel(data));
-            }
-            console.log(result);
-            this.maxPages = result['max_page'];
-        })
-        return this.searchProfiles();
       }
 }

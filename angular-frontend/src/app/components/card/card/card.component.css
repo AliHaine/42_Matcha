@@ -71,6 +71,16 @@
     transform: scale(1.3);
 }
 
+.img {
+    aspect-ratio: 1;
+    display: inline-block;
+    background: #fd7da0;
+}
+
+.img:hover {
+    background: var(--color-2);
+}
+
 /* -------------------------------------------------- */
 
 #profile {

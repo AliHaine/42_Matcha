@@ -1,8 +1,8 @@
 import {Component, inject} from '@angular/core';
-import {CardService} from "../../services/card.service";
 import {CardComponent} from "../card/card/card.component";
 import {NgForOf} from "@angular/common";
 import {NgxPaginationModule} from 'ngx-pagination';
+import {SearchService} from "../../services/search.service";
 
 @Component({
   selector: 'app-search',
@@ -16,13 +16,13 @@ import {NgxPaginationModule} from 'ngx-pagination';
 })
 export class SearchComponent {
 
-  cardService = inject(CardService)
+  searchService = inject(SearchService);
   activeFilter = []
   p: number = 1;
   collection: any[] = [];
 
   constructor() {
-    this.cardService.getSearchProfiles(6, 1);
+    this.searchService.getSearchProfiles(1);
   }
 
   addFilter() {
@@ -35,6 +35,6 @@ export class SearchComponent {
 
   onPageChange(event: number) {
     this.p = event;
-    this.cardService.getSearchProfiles(6, event);
+    this.searchService.getSearchProfiles(event);
   }
 }

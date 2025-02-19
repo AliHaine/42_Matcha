@@ -4,7 +4,7 @@
         <div class="profilePicIcons">
             <img class="overlayIcon giftIcon" src="/icons/gift.png">
             <img class="overlayIcon heartIcon" (click)="likeUser()" src="/icons/heart.png">
-            <img [routerLink]="['/profile/', profile().userId]" class="overlayIcon" src="/icons/profile.png">
+            <a [routerLink]="['/profile/', profile().userId]" class="overlayIcon img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
         </div>
     </div>
 

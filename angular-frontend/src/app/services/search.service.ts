@@ -1,0 +1,33 @@
+import {inject, Injectable, signal} from '@angular/core';
+import {ProfileModel} from "../models/profile.model";
+import {ApiService} from "./api.service";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SearchService {
+
+  apiService = inject(ApiService);
+  searchProfiles = signal<ProfileModel[]>([]);
+  maxPages: number = 1;
+  profilePerPage: number;
+
+  constructor() {
+    this.setProfilePerPage(6);
+  }
+
+  setProfilePerPage(per_page: number) {
+    this.profilePerPage = per_page;
+  }
+
+  getSearchProfiles(page: number): ProfileModel[] {
+    this.searchProfiles.set([]);
+    this.apiService.getData('/research', {"profile_per_page": this.profilePerPage, "page": page}).subscribe(result => {
+      for (const data of result["result"]) {
+        this.searchProfiles().push(new ProfileModel(data));
+      }
+      this.maxPages = result['max_page'];
+    })
+    return this.searchProfiles();
+  }
+}
