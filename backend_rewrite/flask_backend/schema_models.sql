@@ -65,9 +65,9 @@ CREATE TABLE users (
 
     -- constraint setup
     CONSTRAINT firstname_not_empty CHECK (firstname <> ''),
-    CONSTRAINT firstname_invalid CHECK (firstname ~ '^[a-zA-Z\s-]+$'),
+    CONSTRAINT firstname_invalid CHECK (firstname ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ\- ]+$'),
     CONSTRAINT lastname_not_empty CHECK (lastname <> ''),
-    CONSTRAINT lastname_invalid CHECK (lastname ~ '^[a-zA-Z\s-]+$'),
+    CONSTRAINT lastname_invalid CHECK (lastname ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ\- ]+$'),
     CONSTRAINT email_not_empty CHECK (email <> ''),
     CONSTRAINT email_unique UNIQUE (email),
     CONSTRAINT email_invalid CHECK (email ~ '^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9.-]+$'),
@@ -84,7 +84,7 @@ CREATE TABLE users (
     CONSTRAINT smoking_invalid CHECK (smoking IN (TRUE, FALSE)),
     CONSTRAINT alcohol_invalid CHECK (alcohol IN ('Never', 'Occasionally', 'Every week', 'Every day')),
     CONSTRAINT diet_invalid CHECK (diet IN ('Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein')),
-    CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-Z\s-]+$'),
+    CONSTRAINT description_invalid CHECK (description ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ0-9 .,!?;:()\[\]-]+$'),
     CONSTRAINT status_invalid CHECK (status IN (TRUE, FALSE)),
     CONSTRAINT registration_complete_invalid CHECK (registration_complete IN (TRUE, FALSE)),
     CONSTRAINT active_connections_invalid CHECK (active_connections >= 0),

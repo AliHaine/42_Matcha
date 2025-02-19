@@ -17,9 +17,11 @@ from .jwt_handler import missing_token_callback, expired_token_callback, invalid
 socketio = SocketIO(cors_allowed_origins="*")
 from . import websocket
 
+sys.setdefaultencoding('utf-8') if hasattr(sys, 'setdefaultencoding') else None
+
 def export_constraints(app, cur):
     table_name = "users"
-    columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
+    columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", 'firstname', 'lastname', "description"]
     constraints = {}
 
     # Requête pour récupérer la définition de la contrainte CHECK
@@ -32,21 +34,29 @@ def export_constraints(app, cur):
     """
     for column_name in columns_names:
         cur.execute(query, (table_name, f'%{column_name}%'))
-        result = cur.fetchone()
-
-        if result:
-            constraint_def = result["pg_get_constraintdef"]
-
-            match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
-            if match:
-                values = match.group(1).split(", ")
-                values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
-                constraints[column_name] = values
+        results = cur.fetchall()
+        for result in results:
+            if result:
+                constraint_def = result["pg_get_constraintdef"]
+                match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
+                if match:
+                    print(f"✅ Valeurs trouvées : {match.group(1)}")
+                    values = match.group(1).split(", ")
+                    values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
+                    constraints[column_name] = values
+                match_regex = re.search(r"[~|SIMILAR TO]\s+'(.*?)'", constraint_def)
+                if match_regex:
+                    extracted_regex = match_regex.group(1)
+                    extracted_regex = extracted_regex.replace("\\\\", "\\")
+                    print(f"✅ Regex trouvée : {extracted_regex}")
+                    constraints[column_name] = extracted_regex
+                
+                if not match and not match_regex:
+                    print("❌ Aucune valeur trouvée.")
             else:
-                print("Aucune liste explicite trouvée.")
-        else:
-            print("Aucune contrainte CHECK trouvée.")
+                print("Aucune contrainte CHECK trouvée.")
     app.config['CONSTRAINTS'] = constraints
+
 
 def init_cities():
     from .db import get_db
@@ -80,6 +90,7 @@ def create_app(test_config=None):
         BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
         PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads/profile_pictures'),
         PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
+        JSON_AS_ASCII=False,
     )
     app.app_context().push()
     # initialize the database
@@ -94,6 +105,7 @@ def create_app(test_config=None):
             result = cur.fetchall()
             app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
             export_constraints(app, cur)
+            print(app.config['CONSTRAINTS'])
             cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
             database.commit()
             init_cities()

@@ -2,8 +2,27 @@ from .db import get_db
 from .cities import get_city_id
 import re
 from flask_jwt_extended import jwt_required, get_jwt_identity
-ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+# ALLOWED_CHARACTERS_BASE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+REGEX_ALLOWED_CHARACTERS_BASE = r'^[a-zA-Z-]+$'
 from flask import current_app
+
+def dynamic_regex(digits=False, special=False, accents=False, spaces=False):
+    base_chars = "a-zA-Z"  # Lettres de base
+    regex = "^[" + base_chars
+
+    if digits:
+        regex += "0-9"
+    if special:
+        regex += re.escape("-@!$#%&*")  # Ajoute des caractères spéciaux sécurisés
+    if accents:
+        regex += "À-ÖØ-öø-ÿ"  # Évite les caractères indésirables comme × et ÷
+    if spaces:
+        regex += " "
+
+    regex += "]+$"
+    return regex
+
+    
 
 FIELDS_UPDATABLE = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
 STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender", "hetero"]
@@ -102,7 +121,11 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
             result['errors'].append(f"Field {field} is missing")
         else:
             if field == "firstname" or field == "lastname":
-                if not isinstance(data[field], str) or not all(c in ALLOWED_CHARACTERS_BASE + " " for c in data[field]):
+                if field == "firstname":
+                    regex_name = current_app.config['CONSTRAINTS']['firstname']
+                else:
+                    regex_name = current_app.config['CONSTRAINTS']['lastname']
+                if not isinstance(data[field], str) or not re.match(regex_name, data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
                 if len(data[field]) < 2 or len(data[field]) > 20:
@@ -247,7 +270,7 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                             result['success'] = False
                             result['errors'].append(f"Field {field}/{interest} is not valid")
             if field == "description":
-                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 1500:
+                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 1500 or re.match(current_app.config["CONSTRAINTS"]["description"], data[field]) is None:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
