@@ -6,11 +6,11 @@
         <button class="filter-button button-style-2">Add new filter </button>
     </div>
     <div id="cards">
-        <app-card *ngFor="let card of cardService.getSearchProfiles() | paginate: { itemsPerPage: 2, currentPage: p }"
+        <app-card *ngFor="let card of cardService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: 18 }"
                   [card]="card">
         </app-card>
     </div>
     <div id="pagination">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
 </div>

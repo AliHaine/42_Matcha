@@ -4,7 +4,7 @@
         <div class="profilePicIcons">
             <img class="overlayIcon giftIcon" src="/icons/gift.png">
             <img class="overlayIcon heartIcon" (click)="likeUser()" src="/icons/heart.png">
-            <img class="overlayIcon" src="/icons/profile.png">
+            <img [routerLink]="['/profile/', card().userId]" class="overlayIcon" src="/icons/profile.png">
         </div>
     </div>
 
