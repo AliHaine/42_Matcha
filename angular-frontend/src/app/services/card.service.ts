@@ -11,6 +11,7 @@ export class CardService {
     apiService = inject(ApiService);
     private profiles: CardModel[] = [];
     searchProfiles = signal<CardModel[]>([]);
+    maxPages: number = 1;
 
     constructor() {
 
@@ -119,7 +120,12 @@ export class CardService {
       }
 
       refreshProfile() {
-
+        this.profiles = [];
+          this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
+              for (const data of result["result"]) {
+                  this.profiles.push(new CardModel(data));
+              }
+          });
       }
 
       getProfiles(): CardModel[] {
@@ -132,6 +138,8 @@ export class CardService {
             for (const data of result["result"]) {
                 this.searchProfiles().push(new CardModel(data));
             }
+            console.log(result);
+            this.maxPages = result['max_page'];
         })
         return this.searchProfiles();
       }
