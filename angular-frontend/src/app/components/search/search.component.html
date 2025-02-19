@@ -6,8 +6,8 @@
         <button class="filter-button button-style-2">Add new filter </button>
     </div>
     <div id="cards">
-        <app-card *ngFor="let card of cardService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: cardService.maxPages * 6 }"
-                  [card]="card">
+        <app-card *ngFor="let profile of cardService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: cardService.maxPages * 6 }"
+                  [profile]="profile">
         </app-card>
     </div>
     <div id="pagination">

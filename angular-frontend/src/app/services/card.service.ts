@@ -1,7 +1,6 @@
 import {inject, Injectable, signal} from '@angular/core';
-import {CardModel} from "../models/card.model";
-import {InterestModel} from "../models/interest.model";
 import {ApiService} from "./api.service";
+import {ProfileModel} from "../models/profile.model";
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +8,15 @@ import {ApiService} from "./api.service";
 export class CardService {
 
     apiService = inject(ApiService);
-    private profiles: CardModel[] = [];
-    searchProfiles = signal<CardModel[]>([]);
+    private profiles: ProfileModel[] = [];
+    searchProfiles = signal<ProfileModel[]>([]);
     maxPages: number = 1;
 
     constructor() {
 
         this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
             for (const data of result["result"]) {
-                this.profiles.push(new CardModel(data));
+                this.profiles.push(new ProfileModel(data));
             }
         });
 /*
@@ -123,20 +122,20 @@ export class CardService {
         this.profiles = [];
           this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
               for (const data of result["result"]) {
-                  this.profiles.push(new CardModel(data));
+                  this.profiles.push(new ProfileModel(data));
               }
           });
       }
 
-      getProfiles(): CardModel[] {
+      getProfiles(): ProfileModel[] {
           return this.profiles;
       }
 
-      getSearchProfiles(profile_per_page: number, page: number): CardModel[] {
+      getSearchProfiles(profile_per_page: number, page: number): ProfileModel[] {
         this.searchProfiles.set([]);
         this.apiService.getData('/research', {"profile_per_page": profile_per_page, "page": page}).subscribe(result => {
             for (const data of result["result"]) {
-                this.searchProfiles().push(new CardModel(data));
+                this.searchProfiles().push(new ProfileModel(data));
             }
             console.log(result);
             this.maxPages = result['max_page'];

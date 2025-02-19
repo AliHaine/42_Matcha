@@ -1,17 +1,20 @@
-export class ProfileModel {
+import {InterestModel} from "./interest.model";
 
-    firstname: String;
-    lastname: String;
-    age: Number;
-    city: String;
-    gender: String;
-    description: String;
+export class ProfileModel {
+    firstname: string;
+    lastname: string;
+    age: number;
+    city: string;
+    gender: string;
+    description: string;
     lookingFor: [];
     shape: [];
     health: [];
-    interests: [];
-    picturesNumber: Number;
-    status: String;
+    interests: InterestModel[];
+    picturesNumber: number;
+    profilePicturePath: string;
+    status: string;
+    userId: number;
 
     constructor(data: {[key: string]: any}) {
         this.firstname = data["firstname"];
@@ -23,9 +26,15 @@ export class ProfileModel {
         this.lookingFor = data["lookingFor"];
         this.shape = data["shape"];
         this.health = data["health"];
-        this.interests = data["interests"];
+        this.interests = [
+            new InterestModel("/icons/interest.png", "Interest", data['interests']),
+            new InterestModel("/icons/pharmacie.png", "Health", data['health']),
+            new InterestModel("/icons/body.png", "Shape", data['shape']),
+            new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
+        ];
         this.picturesNumber = data["picturesNumber"];
+        this.profilePicturePath = data['picturesNumber'] === 0 ? "defaultpp.jpg" : "defaultpp.jpg";
         this.status = data["status"];
+        this.userId = data["id"];
     }
-
 }

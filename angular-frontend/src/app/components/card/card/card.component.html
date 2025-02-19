@@ -1,25 +1,22 @@
 <div id="main">
     <div id="pictureAndIcons">
-        <img class="profilePic" [src]=card().profilePicturePath />
+        <img class="profilePic" [src]=profile().profilePicturePath />
         <div class="profilePicIcons">
             <img class="overlayIcon giftIcon" src="/icons/gift.png">
             <img class="overlayIcon heartIcon" (click)="likeUser()" src="/icons/heart.png">
-            <img [routerLink]="['/profile/', card().userId]" class="overlayIcon" src="/icons/profile.png">
+            <img [routerLink]="['/profile/', profile().userId]" class="overlayIcon" src="/icons/profile.png">
         </div>
     </div>
 
     <div id="profile">
         <div id="nameAndAge">
-            {{card().firstname}} {{card().age}} years old, {{card().city}}
+            {{profile().firstname}} {{profile().age}} years old, {{profile().city}}
         </div>
         <div id="description">
-            {{card().description}} <a [routerLink]="'/profile/'+ card().userId">SEE MORE</a>
+            {{profile().description}} <a [routerLink]="'/profile/'+ profile().userId">SEE MORE</a>
         </div>
         <div id="details">
-            <app-interest [interest]="card().getInterestFromIndex(0)"/>
-            <app-interest [interest]="card().getInterestFromIndex(1)"/>
-            <app-interest [interest]="card().getInterestFromIndex(2)"/>
-            <app-interest [interest]="card().getInterestFromIndex(3)"/>
+            <app-interest *ngFor="let interest of this.profile().interests" [interest]="interest"/>
         </div>
     </div>
 </div>
