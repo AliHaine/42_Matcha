@@ -6,6 +6,7 @@ import {SearchService} from "../../services/search.service";
 import {MatSlider, MatSliderRangeThumb} from '@angular/material/slider';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
+import {LocationService} from "../../services/location.service";
 
 @Component({
   selector: 'app-search',
@@ -23,7 +24,7 @@ import {ApiService} from "../../services/api.service";
 export class SearchComponent {
 
   searchService = inject(SearchService);
-  apiService = inject(ApiService);
+  locationService = inject(LocationService);
   p: number = 1;
   formGroup = new FormGroup({
     ageMin: new FormControl(15),
@@ -35,11 +36,7 @@ export class SearchComponent {
 
   constructor() {
     this.updateSearch(1);
-    this.formGroup.controls.location.valueChanges.subscribe(value => {
-      if (value !== null)
-        this.apiService.cityGetFromGouv(value)
-      console.log(value);
-    })
+    this.locationService.observableToSubscribe(this.formGroup.controls.location.valueChanges);
   }
 
   updateSearch(page: number) {
@@ -47,8 +44,7 @@ export class SearchComponent {
     this.searchService.getSearchProfiles(Object.assign({"page": page}, this.formGroup.value));
   }
 
-  formatLabel(value: number): string {
-      return "55";
-    }
-
+  setLocation(value: string) {
+      this.formGroup.controls.location.setValue(value);
+  }
 }

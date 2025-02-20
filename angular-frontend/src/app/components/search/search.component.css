@@ -43,28 +43,25 @@
     flex-direction: column;
 }
 
-.mat-slider {
-    /* Vos styles personnalisés ici */
-    height: 8px; /* Exemple : changer la hauteur du slider */
+#fame-rate {
+    align-items: center;
 }
 
-.mat-slider-thumb {
-    /* Styles pour le pouce du slider */
-    background-color: red; /* Exemple : changer la couleur du pouce */
+#fame-rate-input {
+    height: 35%;
+    width: 35%;
+    position: relative;
+    top: 20%;
+    transform: translateY(-20%);
 }
 
-.mat-slider-track-fill {
-    /* Styles pour la piste remplie du slider */
-    background-color: blue; /* Exemple : changer la couleur de la piste remplie */
+#pagination ::ng-deep .ngx-pagination .current {
+    background: var(--color-3);
 }
 
-::ng-deep .mat-slider-thumb-label {
-    background-color: rgba(0, 0, 0, 0.7) !important; /* Couleur de fond du label */
-    color: white !important; /* Couleur du texte */
-    border-radius: 4px !important; /* Arrondir les coins */
-    padding: 4px 8px !important; /* Espacement interne */
+
+
+#pagination ::ng-deep .ngx-pagination a {
+    color: var(--color-4);
 }
 
-::ng-deep .mat-slider-thumb-label-text {
-    font-size: 12px !important; /* Taille de la police */
-}

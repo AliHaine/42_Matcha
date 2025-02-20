@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {map, Observable, tap} from 'rxjs';
+import { Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +17,6 @@ export class ApiService {
 
     postData(targetUrl: string, dataToPost: any): Observable<any> {
         return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost);
-    }
-
-    cityGetFromGouv(city: string) {
-      this.http.get("https://geo.api.gouv.fr/communes/", { params: {"nom": city, "limit": 5, "boost": "population"} }).subscribe(response => {
-          console.log(response)
-      });
     }
 
     saveAccessToken(token: string) {
