@@ -31,3 +31,14 @@
 .filter-button {
     line-height: 2.2em;
 }
+
+#filter-area {
+    gap: 20px;
+    display: flex;
+    text-align: center;
+}
+
+#filter-area div {
+    display: flex;
+    flex-direction: column;
+}

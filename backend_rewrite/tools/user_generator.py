@@ -1,5 +1,5 @@
 import sys
-from random import sample, choice
+from random import sample, choice, random
 import requests
 import psycopg2
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -10,13 +10,16 @@ cursor = connection.cursor()
 link = "https://randomuser.me/api/?nat=fr"
 
 
-interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']["Other"]
-def get_interests(number):
-    return sample(interests, number)
-
+#interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']
+#def get_interests():
+ #   return [
+ #       sample(interests['Other'], 2),
+ #       sample(interests['Culture'], 2),
+ #       sample(interests['Sport'], 2),
+ #    ]
 
 commitment = {
-    "searching": ["Friends", "Love", "Just talking"],
+    "searching": ["Friends", "Love", "Talking"],
     "commitment": ["Short term", "Long term", "Undecided"],
     "frequency": ["Daily", "Weekly", "Occasionally"]
 }
@@ -38,9 +41,10 @@ def get_data_to_send(result):
     data_to_send['lastname'] = result[0]['name']['last']
     data_to_send['age'] = result[0]['dob']['age']
     data_to_send['gender'] = result[0]['gender'][0].upper()
-    data_to_send['email']= f"{data_to_send['firstname']}.{data_to_send['lastname']}.{data_to_send['age']}@gmail.com"
+    data_to_send['email']= f"{data_to_send['firstname']}.{data_to_send['lastname']}.{data_to_send['age']}@gmail.com".lower().replace(" ", "")
     data_to_send['password'] = generate_password_hash("Panda666!")
     data_to_send['description'] = "default descritiopn"
+    #data_to_send['interests'] = get_interests()
     get_commitment(data_to_send)
     return data_to_send
 
@@ -52,8 +56,8 @@ def get_data_to_send(result):
 
 def execute_sql(data_to_send):
     cursor.execute("""
-        INSERT INTO users (firstname, lastname, gender, age, email, password, description, weight, size, shape, smoking, alcohol, diet, searching, commitment, frequency, registration_complete) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        INSERT INTO users (firstname, lastname, gender, age, email, password, description, weight, size, shape, smoking, alcohol, diet, searching, commitment, frequency, registration_complete, hetero) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, (
         data_to_send['firstname'],
         data_to_send['lastname'],
@@ -65,13 +69,15 @@ def execute_sql(data_to_send):
         "91-100",
         "181-190",
         'Normal',
-        False,  # Boolean value for smoking
+        choice([True, False]),  # Boolean value for smoking
         'Never',  # Static string value for drink
         'Omnivor',  # Static value for diet
         data_to_send['searching'],
         data_to_send['commitment'],
         data_to_send['frequency'],
-        True
+        True,
+        choice([True, False]),
+        #data_to_send['interests'],
     ))
     connection.commit()
 
@@ -79,3 +85,4 @@ for i in range(int(sys.argv[1])):
     user_response = get_user()
     data_to_send = get_data_to_send(user_response)
     execute_sql(data_to_send)
+    print("New user created", data_to_send)

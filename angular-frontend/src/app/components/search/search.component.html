@@ -1,12 +1,26 @@
 <div id="search-content">
     <div id="refresh-button">
-        <img src="/logoicon.png" (click)="cardService.refreshProfile()">
+        <img src="/logoicon.png" (click)="updateSearch()">
     </div>
-    <div id="filter-area">
-        <button class="filter-button button-style-2">Add new filter </button>
-    </div>
+    <form id="filter-area" [formGroup]="formGroup">
+        <div>
+            <label>Age gap</label>
+            <mat-slider min="15" max="80" step="1">
+                <input matSliderStartThumb formControlName="ageMin">
+                <input matSliderEndThumb formControlName="ageMax">
+            </mat-slider>
+        </div>
+        <div>
+            <label>Location</label>
+            <input placeholder="Type a city" formControlName="location">
+        </div>
+        <div>
+            <label>Interest</label>
+            <input placeholder="Type an interest" formControlName="interest">
+        </div>
+    </form>
     <div id="cards">
-        <app-card *ngFor="let profile of cardService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: cardService.maxPages * 6 }"
+        <app-card *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: searchService.maxPages * 6 }"
                   [profile]="profile">
         </app-card>
     </div>

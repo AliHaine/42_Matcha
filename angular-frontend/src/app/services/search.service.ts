@@ -10,7 +10,7 @@ export class SearchService {
   apiService = inject(ApiService);
   searchProfiles = signal<ProfileModel[]>([]);
   maxPages: number = 1;
-  profilePerPage: number;
+  profilePerPage: number = 2;
 
   constructor() {
     this.setProfilePerPage(6);
