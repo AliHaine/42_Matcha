@@ -45,6 +45,14 @@ def research():
             arguments['location'] = request.args['location']
         if 'interest' in request.args:
             arguments['interest'] = request.args['interest']
+        if 'fameRate' in request.args:
+            fame_rate = request.args['fameRate']
+            if fame_rate == 'true':
+                arguments['fame_rate'] = True
+            elif fame_rate == 'false':
+                arguments['fame_rate'] = False
+            else:
+                errors.append('Invalid fameRate')
     except Exception as e:
         print("failed arguments research", e)
         return jsonify({'error': 'Invalid parameters'})
@@ -68,9 +76,13 @@ def research():
             if interest is None:
                 errors.append('Invalid interest')
             else:
-                baseRequest += f' AND id IN (SELECT user_id FROM user_interests WHERE interest_id = {interest["id"]})'
+                baseRequest += f' AND id IN (SELECT user_id FROM users_interests WHERE interest_id = {interest["id"]})'
         print(baseRequest)
-        cur.execute(f'{baseRequest} ORDER BY id ASC', (get_jwt_identity(),))
+        orderBy = 'ORDER BY id ASC'
+        if 'fame_rate' in arguments:
+            if arguments['fame_rate']:
+                orderBy = 'ORDER BY fame_rate DESC'
+        cur.execute(f'{baseRequest} {orderBy}', (get_jwt_identity(),))
         users = cur.fetchall()
         start = (page - 1) * profile_per_page
         end = start + profile_per_page

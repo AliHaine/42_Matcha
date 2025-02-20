@@ -10,7 +10,6 @@ from .user import check_registration_status
 
 bp = Blueprint('profiles', __name__, url_prefix='/api/profiles')
 
-
 def convert_to_public_profile(user):
     cityID = user['city_id']
     city = ""
@@ -55,6 +54,7 @@ def convert_to_public_profile(user):
         'interests': interests,
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
+        'fame_rate': user['fame_rate'],
     }
 
 @bp.route('/me', methods=['GET', 'POST'])
@@ -111,9 +111,9 @@ def get_profile(id):
                     cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                     user_view = cursor.fetchone()
                     if user_view is None:
-                        cursor.execute("INSERT INTO user_views (viewer_id, viewed_id) VALUES (%s, %s)", (user_getting["id"], user["id"],))
+                        cursor.execute("INSERT INTO user_views (viewer_id, viewed_id, accessed) VALUES (%s, %s, TRUE)", (user_getting["id"], user["id"],))
                     else:
-                        cursor.execute("UPDATE user_views SET last_view = NOW() WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
+                        cursor.execute("UPDATE user_views SET last_view = NOW(), accessed = TRUE WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                     db.commit()
             except Exception as e:
                 print("failed to update user views", e)

@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS users_interests CASCADE;
 DROP TABLE IF EXISTS user_views CASCADE;
 DROP TABLE IF EXISTS waiting_notifications CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
+DROP TRIGGER IF EXISTS trigger_update_fame_rate ON user_views;
+DROP FUNCTION IF EXISTS update_fame_rate;
 
 CREATE TABLE cities (
     id SERIAL PRIMARY KEY,
@@ -61,6 +63,7 @@ CREATE TABLE users (
     status BOOLEAN DEFAULT FALSE,
     active_connections INT DEFAULT 0,
     pictures_number INT DEFAULT 0,
+    fame_rate FLOAT DEFAULT 0,
     registration_complete BOOLEAN DEFAULT FALSE,
 
     -- constraint setup
@@ -104,6 +107,7 @@ CREATE TABLE user_views(
     id SERIAL PRIMARY KEY,
     viewer_id INT,
     viewed_id INT,
+    accessed BOOLEAN DEFAULT FALSE,
     liked BOOLEAN DEFAULT FALSE,
     blocked BOOLEAN DEFAULT FALSE,
     report BOOLEAN DEFAULT FALSE,
@@ -133,3 +137,27 @@ CREATE TABLE messages(
     CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE OR REPLACE FUNCTION update_fame_rate() RETURNS TRIGGER AS $$
+BEGIN
+    -- Met à jour uniquement l'utilisateur "viewed" affecté par cette interaction
+    UPDATE users
+    SET fame_rate = (
+        SELECT 
+            (COUNT(CASE WHEN liked THEN 1 END) * 2) + 
+            (COUNT(*) / 10) + 
+            (COUNT(CASE WHEN last_chat > now() - INTERVAL '7 days' THEN 1 END) * 3) - 
+            (COUNT(CASE WHEN report THEN 1 END) * 5)
+        FROM user_views
+        WHERE viewed_id = NEW.viewed_id
+    )
+    WHERE id = NEW.viewed_id;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_fame_rate
+AFTER INSERT OR UPDATE ON user_views
+FOR EACH ROW
+EXECUTE FUNCTION update_fame_rate();
