@@ -92,7 +92,7 @@
         </div>
 
         <div>
-          <label>Contant frequency</label>
+          <label>Contact frequency</label>
           <select id="frequency" formControlName='frequency'>
               <option>Daily</option>
               <option>Weekly</option>
@@ -184,8 +184,8 @@
     <h1>Finish your profile</h1>
     <div id="checkbox-area">
         <fieldset *ngFor="let formArrayName of this.getGroupForm3()" [formArrayName]=formArrayName>
-            <label>{{formArrayName}}</label>
-              <div *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
+            <h2>{{formArrayName}}</h2>
+              <div class="test" *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
                 <input
                     type="checkbox" [id]="formArrayName + i"
                     [formControlName]=i

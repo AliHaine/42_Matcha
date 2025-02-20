@@ -19,6 +19,12 @@ export class ApiService {
         return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost);
     }
 
+    cityGetFromGouv(city: string) {
+      this.http.get("https://geo.api.gouv.fr/communes/", { params: {"nom": city, "limit": 5, "boost": "population"} }).subscribe(response => {
+          console.log(response)
+      });
+    }
+
     saveAccessToken(token: string) {
       localStorage.setItem('access_token', token);
     }

@@ -5,6 +5,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import {SearchService} from "../../services/search.service";
 import {MatSlider, MatSliderRangeThumb} from '@angular/material/slider';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'app-search',
@@ -22,6 +23,7 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 export class SearchComponent {
 
   searchService = inject(SearchService);
+  apiService = inject(ApiService);
   p: number = 1;
   formGroup = new FormGroup({
     ageMin: new FormControl(15),
@@ -33,10 +35,20 @@ export class SearchComponent {
 
   constructor() {
     this.updateSearch(1);
+    this.formGroup.controls.location.valueChanges.subscribe(value => {
+      if (value !== null)
+        this.apiService.cityGetFromGouv(value)
+      console.log(value);
+    })
   }
 
   updateSearch(page: number) {
     this.p = page;
     this.searchService.getSearchProfiles(Object.assign({"page": page}, this.formGroup.value));
   }
+
+  formatLabel(value: number): string {
+      return "55";
+    }
+
 }

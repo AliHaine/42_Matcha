@@ -42,3 +42,29 @@
     display: flex;
     flex-direction: column;
 }
+
+.mat-slider {
+    /* Vos styles personnalisés ici */
+    height: 8px; /* Exemple : changer la hauteur du slider */
+}
+
+.mat-slider-thumb {
+    /* Styles pour le pouce du slider */
+    background-color: red; /* Exemple : changer la couleur du pouce */
+}
+
+.mat-slider-track-fill {
+    /* Styles pour la piste remplie du slider */
+    background-color: blue; /* Exemple : changer la couleur de la piste remplie */
+}
+
+::ng-deep .mat-slider-thumb-label {
+    background-color: rgba(0, 0, 0, 0.7) !important; /* Couleur de fond du label */
+    color: white !important; /* Couleur du texte */
+    border-radius: 4px !important; /* Arrondir les coins */
+    padding: 4px 8px !important; /* Espacement interne */
+}
+
+::ng-deep .mat-slider-thumb-label-text {
+    font-size: 12px !important; /* Taille de la police */
+}

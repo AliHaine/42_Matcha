@@ -3,6 +3,7 @@ from random import sample, choice, random
 import requests
 import psycopg2
 from werkzeug.security import check_password_hash, generate_password_hash
+import re
 
 connection = psycopg2.connect(database="matcha", user="admin", password="admin/0123456789", host="localhost", port=6000)
 cursor = connection.cursor()
@@ -41,7 +42,8 @@ def get_data_to_send(result):
     data_to_send['lastname'] = result[0]['name']['last']
     data_to_send['age'] = result[0]['dob']['age']
     data_to_send['gender'] = result[0]['gender'][0].upper()
-    data_to_send['email']= f"{data_to_send['firstname']}.{data_to_send['lastname']}.{data_to_send['age']}@gmail.com".lower().replace(" ", "")
+    data_to_send['email'] = f"{data_to_send['firstname']}.{data_to_send['lastname']}{data_to_send['age']}@gmail.com".lower().replace(" ", "")
+    data_to_send['email'] = re.sub(r"[^a-zA-Z@.]", "", data_to_send['email'])
     data_to_send['password'] = generate_password_hash("Panda666!")
     data_to_send['description'] = "default descritiopn"
     #data_to_send['interests'] = get_interests()

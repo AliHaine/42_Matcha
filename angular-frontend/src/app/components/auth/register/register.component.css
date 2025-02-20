@@ -16,6 +16,8 @@
 
 fieldset {
     display: flex;
+    gap: 3px;
+    border-width: 0;
 }
 
 a, h1, h2 {
@@ -49,4 +51,9 @@ a, h1, h2 {
     color: var(--color-error);
     font-weight: bold;
     text-align: center;
+}
+
+.test {
+    display: flex;
+    gap: 3px;
 }
