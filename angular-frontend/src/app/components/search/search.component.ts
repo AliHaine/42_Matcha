@@ -27,20 +27,16 @@ export class SearchComponent {
     ageMin: new FormControl(15),
     ageMax: new FormControl(80),
     location: new FormControl(''),
-    interest: new FormControl('')
+    interest: new FormControl(''),
+    fameRate: new FormControl(false),
   })
 
   constructor() {
-    this.searchService.getSearchProfiles(1);
+    this.updateSearch(1);
   }
 
-  onPageChange(event: number) {
-    this.p = event;
-    this.searchService.getSearchProfiles(event);
-  }
-
-  updateSearch() {
-    console.log(this.formGroup.value);
-    this.searchService.getSearchProfiles(1);
+  updateSearch(page: number) {
+    this.p = page;
+    this.searchService.getSearchProfiles(Object.assign({"page": page}, this.formGroup.value));
   }
 }

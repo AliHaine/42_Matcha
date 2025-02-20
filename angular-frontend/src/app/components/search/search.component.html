@@ -1,6 +1,6 @@
 <div id="search-content">
     <div id="refresh-button">
-        <img src="/logoicon.png" (click)="updateSearch()">
+        <img src="/logoicon.png" (click)="updateSearch(1)">
     </div>
     <form id="filter-area" [formGroup]="formGroup">
         <div>
@@ -18,6 +18,10 @@
             <label>Interest</label>
             <input placeholder="Type an interest" formControlName="interest">
         </div>
+        <div>
+            <label>Fame rate</label>
+            <input placeholder="Type an interest" formControlName="fameRate" type="checkbox">
+        </div>
     </form>
     <div id="cards">
         <app-card *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: searchService.maxPages * 6 }"
@@ -25,6 +29,6 @@
         </app-card>
     </div>
     <div id="pagination">
-        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+        <pagination-controls (pageChange)="updateSearch($event)"></pagination-controls>
     </div>
 </div>

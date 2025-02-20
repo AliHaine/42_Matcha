@@ -20,9 +20,11 @@ export class SearchService {
     this.profilePerPage = per_page;
   }
 
-  getSearchProfiles(page: number): ProfileModel[] {
+  getSearchProfiles(data: {[key: string]: any}): ProfileModel[] {
     this.searchProfiles.set([]);
-    this.apiService.getData('/research', {"profile_per_page": this.profilePerPage, "page": page}).subscribe(result => {
+    data["profile_per_page"] = this.profilePerPage;
+    this.apiService.getData('/research', data).subscribe(result => {
+      console.log(result)
       for (const data of result["result"]) {
         this.searchProfiles().push(new ProfileModel(data));
       }
