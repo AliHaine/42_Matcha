@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $0
+
 json_data=$(curl -s 'localhost:5000/api/getInformations/interests')
 # Vérifier si les données sont vides
 if [ -z "$json_data" ]; then
@@ -48,7 +50,7 @@ done < <(echo "$json_data" | jq -r '.registerInfo.weight[]')
 
 max_jobs=100
 count=0 
-max_loop=100
+max_loop=200
 
 if (( max_loop % 2 != 0 )); then
     ((max_loop++))
@@ -118,13 +120,24 @@ while (( remaining > 0 )); do
             searchingChoice=$(shuf -e "${searching_possibility[@]}" -n 1)
             commitmentChoice=$(shuf -e "${commitment_possibility[@]}" -n 1)
             frequencyChoice=$(shuf -e "${frequency_possibility[@]}" -n 1)
-            weightChoice=$(shuf -e "${weight_possibility[@]}" -n 1)
-            sizeChoice=$(shuf -e "${size_possibility[@]}" -n 1)
+            weightChoice=$(shuf -e -n 1 -- "${weight_possibility[@]}")
+            sizeChoice=$(shuf -e -n 1 -- "${size_possibility[@]}")
             shapeChoice=$(shuf -e "${shape_possibility[@]}" -n 1)
             alcoholChoice=$(shuf -e "${alcohol_possibility[@]}" -n 1)
             dietChoice=$(shuf -e "${diet_possibility[@]}" -n 1)
             smokingChoice=$(shuf -e "true" "false" -n 1)
 
+            echo heteroChoice : $heteroChoice
+            echo searchingChoice : $searchingChoice
+            echo commitmentChoice : $commitmentChoice
+            echo frequencyChoice : $frequencyChoice
+            echo weightChoice : $weightChoice
+            echo sizeChoice : $sizeChoice
+            echo shapeChoice : $shapeChoice
+            echo alcoholChoice : $alcoholChoice
+            echo dietChoice : $dietChoice
+            echo smokingChoice : $smokingChoice
+            echo json : "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
             curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
 
             random_interests=$(shuf -e "${all_interests[@]}" -n 3 | jq -R . | jq -s .)
