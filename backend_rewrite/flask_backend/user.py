@@ -194,17 +194,14 @@ def check_fields_step2(data, fields=STEP2_FIELDS):
         else:
             if field == "city":
                 pass
-#                 if not isinstance(data[field], dict):
-#                     result['success'] = False
-#                     result['errors'].append(f"Field {field} is not valid")
-#                 else:
-#                     if "lon" not in data[field] or "lat" not in data[field]:
-#                         result['success'] = False
-#                         result['errors'].append(f"Field {field} is not valid")
-#                     else:
-#                         if isinstance(data[field]["lon"], float) == False or isinstance(data[field]["lat"], float) == False:
-#                             result['success'] = False
-#                             result['errors'].append(f"Field {field} is not valid")
+                if not isinstance(data[field], str):
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+                else:
+                    city_id = get_city_id(data[field])
+                    if city_id is None:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid")
             elif field == "searching":
                 if not isinstance(data[field], str) or data[field] not in current_app.config['CONSTRAINTS']['searching']:
                     result['success'] = False

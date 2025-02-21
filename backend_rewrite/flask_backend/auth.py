@@ -59,7 +59,7 @@ def register_step1(data):
 @jwt_required()
 def register_step2(data):
     user_informations = {
-        'city': data.get('city', {}),
+        'city': data.get('city', ""),
         'searching': data.get('searching', ''),
         'commitment': data.get('commitment', ''),
         'frequency': data.get('frequency', ''),
@@ -74,7 +74,6 @@ def register_step2(data):
     if check['success'] == False:
         return jsonify({'success': False, 'error': ", ".join(check['errors'])})
     user_email = get_jwt_identity()
-    del user_informations['city']
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
     if result == True:

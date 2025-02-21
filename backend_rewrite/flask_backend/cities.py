@@ -2,11 +2,18 @@ from .db import get_db
 import requests
 import unicodedata
 
-def get_city_id(coordinates):
-    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?lat={coordinates['lat']}&lon={coordinates['lon']}&fields=code,nom,departement,region,centre").json()
+def get_city_id(cityname):
+    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&fields=code,nom,departement,region,centre").json()
     if len(city_informations) == 0:
         return None
-    city_informations = city_informations[0]
+    city_found = False
+    for city in city_informations:
+        if city["nom"].lower() == cityname.lower():
+            city_informations = city
+            city_found = True
+            break
+    if not city_found:
+        return None
     city_informations["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["nom"]) if unicodedata.category(c) != 'Mn'))
     city_informations["departement"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["departement"]["nom"]) if unicodedata.category(c) != 'Mn'))
     city_informations["region"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["region"]["nom"]) if unicodedata.category(c) != 'Mn'))
