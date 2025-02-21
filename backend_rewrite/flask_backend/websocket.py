@@ -1,4 +1,4 @@
-from flask_socketio import emit, disconnect
+from flask_socketio import emit, disconnect, join_room, leave_room
 from flask import request, current_app
 from . import socketio
 from flask_jwt_extended import decode_token
@@ -37,7 +37,7 @@ def handle_connect():
             for row in cur.fetchall():
                 available_chats.append(row["user2"])
         connected_users[request.sid]['available_chats'] = available_chats
-        socketio.enter_room(request.sid, f"user_{user['id']}")
+        join_room(f"user_{user['id']}")
         send_all_notifications(user["id"])
         emit('init', {'data': f"Connecté en tant que {user_email}", 'available_chats':available_chats})
     except Exception as e:
@@ -55,7 +55,7 @@ def handle_disconnect():
         cur.execute('UPDATE users SET active_connections = active_connections - 1 WHERE id = %s', (user_elems["id"],))
         cur.execute('UPDATE users SET status = FALSE WHERE active_connections = 0 AND id = %s', (user_elems["id"],))
         db.commit()
-        socketio.leave_room(request.sid, f"user_{user_elems['id']}")
+        leave_room(f"user_{user_elems['id']}")
         del connected_users[request.sid]
     print(f"Utilisateur {user_elems['id']} déconnecté via WebSocket")
 
@@ -67,15 +67,15 @@ def handle_chat_message(data):
             print("Message reçu (str) :", data, type(data))
             data = json.loads(data)
         print("Message reçu (décodé) :", data, type(data))
-        socketio.emit('response', {'data': f"Message reçu :"}, broadcast=True)
+        # socketio.emit('response', {'data': f"Message reçu :"}, broadcast=True)
     except Exception as e:
         print("Erreur de décodage JSON :", e)
-        socketio.emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
+        # socketio.emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
 
 @socketio.on('my event')
 def handle_my_event(data):
     print("Event reçu :", data)
-    socketio.emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
+    # socketio.emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
 
 
 def send_notification(emitter, receiver, action, message):
