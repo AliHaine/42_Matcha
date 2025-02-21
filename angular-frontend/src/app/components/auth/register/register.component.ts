@@ -13,6 +13,7 @@ import {ApiService} from "../../../services/api.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
 import {AuthService} from "../../../services/auth.service";
+import {LocationService} from "../../../services/location.service";
 
 @Component({
     selector: 'app-register',
@@ -25,6 +26,7 @@ export class RegisterComponent {
 
     currentStep: number = 1;
     apiService = inject(ApiService);
+    locationService = inject(LocationService);
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);
@@ -71,6 +73,8 @@ export class RegisterComponent {
                 });
             }
         });
+
+        this.locationService.observableToSubscribe(this.formControlGroupStep2.controls.city.valueChanges);
     }
 
     submit(event: Event, values: any) {
@@ -116,6 +120,10 @@ export class RegisterComponent {
             values[key] = index;
         }
     }
+
+  setLocation(value: string) {
+      this.formControlGroupStep2.controls.city.setValue(value);
+  }
 }
 
 export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {

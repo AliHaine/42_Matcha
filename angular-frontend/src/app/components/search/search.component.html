@@ -5,22 +5,27 @@
     <form id="filter-area" [formGroup]="formGroup">
         <div>
             <label>Age gap</label>
-            <mat-slider min="15" max="80" step="1">
+            <mat-slider min="15" max="80" step="1" color="accent">
                 <input matSliderStartThumb formControlName="ageMin">
                 <input matSliderEndThumb formControlName="ageMax">
             </mat-slider>
         </div>
         <div>
             <label>Location</label>
-            <input placeholder="Type a city" formControlName="location">
+            <input class="input-style-1" placeholder="Type a city" formControlName="location">
+            <div class="dropdown">
+                <div class="dropdown-menu">
+                    <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
+                </div>
+            </div>
         </div>
         <div>
             <label>Interest</label>
-            <input placeholder="Type an interest" formControlName="interest">
+            <input class="input-style-1" placeholder="Type an interest" formControlName="interest">
         </div>
-        <div>
+        <div id="fame-rate">
             <label>Fame rate</label>
-            <input placeholder="Type an interest" formControlName="fameRate" type="checkbox">
+            <input id="fame-rate-input" placeholder="Type an interest" formControlName="fameRate" type="checkbox">
         </div>
     </form>
     <div id="cards">

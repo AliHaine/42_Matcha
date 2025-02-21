@@ -42,3 +42,26 @@
     display: flex;
     flex-direction: column;
 }
+
+#fame-rate {
+    align-items: center;
+}
+
+#fame-rate-input {
+    height: 35%;
+    width: 35%;
+    position: relative;
+    top: 20%;
+    transform: translateY(-20%);
+}
+
+#pagination ::ng-deep .ngx-pagination .current {
+    background: var(--color-3);
+}
+
+
+
+#pagination ::ng-deep .ngx-pagination a {
+    color: var(--color-4);
+}
+

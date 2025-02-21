@@ -6,7 +6,8 @@
     </ul>
     <div id="middleLogo"><a routerLink="/">MATCHA</a></div>
     <div id="rightElements">
-        <div class="img" style="-webkit-mask: url('/icons/navHeart.png') center/contain" (mouseover)="overtest()"></div>
-        <a routerLink="/profile" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
+        <div class="img" style="-webkit-mask: url('/icons/navHeart.png') center/contain" (mouseover)="overtest()" (mouseleave)="showNotif = false"></div>
+        <a routerLink="/account" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
 </nav>
+<app-notification *ngIf="showNotif"></app-notification>
