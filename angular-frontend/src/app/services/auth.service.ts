@@ -1,6 +1,7 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {ApiService} from "./api.service";
 import {Router} from "@angular/router";
+import {WebsocketService} from "./websocket.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ export class AuthService {
 
   loggedIn = signal<boolean>(true);
   apiService = inject(ApiService);
-  router = inject(Router)
+  router = inject(Router);
+  websocketService = inject(WebsocketService);
 
   constructor() {
     const token: string | null = this.apiService.getAccessToken();
@@ -26,6 +28,7 @@ export class AuthService {
   }
 
   login() {
+    this.websocketService.socketLoaderTmp();
     this.loggedIn.set(true);
   }
 

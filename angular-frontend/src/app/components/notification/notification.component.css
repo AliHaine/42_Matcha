@@ -1,12 +1,18 @@
 #notif-content {
     position: absolute;
     right: 0;
-    background-color: var(--color-2);
+    background-color: var(--color-3);
+    color: var(--color-1);
 }
 
-#ta {
-    border-spacing: 25px 5px; /* Adds space between columns and rows */
+table {
+    border-spacing: 45px 5px; /* Adds space between columns and rows */
     border-collapse: separate;
+    font-size: 1.3em;
 
+}
+
+caption {
+    font-size: 2em;
 }
 

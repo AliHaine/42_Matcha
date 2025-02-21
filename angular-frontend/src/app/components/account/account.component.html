@@ -1,3 +1,54 @@
-<p>account works!</p>
+<div id="account-content">
+    <h1>Edit your profile</h1>
+    <form id="inputs" [formGroup]="this.formGroup">
+        <div class="input-area">
+            <label>Firstname</label>
+            <input class="input-style-1" formControlName="firstname">
+        </div>
 
-<button (click)="authService.logout()">logout</button>
+        <div class="input-area">
+            <label>Lastname</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Age</label>
+            <input type="number" class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>City</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Gender</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Sexual orientation</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Email</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Password</label>
+            <input class="input-style-1">
+        </div>
+
+        <div class="input-area">
+            <label>Description</label>
+            <input class="input-style-1">
+        </div>
+    </form>
+
+    <div id="buttons-area">
+        <button class="button-style-1" (click)="authService.logout()">Apply</button>
+        <button class="button-style-1" (click)="authService.logout()">logout</button>
+    </div>
+</div>

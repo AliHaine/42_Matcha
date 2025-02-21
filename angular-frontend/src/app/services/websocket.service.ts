@@ -7,10 +7,13 @@ import {ApiService} from "./api.service";
 })
 export class WebsocketService {
 
-  private websocket: Socket;
+  private websocket: Socket | undefined;
   private apiService = inject(ApiService);
 
   constructor() {
+  }
+
+  socketLoaderTmp() {
     console.log('Socket.IO Service Initialized');
 
     this.websocket = io('ws://127.0.0.1:5000', {
@@ -33,6 +36,7 @@ export class WebsocketService {
   }
 
   sendMessage(data: any) {
-    this.websocket.emit('message', data);
+    if (this.websocket !== undefined)
+      this.websocket.emit('message', data);
   }
 }

@@ -15,6 +15,5 @@ export class NavbarComponent {
 
   overtest() {
     this.showNotif = true;
-    console.log("hover")
   }
 }

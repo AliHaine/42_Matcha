@@ -1,0 +1,31 @@
+#account-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-4);
+    padding: 2%;
+    color: var(--color-1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+#inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+}
+
+#buttons-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+}

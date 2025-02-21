@@ -26,5 +26,4 @@ import {WebsocketService} from "../services/websocket.service";
 export class RootComponent {
   protected readonly inject = inject;
   authService = inject(AuthService);
-  websocketService = inject(WebsocketService);
 }
