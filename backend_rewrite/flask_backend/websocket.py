@@ -1,5 +1,5 @@
 from flask_socketio import emit, disconnect
-from flask import request
+from flask import request, current_app
 from . import socketio
 from flask_jwt_extended import decode_token
 from .db import get_db
@@ -37,6 +37,8 @@ def handle_connect():
             for row in cur.fetchall():
                 available_chats.append(row["user2"])
         connected_users[request.sid]['available_chats'] = available_chats
+        socketio.enter_room(request.sid, f"user_{user['id']}")
+        send_all_notifications(user["id"])
         emit('init', {'data': f"Connecté en tant que {user_email}", 'available_chats':available_chats})
     except Exception as e:
         print(f"Erreur de décodage du JWT : {e}")
@@ -53,6 +55,7 @@ def handle_disconnect():
         cur.execute('UPDATE users SET active_connections = active_connections - 1 WHERE id = %s', (user_elems["id"],))
         cur.execute('UPDATE users SET status = FALSE WHERE active_connections = 0 AND id = %s', (user_elems["id"],))
         db.commit()
+        socketio.leave_room(request.sid, f"user_{user_elems['id']}")
         del connected_users[request.sid]
     print(f"Utilisateur {user_elems['id']} déconnecté via WebSocket")
 
@@ -64,12 +67,51 @@ def handle_chat_message(data):
             print("Message reçu (str) :", data, type(data))
             data = json.loads(data)
         print("Message reçu (décodé) :", data, type(data))
-        emit('response', {'data': f"Message reçu :"}, broadcast=True)
+        socketio.emit('response', {'data': f"Message reçu :"}, broadcast=True)
     except Exception as e:
         print("Erreur de décodage JSON :", e)
-        emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
+        socketio.emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
 
 @socketio.on('my event')
 def handle_my_event(data):
     print("Event reçu :", data)
-    emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
+    socketio.emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
+
+
+def send_notification(emitter, receiver, action, message):
+    try:
+        db = get_db()
+        print(f"Notification de {emitter} à {receiver} : {action} - {message}")
+        user_emitter = None
+        user_receiver = None
+        with db.cursor() as cur:
+            cur.execute('SELECT * FROM users WHERE id = %s', (emitter,))
+            user_emitter = cur.fetchone()
+            cur.execute('SELECT * FROM users WHERE id = %s', (receiver,))
+            user_receiver = cur.fetchone()
+            if user_receiver is None or user_emitter is None:
+                return
+            cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))
+            db.commit()
+            socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':action, 'message':message}, room=f"user_{user_receiver['id']}")
+    except Exception as e:
+        print(f"Erreur d'envoi de notification : {e}")
+
+def send_all_notifications(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM waiting_notifications WHERE receiver = %s', (user_id,))
+        for notif in cur.fetchall():
+            cur.execute('SELECT * FROM users WHERE id = %s', (notif["emmiter"],))
+            user_emitter = cur.fetchone()
+            if user_emitter is None:
+                cursor.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif["id"],))
+                db.commit()
+                continue
+            socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
+
+def delete_all_notifications(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('DELETE FROM waiting_notifications WHERE receiver = %s', (user_id,))
+        db.commit()

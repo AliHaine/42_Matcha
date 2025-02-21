@@ -91,6 +91,7 @@ def create_app(test_config=None):
         PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads/profile_pictures'),
         PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
         JSON_AS_ASCII=False,
+        SOCKETIO_INSTANCE=socketio,
     )
     app.app_context().push()
     # initialize the database

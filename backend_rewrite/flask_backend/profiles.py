@@ -90,6 +90,7 @@ def me():
 @jwt_required()
 @registration_completed
 def get_profile(id):
+    from .websocket import send_notification
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users WHERE id = %s", (id,))
@@ -114,6 +115,7 @@ def get_profile(id):
                         cursor.execute("INSERT INTO user_views (viewer_id, viewed_id, accessed) VALUES (%s, %s, TRUE)", (user_getting["id"], user["id"],))
                     else:
                         cursor.execute("UPDATE user_views SET last_view = NOW(), accessed = TRUE WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
+                    send_notification(user_getting["id"], user["id"], "view", "User viewed your profile")
                     db.commit()
             except Exception as e:
                 print("failed to update user views", e)
@@ -138,12 +140,17 @@ def get_profile(id):
                 user_view = cursor.fetchone()
             if action == 'like':
                 cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
+                print("like")
+                send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
             elif action == 'dislike':
                 cursor.execute("UPDATE user_views SET disliked = TRUE WHERE id = %s", (user_view["id"],))
+                send_notification(user_getting["id"], user["id"], "dislike", "User disliked your profile")
             elif action == 'block':
                 cursor.execute("UPDATE user_views SET blocked = TRUE WHERE id = %s", (user_view["id"],))
+                send_notification(user_getting["id"], user["id"], "block", "User blocked you")
             elif action == 'unblock':
                 cursor.execute("UPDATE user_views SET blocked = FALSE WHERE id = %s", (user_view["id"],))
+                send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
             elif action == 'report':
                 cursor.execute("UPDATE user_views SET reported = TRUE WHERE id = %s", (user_view["id"],))
             else:

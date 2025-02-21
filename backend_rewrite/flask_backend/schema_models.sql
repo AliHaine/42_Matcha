@@ -122,10 +122,13 @@ CREATE TABLE user_views(
 
 CREATE TABLE waiting_notifications(
     id SERIAL PRIMARY KEY,
-    user_id INT,
+    emmiter INT NOT NULL,
+    receiver INT NOT NULL,
     message VARCHAR(250),
+    action VARCHAR(250),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_emmiter FOREIGN KEY (emmiter) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_receiver FOREIGN KEY (receiver) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE messages(
