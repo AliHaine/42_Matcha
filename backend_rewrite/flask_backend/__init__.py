@@ -140,9 +140,10 @@ def create_app(test_config=None):
     app.register_blueprint(matcha.bp)
     app.register_blueprint(get_informations.bp)
 
-    # @app.route('/')
-    # def hello():
-    #     return 'Hello, World!'
+    @app.route('/test')
+    def hello():
+        from .cities import get_city_around
+        return str(get_city_around(1, 50))
 
     # registering jwt and its callbacks
     jwt = JWTManager(app)

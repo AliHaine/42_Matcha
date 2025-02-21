@@ -18,6 +18,8 @@ CREATE TABLE cities (
     regioncode INT NOT NULL,
     centerlon FLOAT NOT NULL,
     centerlat FLOAT NOT NULL,
+     geom GEOGRAPHY(POINT, 4326) GENERATED ALWAYS AS 
+        (ST_SetSRID(ST_MakePoint(centerlon, centerlat), 4326)::GEOGRAPHY) STORED,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT cityname_not_empty CHECK (cityname <> ''),
     CONSTRAINT departementname_not_empty CHECK (departementname <> ''),
@@ -42,7 +44,7 @@ CREATE TABLE users (
     age INT NOT NULL,
     gender VARCHAR(1) NOT NULL,
     -- second step register
-    city_id INT DEFAULT 1,  -- Rendre la ville obligatoire
+    city_id INT,  -- Rendre la ville obligatoire
     searching VARCHAR(13),
     commitment VARCHAR(11),
     frequency VARCHAR(13),

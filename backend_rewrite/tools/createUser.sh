@@ -50,7 +50,7 @@ done < <(echo "$json_data" | jq -r '.registerInfo.weight[]')
 
 max_jobs=100
 count=0 
-max_loop=200
+max_loop=10
 
 if (( max_loop % 2 != 0 )); then
     ((max_loop++))
@@ -138,7 +138,7 @@ while (( remaining > 0 )); do
             echo dietChoice : $dietChoice
             echo smokingChoice : $smokingChoice
             echo json : "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
-            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":{\"lon\":7.3,\"lat\":47.75},\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
+            curl -s -X POST localhost:5000/api/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $accessToken" -d "{\"step\":2,\"city\":\"mulhouse\",\"hetero\":$heteroChoice, \"searching\":\"$searchingChoice\",\"commitment\":\"$commitmentChoice\",\"frequency\":\"$frequencyChoice\",\"weight\":\"$weightChoice\",\"size\":\"$sizeChoice\",\"shape\":\"$shapeChoice\",\"alcohol\":\"$alcoholChoice\",\"smoking\":$smokingChoice, \"diet\":\"$dietChoice\"}"
 
             random_interests=$(shuf -e "${all_interests[@]}" -n 3 | jq -R . | jq -s .)
 

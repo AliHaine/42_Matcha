@@ -28,3 +28,14 @@ def get_city_id(cityname):
             result = cur.fetchone()
         return result['id']
     return None
+
+def get_city_around(cityid, kms):
+    db = get_db()
+    with db.cursor() as cur:
+        # la recherche actuelle est set sur les coordonnéés de Paris avec un rayon de 50km
+        cur.execute('SELECT * FROM cities WHERE ST_DWithin(geom,ST_MakePoint(2.3522, 48.8566)::GEOGRAPHY,50000)')
+        city = cur.fetchone()
+        if city is None:
+            return None
+        cities = cur.fetchall()
+        return cities
