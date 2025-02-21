@@ -69,7 +69,9 @@ def me():
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'})
     if request.method == 'GET':
-        return jsonify({'success': True, 'user': convert_to_public_profile(user)})
+        profile = convert_to_public_profile(user)
+        profile['email'] = user['email']
+        return jsonify({'success': True, 'user': profile})
     elif request.method == 'POST':
         try:
             data = request.json
