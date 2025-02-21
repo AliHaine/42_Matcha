@@ -1,0 +1,12 @@
+#notif-content {
+    position: absolute;
+    right: 0;
+    background-color: var(--color-2);
+}
+
+#ta {
+    border-spacing: 25px 5px; /* Adds space between columns and rows */
+    border-collapse: separate;
+
+}
+
