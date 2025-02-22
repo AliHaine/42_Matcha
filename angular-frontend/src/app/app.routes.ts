@@ -7,7 +7,7 @@ import {SearchComponent} from "./components/search/search.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {authGuard} from "./others/auth.guard";
 import {ChatComponent} from "./components/chat/chat.component";
-import {loginGuard} from "./others/login.guard";
+import {LoginGuard} from "./others/login.guard";
 import {AccountComponent} from "./components/account/account.component";
 
 export const routes: Routes = [
@@ -17,7 +17,6 @@ export const routes: Routes = [
     { path: 'search', component: SearchComponent, canActivate: [authGuard] },
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
-    { path: 'auth/login', component: LoginComponent, canActivate: [loginGuard] },
-    { path: 'auth/register', component: RegisterComponent, canActivate: [loginGuard] },
+    { path: 'auth', canActivate: [LoginGuard], children: [{ path: 'register', component: RegisterComponent }, { path: 'login', component: LoginComponent }]},
     { path: '**', redirectTo: ''},
 ];
