@@ -199,8 +199,9 @@
               </div>
         </fieldset>
     </div>
-    <mat-form-field appearance="outline">
+    <div class="area-single">
         <label>Description</label>
+        <mat-form-field>
         <textarea id="description"
                   matInput
                   cdkTextareaAutosize
@@ -208,7 +209,8 @@
                   cdkAutosizeMaxRows="10"
                   formControlName="description">
         </textarea>
-    </mat-form-field>
+        </mat-form-field>
+    </div>
     <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1">Finish</button>
 </form>

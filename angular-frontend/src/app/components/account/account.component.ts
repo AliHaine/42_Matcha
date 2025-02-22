@@ -5,8 +5,8 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 
 @Component({
@@ -15,8 +15,8 @@ import {TextFieldModule} from '@angular/cdk/text-field';
     ReactiveFormsModule,
     NgForOf,
     CdkTextareaAutosize,
-    MatFormField,
-    MatInput,
+    MatFormFieldModule,
+    MatInputModule,
     TextFieldModule
   ],
   templateUrl: './account.component.html',
@@ -42,7 +42,7 @@ export class AccountComponent {
 
   constructor() {
     this.apiService.getData("/profiles/me", {}).subscribe(result => {
-      console.log(this.formGroup.value["city"])
+      console.log(result['user']);
       for (const value in result["user"])
         if (this.formGroup.value[value] !== undefined)
           this.formGroup.controls[value].setValue(result["user"][value]);

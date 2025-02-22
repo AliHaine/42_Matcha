@@ -69,16 +69,18 @@
             <input type="password" class="input-style-1" formControlName="password">
         </div>
 
-        <mat-form-field appearance="outline">
-            <label>Description</label>
-            <textarea id="description"
-                      matInput
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="4"
-                      cdkAutosizeMaxRows="10"
-                      formControlName="description">
+        <div class="input-area">
+            <mat-label>Description</mat-label>
+            <mat-form-field>
+                <textarea id="description"
+                          matInput
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="4"
+                          cdkAutosizeMaxRows="6"
+                          formControlName="description">
             </textarea>
-        </mat-form-field>
+            </mat-form-field>
+        </div>
     </form>
 
     <div id="buttons-area">

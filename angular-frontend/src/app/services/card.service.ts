@@ -12,11 +12,7 @@ export class CardService {
 
     constructor() {
 
-        this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
-            for (const data of result["result"]) {
-                this.profiles.push(new ProfileModel(data));
-            }
-        });
+        this.refreshProfile();
 /*
         this.profiles.push(new CardModel({
             'firstname': "Enzo",

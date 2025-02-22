@@ -148,9 +148,13 @@ input[type='radio'] {
     accent-color: var(--color-4);
 }
 
-.mat-mdc-form-field .mdc-notched-outline,
-.mat-mdc-form-field .mdc-notched-outline__leading,
-.mat-mdc-form-field .mdc-notched-outline__notch,
-.mat-mdc-form-field .mdc-notched-outline__trailing {
-    border: none !important;
+.mdc-text-field--outlined .mat-mdc-form-field-infix,
+.mdc-text-field--no-label .mat-mdc-form-field-infix {
+    padding-top: 4px !important;
+    padding-bottom: 0 !important;
+}
+
+.mat-mdc-form-field {
+    background-color: var(--color-1);
+    border-radius: 10px;
 }
