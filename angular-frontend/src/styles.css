@@ -4,8 +4,8 @@ a {
 }
 
 ul {
-            list-style: none;
-        }
+    list-style: none;
+}
 
 * {
     padding: 0;
@@ -142,4 +142,15 @@ input[type="checkbox"]:checked::before {
     --color-4: #563B83;
     --color-rgb-5: 13, 23, 45;
     --color-error: #de4768;
+}
+
+input[type='radio'] {
+    accent-color: var(--color-4);
+}
+
+.mat-mdc-form-field .mdc-notched-outline,
+.mat-mdc-form-field .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-notched-outline__notch,
+.mat-mdc-form-field .mdc-notched-outline__trailing {
+    border: none !important;
 }

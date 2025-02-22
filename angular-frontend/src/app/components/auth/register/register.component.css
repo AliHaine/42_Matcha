@@ -57,3 +57,7 @@ a, h1, h2 {
     display: flex;
     gap: 3px;
 }
+
+#description {
+    background-color: var(--color-3);
+}

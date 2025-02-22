@@ -8,47 +8,81 @@
 
         <div class="input-area">
             <label>Lastname</label>
-            <input class="input-style-1">
-        </div>
-
-        <div class="input-area">
-            <label>Age</label>
-            <input type="number" class="input-style-1">
+            <input class="input-style-1" formControlName="lastname">
         </div>
 
         <div class="input-area">
             <label>City</label>
-            <input class="input-style-1">
+            <input class="input-style-1" formControlName="city">
+            <div class="dropdown">
+                <div class="dropdown-menu" style="display: flex; flex-direction: column; color: var(--color-4);">
+                    <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <label>Age</label>
+            <input type="number" class="input-style-1" formControlName="age">
         </div>
 
         <div class="input-area">
             <label>Gender</label>
-            <input class="input-style-1">
+            <fieldset>
+			 	 <div>
+					<input type="radio" value="M" formControlName="gender" />
+					<label>Male</label>
+			  	</div>
+				<div>
+					<input type="radio" value="F" formControlName="gender" />
+					<label>Female</label>
+				</div>
+			</fieldset>
         </div>
 
         <div class="input-area">
             <label>Sexual orientation</label>
-            <input class="input-style-1">
+            <fieldset>
+                <div>
+                    <input type="radio" [value]=true formControlName="hetero" />
+                    <label>Heterosexual</label>
+                </div>
+                <div>
+                    <input type="radio" [value]=false formControlName="hetero" />
+                    <label>Other</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="input-area">
+            <label>Interests</label>
+            <input class="input-style-1" formControlName="interests">
         </div>
 
         <div class="input-area">
             <label>Email</label>
-            <input class="input-style-1">
+            <input type="email" class="input-style-1" formControlName="email">
         </div>
 
         <div class="input-area">
             <label>Password</label>
-            <input class="input-style-1">
+            <input type="password" class="input-style-1" formControlName="password">
         </div>
 
-        <div class="input-area">
+        <mat-form-field appearance="outline">
             <label>Description</label>
-            <input class="input-style-1">
-        </div>
+            <textarea id="description"
+                      matInput
+                      cdkTextareaAutosize
+                      cdkAutosizeMinRows="4"
+                      cdkAutosizeMaxRows="10"
+                      formControlName="description">
+            </textarea>
+        </mat-form-field>
     </form>
 
     <div id="buttons-area">
-        <button class="button-style-1" (click)="authService.logout()">Apply</button>
+        <button class="button-style-1" (click)="this.applyTrigger()">Apply</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>
     </div>
 </div>
