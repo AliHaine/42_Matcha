@@ -1,6 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import {ApiService} from "./api.service";
+import {NotificationService} from "./notification.service";
+import {NotificationModel} from "../models/notification.model";
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,7 @@ export class WebsocketService {
 
   private websocket: Socket | undefined;
   private apiService = inject(ApiService);
+  private notificationService = inject(NotificationService);
 
   constructor() {
   }
@@ -26,8 +29,9 @@ export class WebsocketService {
       this.sendMessage({ msg: "salut from angular" }); // Send after connection
     });
 
-    this.websocket.on('message', (msg: any) => {
-      console.log('Received from server:', msg);
+    this.websocket.on('notification', (msg: any) => {
+      console.log(msg)
+      this.notificationService.notifications.push(new NotificationModel(msg.author_id, msg.author_name, msg.action))
     });
 
     this.websocket.on('disconnect', () => {

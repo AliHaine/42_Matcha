@@ -9,7 +9,9 @@ connection = psycopg2.connect(database="matcha", user="admin", password="admin/0
 cursor = connection.cursor()
 
 link = "https://randomuser.me/api/?nat=fr"
+city_link = "https://geo.api.gouv.fr/communes"
 
+city_data = requests.get(city_link).json()
 
 #interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']
 #def get_interests():
@@ -46,6 +48,7 @@ def get_data_to_send(result):
     data_to_send['email'] = re.sub(r"[^a-zA-Z@.]", "", data_to_send['email'])
     data_to_send['password'] = generate_password_hash("Panda666!")
     data_to_send['description'] = "default descritiopn"
+    data_to_send['city'] = choice(city_data)["nom"]
     #data_to_send['interests'] = get_interests()
     get_commitment(data_to_send)
     return data_to_send
@@ -79,6 +82,7 @@ def execute_sql(data_to_send):
         data_to_send['frequency'],
         True,
         choice([True, False]),
+        #data_to_send['city'],
         #data_to_send['interests'],
     ))
     connection.commit()

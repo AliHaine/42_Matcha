@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NotificationComponent} from "../notification/notification.component";
 import {NgIf} from "@angular/common";
+import {WebsocketService} from "../../services/websocket.service";
 
 @Component({
   selector: 'app-navbar',
@@ -11,9 +12,11 @@ import {NgIf} from "@angular/common";
 })
 export class NavbarComponent {
 
-  showNotif: boolean = false;
+  showNotif: boolean = true;
+  websocketService = inject(WebsocketService);
 
   overtest() {
     this.showNotif = true;
+    this.websocketService.sendMessage({"action": "clear"})
   }
 }

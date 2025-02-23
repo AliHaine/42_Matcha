@@ -1,5 +1,5 @@
 <div id="notif-content">
-        <table id="ta">
+        <table *ngIf="notificationService.notifications.length > 0; else nothing">
             <caption>
                 Notifications
             </caption>
@@ -8,17 +8,17 @@
             <th scope="col">Name</th>
             <th scope="col">Action</th>
 
-          <tr>
-            <td>154</td>
-            <td>Ali Yagmur</td>
-            <td>Match</td>
-          </tr>
-
-            <tr>
-            <td>15</td>
-            <td>Nathan Galz</td>
-            <td>Report</td>
-          </tr>
-
+            <tr *ngFor="let notif of notificationService.notifications">
+                <td>{{ notif.userId }}</td>
+                <td>{{ notif.userFullName }}</td>
+                <td>{{ notif.action }}</td>
+            </tr>
         </table>
+
+    <ng-template #nothing>
+        <div id="nothing">
+            <h1>Notifications</h1>
+            <p>You don't have any notifications</p>
+        </div>
+    </ng-template>
 </div>

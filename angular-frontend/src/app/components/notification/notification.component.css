@@ -9,10 +9,17 @@ table {
     border-spacing: 45px 5px; /* Adds space between columns and rows */
     border-collapse: separate;
     font-size: 1.3em;
-
 }
 
 caption {
     font-size: 2em;
+}
+
+#nothing {
+    padding: 10px;
+}
+
+#nothing h1 {
+    text-align: center;
 }
 
