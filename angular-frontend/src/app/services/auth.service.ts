@@ -20,7 +20,7 @@ export class AuthService {
       this.isLoggedIn = false;
   }
 
-  tmpTokenCheck(): Observable<boolean> {
+  accessTokenCheck(): Observable<boolean> {
       return this.apiService.getData("/auth/verify_token", {}).pipe(
           tap(result => {
             if (result["success"] === false)

@@ -38,3 +38,9 @@ button {
 #description {
     color: var(--color-4);
 }
+
+.error {
+    color: var(--color-error);
+    font-weight: bold;
+    text-align: center;
+}

@@ -83,6 +83,7 @@
         </div>
     </form>
 
+    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
     <div id="buttons-area">
         <button class="button-style-1" (click)="this.applyTrigger()">Apply</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>

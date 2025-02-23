@@ -27,7 +27,6 @@ import {MatInput} from "@angular/material/input";
 
 export class RegisterComponent {
 
-    currentStep: number = 1;
     apiService = inject(ApiService);
     locationService = inject(LocationService);
     router = inject(Router)
@@ -82,9 +81,9 @@ export class RegisterComponent {
 
     submit(event: Event, values: any) {
       event.preventDefault();
-      values['step'] = this.currentStep;
+      values['step'] = this.registerService.getStep();
 
-      if (this.currentStep === 3)
+      if (this.registerService.getStep() === 3)
           this.setupInterests(values);
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
@@ -92,13 +91,13 @@ export class RegisterComponent {
               this.errorMessage = response['error'];
               return;
           }
-          if (this.currentStep === 1)
+          if (this.registerService.getStep() === 1)
               this.apiService.saveAccessToken(response['access_token'])
-          if (this.currentStep === 3) {
+          if (this.registerService.getStep() === 3) {
               this.authService.login();
               this.router.navigate([''])
           }
-          this.currentStep++
+          this.registerService.increaseStep();
           this.errorMessage = "";
       });
     }

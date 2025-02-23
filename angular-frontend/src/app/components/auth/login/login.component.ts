@@ -4,6 +4,7 @@ import {ApiService} from "../../../services/api.service";
 import {EmailValidator, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {NgIf} from "@angular/common";
+import {RegisterService} from "../../../services/register.service";
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent {
 
     authService = inject(AuthService);
     apiService = inject(ApiService);
+    registerService = inject(RegisterService);
     router = inject(Router)
     errorMessage: string = "";
     formControlGroup = new FormGroup({
@@ -31,8 +33,14 @@ export class LoginComponent {
                 this.authService.login();
                 this.router.navigate(['']);
             } else {
-                this.formControlGroup.get("password")?.setValue("");
-                this.errorMessage = res['error'];
+                if (res['missing_steps']) {
+                    this.apiService.saveAccessToken(res["access_token"]);
+                    this.registerService.setStep(res['missing_steps'].at(0));
+                    this.router.navigate(['auth/register']);
+                } else {
+                    this.formControlGroup.get("password")?.setValue("");
+                    this.errorMessage = res['error'];
+                }
             }
       });
     }

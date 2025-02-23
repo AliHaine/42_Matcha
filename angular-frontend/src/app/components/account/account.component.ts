@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -17,7 +17,8 @@ import {TextFieldModule} from '@angular/cdk/text-field';
     CdkTextareaAutosize,
     MatFormFieldModule,
     MatInputModule,
-    TextFieldModule
+    TextFieldModule,
+    NgIf
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -27,6 +28,7 @@ export class AccountComponent {
   apiService = inject(ApiService);
   authService = inject(AuthService);
   locationService = inject(LocationService);
+  errorMessage: string = "Error msg example";
   formGroup: FormGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -52,6 +54,9 @@ export class AccountComponent {
 
   applyTrigger() {
     console.log(this.formGroup.value)
+    this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
+      console.log(result);
+    });
   }
 
   setLocation(name: string) {

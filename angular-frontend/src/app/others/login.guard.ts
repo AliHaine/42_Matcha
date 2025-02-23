@@ -11,7 +11,7 @@ export const loginGuard: CanActivateFn = (route, state) => {
     router.navigate(['']);
     return false;
   } else if (authService.isLoggedIn === undefined) {
-    return authService.tmpTokenCheck().pipe(
+    return authService.accessTokenCheck().pipe(
         tap(result => {
           if (result)
             router.navigate([''])
