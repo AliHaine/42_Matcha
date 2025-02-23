@@ -4,7 +4,6 @@ import {FooterComponent} from "./footer/footer.component";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {AuthService} from "../services/auth.service";
 import {NgIf} from "@angular/common";
-import {WebsocketService} from "../services/websocket.service";
 
 @Component({
   selector: 'app-root',
@@ -15,7 +14,7 @@ import {WebsocketService} from "../services/websocket.service";
     NgIf
   ],
   template: `<div id="root-content">
-              <app-navbar *ngIf="this.authService.isLogin()"></app-navbar>
+              <app-navbar *ngIf="this.authService.isLoggedIn"></app-navbar>
               <router-outlet></router-outlet>
               <div id="footer-content">
                  <app-footer></app-footer>

@@ -1,50 +1,45 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {ApiService} from "./api.service";
 import {Router} from "@angular/router";
 import {WebsocketService} from "./websocket.service";
-import {BehaviorSubject, Observable} from "rxjs";
+import {map, Observable, tap} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private isLoggedIn$ = new BehaviorSubject<boolean>(false);
+  isLoggedIn: boolean | undefined = undefined;
   apiService = inject(ApiService);
   router = inject(Router);
   websocketService = inject(WebsocketService);
 
   constructor() {
     const token: string | null = this.apiService.getAccessToken();
-    if (token !== null) {
-      this.apiService.getData("/auth/verify_token", {}).subscribe(result => {
-        if (result["success"] === true) {
-          setTimeout(() =>
-              {
-                this.login();
-              },
-              2000);
-        }
-      })
-    }
+    if (token === null)
+      this.isLoggedIn = false;
   }
 
-  isLogin(): boolean {
-    return this.isLoggedIn$.value;
+  tmpTokenCheck(): Observable<boolean> {
+      return this.apiService.getData("/auth/verify_token", {}).pipe(
+          tap(result => {
+            if (result["success"] === false)
+              this.logout();
+            else
+              this.login();
+          }),
+          map(result => result["success"])
+      );
   }
 
   login() {
     this.websocketService.socketLoaderTmp();
-    this.isLoggedIn$.next(true);
+    this.isLoggedIn = true;
   }
 
   logout() {
-    this.isLoggedIn$.next(false);
+    this.isLoggedIn = false;
     this.apiService.removeAccessToken();
     this.router.navigate(['auth/login']);
-  }
-
-  loginAsObservable(): Observable<boolean> {
-    return this.isLoggedIn$.asObservable();
   }
 }
