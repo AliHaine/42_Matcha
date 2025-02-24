@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app, send_from_directory
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from .db import get_db
 from PIL import Image
 import os
@@ -78,14 +78,39 @@ def me():
         except:
             return jsonify({'success': False, 'error': 'Invalid JSON'})
         user_informations = {}
-        from .user import FIELDS_UPDATABLE
+        print(data)
+        from .user import FIELDS_UPDATABLE, STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS, check_fields_step1, check_fields_step2, check_fields_step3, update_user_fields
         for field in FIELDS_UPDATABLE:
-            user_informations[field] = data.get(field, None)
+            if field in data:
+                if type(data[field]) != int and type(data[field]) != bool:
+                    if len(data[field]) == 0:
+                        continue
+                user_informations[field] = data.get(field, None)
         check = check_registration_status(user["email"])
         if check is False:
             return jsonify({'success': False, 'error': 'User did not complete the registration'})
         else:
-            return jsonify({'success': False, 'error': 'The post method is not implemented yet'})
+            print(user_informations)
+            if len(user_informations) == 0:
+                return jsonify({'success': False, 'error': 'No field to update'})
+            try:
+                check_change_mail = False
+                if 'email' in user_informations:
+                    if user_informations['email'] != user['email']:
+                        check_change_mail = True
+                if check_fields_step1(user_informations, email_exists_check=check_change_mail) is False or check_fields_step2(user_informations) is False or check_fields_step3(user_informations) is False:
+                    return jsonify({'success': False, 'error': 'Invalid fields'})
+                update_user_fields(user_informations, user['email'])
+                db.commit()
+                from .auth import invalidate_token
+                if check_change_mail:
+                    invalidate_token(get_jwt()["jti"])
+                    token = create_access_token(identity=user_informations['email'])
+                else:
+                    token = get_jwt()
+                return jsonify({'success': True, 'access_token': token})
+            except Exception as e:
+                return jsonify({'success': False, 'error': str(e)})
             
 
 @bp.route('/<int:id>', methods=['GET', 'POST'])

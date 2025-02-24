@@ -30,6 +30,10 @@ def save_blacklist():
     with open(BLACKLIST_FILE, 'w') as file:
         json.dump(list(BLACKLIST), file)
 
+def invalidate_token(jti):
+    BLACKLIST.add(jti)
+    save_blacklist()
+
 BLACKLIST = load_blacklist()
 
 def register_step1(data):
@@ -178,9 +182,7 @@ def login():
 @bp.route('/logout', methods=['POST'])
 @jwt_required()
 def logout():
-    jti = get_jwt()["jti"]  # Récupère l'ID unique du token
-    BLACKLIST.add(jti)  # Ajoute à la liste noire
-    save_blacklist()
+    invalidate_token(get_jwt()['jti'])
     return jsonify({"msg": "Successfully logged out"})
 
 
