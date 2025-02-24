@@ -31,15 +31,16 @@ def handle_connect():
             connected_users[request.sid] = {}
             connected_users[request.sid]['id'] = user['id']
         print(f"Utilisateur {user_email} connecté via WebSocket")
-        available_chats = []
-        with db.cursor() as cur:
-            cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user["id"],))
-            for row in cur.fetchall():
-                available_chats.append(row["user2"])
-        connected_users[request.sid]['available_chats'] = available_chats
         join_room(f"user_{user['id']}")
+        update_available_chats(user["id"])
+        # available_chats = []
+        # with db.cursor() as cur:
+        #     cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user["id"],))
+        #     for row in cur.fetchall():
+        #         available_chats.append(row["user2"])
+        # connected_users[request.sid]['available_chats'] = available_chats
         send_all_notifications(user["id"])
-        emit('init', {'data': f"Connecté en tant que {user_email}", 'available_chats':available_chats})
+        # emit('init', {'data': f"Connecté en tant que {user_email}"}, room=f"user_{user['id']}")
     except Exception as e:
         print(f"Erreur de décodage du JWT : {e}")
         disconnect()
@@ -74,14 +75,10 @@ def handle_chat_message(data):
     except Exception as e:
         print("Erreur de décodage JSON :", e)
 
-def parse_service_notification(data):
-    if not "action" in data:
-        return
-    if data["action"] == "clear":
-        delete_all_notifications(connected_users[request.sid]["id"])
-        return
 
 def send_notification(emitter, receiver, action, message):
+    if action == "match":
+        update_available_chats(emitter)
     try:
         db = get_db()
         print(f"Notification de {emitter} à {receiver} : {action} - {message}")
@@ -119,8 +116,28 @@ def send_all_notifications(user_id):
                 continue
             socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
 
-def delete_all_notifications(user_id):
+def parse_service_notification(data):
+    if not "action" in data:
+        return
+    if data["action"] == "clear":
+        delete_all_notifications(connected_users[request.sid]["id"])
+        return
+    
+def update_available_chats(user_id):
+    available_chats = []
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('DELETE FROM waiting_notifications WHERE receiver = %s', (user_id,))
-        db.commit()
+        cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user_id,))
+        for row in cur.fetchall():
+            available_chats.append(row["matched_user"])
+    user_sid = None
+    for sid, user in connected_users.items():
+        if user["id"] == user_id:
+            user_sid = sid
+            break
+    if user_sid is None:
+        return
+    connected_users[user_sid]['available_chats'] = available_chats
+    print(f"Utilisateur {user_id} : {available_chats}")
+    if len(available_chats) > 0:
+        socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")

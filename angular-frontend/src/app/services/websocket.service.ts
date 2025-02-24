@@ -34,6 +34,10 @@ export class WebsocketService {
       this.notificationService.notifications.push(new NotificationModel(msg.author_id, msg.author_name, msg.action))
     });
 
+    this.websocket.on('available_chats', (msg: any) => {
+      console.log(msg)
+    });
+
     this.websocket.on('disconnect', () => {
       console.log('Socket.IO Disconnected ❌');
     });

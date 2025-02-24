@@ -173,6 +173,12 @@ def get_profile(id):
                 cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
                 print("like")
                 send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
+                cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
+                user_viewed = cursor.fetchone()
+                if user_viewed is not None:
+                    if user_viewed["liked"] == True:
+                        send_notification(user["id"], user_getting["id"], "match", "User matched with you")
+                        send_notification(user_getting["id"], user["id"], "match", "User matched with you")
             elif action == 'dislike':
                 cursor.execute("UPDATE user_views SET disliked = TRUE WHERE id = %s", (user_view["id"],))
                 send_notification(user_getting["id"], user["id"], "dislike", "User disliked your profile")
