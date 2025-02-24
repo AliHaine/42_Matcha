@@ -17,6 +17,6 @@ export class NavbarComponent {
 
   overtest() {
     this.showNotif = true;
-    this.websocketService.sendMessage({"action": "clear"})
+    this.websocketService.sendMessage({"service":"notification","action": "clear"})
   }
 }

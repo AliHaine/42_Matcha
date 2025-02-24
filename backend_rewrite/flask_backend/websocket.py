@@ -67,16 +67,19 @@ def handle_chat_message(data):
             print("Message reçu (str) :", data, type(data))
             data = json.loads(data)
         print("Message reçu (décodé) :", data, type(data))
-        # socketio.emit('response', {'data': f"Message reçu :"}, broadcast=True)
+        if "service" in data:
+            if data["service"] == "notification":
+                parse_service_notification(data)
+                return
     except Exception as e:
         print("Erreur de décodage JSON :", e)
-        # socketio.emit('response', {'data': f"Erreur de décodage JSON : {e}"}, broadcast=True)
 
-@socketio.on('my event')
-def handle_my_event(data):
-    print("Event reçu :", data)
-    # socketio.emit('response', {'data': f"Event reçu : {data}"}, broadcast=True)
-
+def parse_service_notification(data):
+    if not "action" in data:
+        return
+    if data["action"] == "clear":
+        delete_all_notifications(connected_users[request.sid]["id"])
+        return
 
 def send_notification(emitter, receiver, action, message):
     try:
@@ -96,6 +99,12 @@ def send_notification(emitter, receiver, action, message):
             socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':action, 'message':message}, room=f"user_{user_receiver['id']}")
     except Exception as e:
         print(f"Erreur d'envoi de notification : {e}")
+
+def delete_all_notifications(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('DELETE FROM waiting_notifications WHERE receiver = %s', (user_id,))
+        db.commit()
 
 def send_all_notifications(user_id):
     db = get_db()

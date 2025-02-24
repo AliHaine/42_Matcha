@@ -141,6 +141,10 @@ def get_profile(id):
                 cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                 user_view = cursor.fetchone()
             if action == 'like':
+                if user_view["blocked"]:
+                    return jsonify({'success': False, 'error': 'User is blocked'})
+                if user_view["liked"] == True:
+                    return jsonify({'success': False, 'error': 'User already liked'})
                 cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
                 print("like")
                 send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
