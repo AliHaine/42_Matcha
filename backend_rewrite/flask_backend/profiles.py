@@ -4,6 +4,8 @@ from .db import get_db
 from PIL import Image
 import os
 
+from werkzeug.security import generate_password_hash
+
 from .decorators import registration_completed
 
 from .user import check_registration_status
@@ -96,17 +98,40 @@ def me():
                 if 'email' in user_informations:
                     if user_informations['email'] != user['email']:
                         check_change_mail = True
-                if check_fields_step1(user_informations, email_exists_check=check_change_mail) is False or check_fields_step2(user_informations) is False or check_fields_step3(user_informations) is False:
-                    return jsonify({'success': False, 'error': 'Invalid fields'})
+                fields = {
+                    "step1": [],
+                    "step2": [],
+                    "step3": []
+                }
+                for field in user_informations:
+                    if field in STEP1_FIELDS:
+                        fields["step1"].append(field)
+                    elif field in STEP2_FIELDS:
+                        fields["step2"].append(field)
+                    elif field in STEP3_FIELDS:
+                        fields["step3"].append(field)
+                if len(fields["step1"]) > 0:
+                    result = check_fields_step1(user_informations, email_exists_check=check_change_mail, fields=fields["step1"])
+                    if result["success"] is False:
+                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
+                if len(fields["step2"]) > 0:
+                    result = check_fields_step2(user_informations, fields=fields["step2"])
+                    if result["success"] is False:
+                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
+                if len(fields["step3"]) > 0:
+                    result = check_fields_step3(user_informations, fields=fields["step3"])
+                    if result["success"] is False:
+                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
+                if 'password' in user_informations:
+                    print("changing password : ", user_informations['password'], end="\n\n\n\n")
+                    user_informations['password'] = generate_password_hash(user_informations['password'])
                 update_user_fields(user_informations, user['email'])
                 db.commit()
                 from .auth import invalidate_token
-                if check_change_mail:
-                    invalidate_token(get_jwt()["jti"])
-                    token = create_access_token(identity=user_informations['email'])
-                else:
-                    token = get_jwt()
-                return jsonify({'success': True, 'access_token': token})
+                if check_change_mail == True or 'password' in user_informations:
+                    invalidate_token(user['email'])
+                    return jsonify({'success': True, 'disconnect': True})
+                return jsonify({'success': True})
             except Exception as e:
                 return jsonify({'success': False, 'error': str(e)})
             
@@ -176,9 +201,19 @@ def get_profile(id):
                     if user_viewed["liked"] == True:
                         send_notification(user["id"], user_getting["id"], "match", "User matched with you")
                         send_notification(user_getting["id"], user["id"], "match", "User matched with you")
-            elif action == 'dislike':
-                cursor.execute("UPDATE user_views SET disliked = TRUE WHERE id = %s", (user_view["id"],))
-                send_notification(user_getting["id"], user["id"], "dislike", "User disliked your profile")
+            elif action == 'unlike':
+                if user_view["blocked"]:
+                    return jsonify({'success': False, 'error': 'User is blocked'})
+                if user_view["liked"] == False:
+                    return jsonify({'success': False, 'error': 'User not liked'})
+                send_notification(user_getting["id"], user["id"], "dislike", "User unliked your profile")
+                cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
+                user_viewed = cursor.fetchone()
+                if user_viewed is not None:
+                    if user_viewed["liked"] == True:
+                        send_notification(user["id"], user_getting["id"], "unmatch", "User unmatched with you")
+                        send_notification(user_getting["id"], user["id"], "unmatch", "User unmatched with you")
+                cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
             elif action == 'block':
                 cursor.execute("UPDATE user_views SET blocked = TRUE WHERE id = %s", (user_view["id"],))
                 send_notification(user_getting["id"], user["id"], "block", "User blocked you")

@@ -77,7 +77,7 @@ def handle_chat_message(data):
 
 
 def send_notification(emitter, receiver, action, message):
-    if action == "match":
+    if action == "match" or action == "unmatch":
         update_available_chats(emitter)
     try:
         db = get_db()

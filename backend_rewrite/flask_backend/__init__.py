@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager
 
 from flask_socketio import SocketIO
 
+from flask_mail import Mail, Message
+
 from .db import get_db
 from datetime import timedelta
 
@@ -89,7 +91,14 @@ def create_app(test_config=None):
         PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
         JSON_AS_ASCII=False,
         SOCKETIO_INSTANCE=socketio,
+        MAIL_SERVER=os.getenv('MAIL_SERVER', default='smtp.gmail.com'),
+        MAIL_PORT=os.getenv('MAIL_PORT', default=587),
+        MAIL_USE_TLS=True,
+        MAIL_USE_SSL=False,
+        MAIL_USERNAME=os.getenv('MAIL_USERNAME', default=''),
+        MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', default=''),
     )
+    # mail = Mail(app)
     app.app_context().push()
     # initialize the database
     if 'init-db' in sys.argv:
@@ -137,9 +146,8 @@ def create_app(test_config=None):
     app.register_blueprint(get_informations.bp)
 
     @app.route('/test')
-    def hello():
-        from .cities import get_city_around
-        return str(get_city_around(1, 50))
+    def test():
+        return "Hello, World!"
 
     # registering jwt and its callbacks
     jwt = JWTManager(app)
