@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import {ApiService} from "./api.service";
 import {NotificationService} from "./notification.service";
 import {NotificationModel} from "../models/notification.model";
+import {backendIP} from "../app.config";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class WebsocketService {
   socketLoaderTmp() {
     console.log('Socket.IO Service Initialized');
 
-    this.websocket = io('ws://127.0.0.1:5000', {
+    this.websocket = io(`ws://${backendIP}:5000`, {
       transports: ['websocket'],
       query: { 'access_token': this.apiService.getAccessToken() },
     });
@@ -41,6 +42,10 @@ export class WebsocketService {
     this.websocket.on('disconnect', () => {
       console.log('Socket.IO Disconnected ❌');
     });
+  }
+
+  closeSocket() {
+    this.websocket?.disconnect();
   }
 
   sendMessage(data: any) {

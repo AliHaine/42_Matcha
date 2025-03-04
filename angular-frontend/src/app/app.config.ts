@@ -9,3 +9,5 @@ import {provideAnimations} from "@angular/platform-browser/animations";
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideHttpClient(withInterceptors([authInterceptor])), provideAnimations()]
 };
+
+export const backendIP = "127.0.0.1"

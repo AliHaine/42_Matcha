@@ -55,6 +55,8 @@ export class AccountComponent {
     console.log(this.formGroup.value)
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       console.log(result);
+      if (result['disconnect'])
+        this.authService.logout();
     });
   }
 

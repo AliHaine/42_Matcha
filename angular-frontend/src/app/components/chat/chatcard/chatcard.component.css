@@ -1,0 +1,22 @@
+#chatcard-content {
+    display: flex;
+    background-color: var(--color-3);
+}
+
+#text-area {
+    width: 80%;
+}
+
+#top {
+    display: flex;
+    justify-content: space-between;
+}
+
+#profile-picture {
+    width: 20%;
+    height: 150px;
+}
+
+#profile-picture img {
+    height: 100%;
+}

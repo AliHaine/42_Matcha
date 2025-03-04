@@ -40,6 +40,7 @@ export class AuthService {
   logout() {
     this.isLoggedIn = false;
     this.apiService.removeAccessToken();
+    this.websocketService.closeSocket();
     this.router.navigate(['auth/login']);
   }
 }
