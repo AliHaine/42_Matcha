@@ -40,7 +40,6 @@ def export_constraints(app, cur):
                 constraint_def = result["pg_get_constraintdef"]
                 match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
                 if match:
-                    print(f"✅ Valeurs trouvées : {match.group(1)}")
                     values = match.group(1).split(", ")
                     values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
                     constraints[column_name] = values
@@ -48,13 +47,7 @@ def export_constraints(app, cur):
                 if match_regex:
                     extracted_regex = match_regex.group(1)
                     extracted_regex = extracted_regex.replace("\\\\", "\\")
-                    print(f"✅ Regex trouvée : {extracted_regex}")
                     constraints[column_name] = extracted_regex
-                
-                if not match and not match_regex:
-                    print("❌ Aucune valeur trouvée.")
-            else:
-                print("Aucune contrainte CHECK trouvée.")
     app.config['CONSTRAINTS'] = constraints
 
 
@@ -77,13 +70,17 @@ def create_app(test_config=None):
     "allow_headers": ["Content-Type", "Authorization"],
     "supports_credentials": True
 }})
+    # load dotenv file
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../settings/.flask.env'))
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../settings/.database.env'))
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE_HOST='localhost',
-        DATABASE_USER='admin',
-        DATABASE_PASSWORD='admin/0123456789',
-        DATABASE='matcha',
-        DATABASE_PORT=6000,
+        SECRET_KEY=os.getenv('SECRET_KEY', default='dev'),
+        DATABASE_HOST=os.getenv('POSTGRES_HOST', default='localhost'),
+        DATABASE_USER=os.getenv('POSTGRES_USER', default='admin'),
+        DATABASE_PASSWORD=os.getenv('POSTGRES_PASSWORD', default='admin'),
+        DATABASE=os.getenv('POSTGRES_DB', default='matcha'),
+        DATABASE_PORT=os.getenv('POSTGRES_PORT', default='5432'),
         JWT_BLACKLIST_ENABLED=True,
         JWT_BLACKLIST_TOKEN_CHECKS=['access'],
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
@@ -106,7 +103,6 @@ def create_app(test_config=None):
             result = cur.fetchall()
             app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
             export_constraints(app, cur)
-            print(app.config['CONSTRAINTS'])
             cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
             database.commit()
             init_cities()

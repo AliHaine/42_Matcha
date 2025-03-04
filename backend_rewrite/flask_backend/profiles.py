@@ -78,7 +78,6 @@ def me():
         except:
             return jsonify({'success': False, 'error': 'Invalid JSON'})
         user_informations = {}
-        print(data)
         from .user import FIELDS_UPDATABLE, STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS, check_fields_step1, check_fields_step2, check_fields_step3, update_user_fields
         for field in FIELDS_UPDATABLE:
             if field in data:
@@ -90,7 +89,6 @@ def me():
         if check is False:
             return jsonify({'success': False, 'error': 'User did not complete the registration'})
         else:
-            print(user_informations)
             if len(user_informations) == 0:
                 return jsonify({'success': False, 'error': 'No field to update'})
             try:
@@ -171,7 +169,6 @@ def get_profile(id):
                 if user_view["liked"] == True:
                     return jsonify({'success': False, 'error': 'User already liked'})
                 cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
-                print("like")
                 send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
                 cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
                 user_viewed = cursor.fetchone()

@@ -24,4 +24,4 @@ flask:
 	python3 backend_rewrite/run.py
 
 database:
-	docker-compose -f backend_rewrite/tools/database/docker-compose.yml up -d
+	docker-compose -f backend_rewrite/tools/database/docker-compose.yml --env-file ./settings/.database.env up -d

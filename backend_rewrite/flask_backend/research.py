@@ -77,7 +77,6 @@ def research():
                 errors.append('Invalid interest')
             else:
                 baseRequest += f' AND id IN (SELECT user_id FROM users_interests WHERE interest_id = {interest["id"]})'
-        print(baseRequest)
         orderBy = 'ORDER BY id ASC'
         if 'fame_rate' in arguments:
             if arguments['fame_rate']:

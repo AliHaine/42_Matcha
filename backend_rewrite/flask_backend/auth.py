@@ -113,7 +113,7 @@ def register():
     try:
         data = request.json
     except Exception as e:
-        print("crash at json conversion :", e)
+        print("error at json conversion :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     step = data.get("step", 0)
     if step == 2 or step == 3:
