@@ -1,10 +1,23 @@
 #chatcard-content {
     display: flex;
     background-color: var(--color-3);
+    padding: 20px;
+}
+
+#chatcard-content:hover {
+    background-color: var(--color-4);
 }
 
 #text-area {
-    width: 80%;
+    width: 70%;
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#text-area p {
+
 }
 
 #top {
@@ -13,10 +26,14 @@
 }
 
 #profile-picture {
-    width: 20%;
-    height: 150px;
+    width: 25%;
+    height: 100px;
+    box-sizing: border-box;
 }
 
 #profile-picture img {
     height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    border: solid red 3px;
 }

@@ -21,5 +21,6 @@
 
 #chat-list {
     width: 25%;
-    background-color: blue;
+    background-color: var(--color-4);
+    border-right: 2px solid white;
 }

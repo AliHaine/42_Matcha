@@ -12,7 +12,7 @@ import {WebsocketService} from "../../services/websocket.service";
 })
 export class NavbarComponent {
 
-  showNotif: boolean = true;
+  showNotif: boolean = false;
   websocketService = inject(WebsocketService);
 
   overtest() {
