@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
-  chat
+  activeChat = signal<number>(0);
+  availableChats = signal<number[]>([0,1,2,3,4]);
+  currentChatMessages = signal<string[]>([]);
 
   constructor() { }
 }
