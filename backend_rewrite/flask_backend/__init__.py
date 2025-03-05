@@ -26,7 +26,6 @@ def export_constraints(app, cur):
     columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", 'firstname', 'lastname', "description"]
     constraints = {}
 
-    # Requête pour récupérer la définition de la contrainte CHECK
     query = f"""
     SELECT pg_get_constraintdef(oid) 
     FROM pg_constraint 
@@ -64,14 +63,13 @@ def init_cities():
             get_city_id({'lat': 47.75, 'lon': 7.3})
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     CORS(app, resources={r"/api/*": {
-    "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "*"],
-    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Ajout de OPTIONS
-    "allow_headers": ["Content-Type", "Authorization"],
-    "supports_credentials": True
-}})
+        "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "*"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }})
     # load dotenv file
     from dotenv import load_dotenv
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../settings/.flask.env'))
@@ -98,7 +96,6 @@ def create_app(test_config=None):
         MAIL_USERNAME=os.getenv('MAIL_USERNAME', default=''),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', default=''),
     )
-    # mail = Mail(app)
     app.app_context().push()
     # initialize the database
     if 'init-db' in sys.argv:
@@ -116,21 +113,22 @@ def create_app(test_config=None):
             database.commit()
             init_cities()
     except Exception as e:
-        print("Failed to get interests list from database", e)
+        print("INIT ERROR : Failed to get interests list from database", e)
         app.config['AVAILABLE_INTERESTS'] = []
-        print("Did you initialize the database ?\n\n")
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+        print("INIT ERROR : Did you initialize the database ?")
 
     # ensure the instance folder exists
+    if not os.path.exists(app.instance_path):
+        print("Creating instance folder")
+        try:
+            os.makedirs(app.instance_path)
+        except Exception as e:
+            print("Failed to create instance folder", e)
     try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+        mail = Mail(app)
+        app.config['MAIL'] = mail
+    except Exception as e:
+        print("Failed to initialize mail server", e)
 
 
     # registering blueprints (routes)
@@ -147,6 +145,9 @@ def create_app(test_config=None):
 
     @app.route('/test')
     def test():
+        msg = Message("Hello",sender=app.config["MAIL_USERNAME"],recipients=[""])
+        msg.body = "testing"
+        mail.send(msg)
         return "Hello, World!"
 
     # registering jwt and its callbacks

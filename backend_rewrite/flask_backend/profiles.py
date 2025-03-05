@@ -59,6 +59,37 @@ def convert_to_public_profile(user):
         'fame_rate': user['fame_rate'],
     }
 
+def convert_to_chat_profile(user, user_getting):
+    cityID = user['city_id']
+    city = ""
+    db = get_db()
+    if cityID is not None:
+        with db.cursor() as cursor:
+            cursor.execute("SELECT cityname FROM cities WHERE id = %s", (cityID,))
+            cityElement = cursor.fetchone()
+            city = cityElement['cityname']
+    messages = []
+    with db.cursor() as cursor:
+        cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+        messagesList = cursor.fetchall()
+        for message in messagesList:
+            messages.append({
+                'id': message['id'],
+                'author': message['sender_id'],
+                'content': message['message'],
+            })
+    return {
+        'id': user['id'],
+        'firstname': user['firstname'],
+        'lastname': user['lastname'],
+        'city': city,
+        'picturesNumber': user['pictures_number'],
+        'status': user['status'],
+        'messages': messages,
+    }
+    
+
+
 @bp.route('/me', methods=['GET', 'POST'])
 @jwt_required()
 @registration_completed
@@ -169,7 +200,9 @@ def get_profile(id):
                     db.commit()
             except Exception as e:
                 print("failed to update user views", e)
-            return jsonify({'success': True, 'user': convert_to_public_profile(user)}), 200
+            if 'chat' in request.args and request.args['chat'] == 'true':
+                return jsonify({'success': True, 'user': convert_to_chat_profile(user, user_getting), 'chat': True})
+            return jsonify({'success': True, 'user': convert_to_public_profile(user)})
         else:
             return jsonify({'success': False, 'error': f'User {user["id"]} did not complete the registration'})
     elif request.method == 'POST':
