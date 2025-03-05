@@ -33,14 +33,7 @@ def handle_connect():
         print(f"Utilisateur {user_email} connecté via WebSocket")
         join_room(f"user_{user['id']}")
         update_available_chats(user["id"])
-        # available_chats = []
-        # with db.cursor() as cur:
-        #     cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user["id"],))
-        #     for row in cur.fetchall():
-        #         available_chats.append(row["user2"])
-        # connected_users[request.sid]['available_chats'] = available_chats
         send_all_notifications(user["id"])
-        # emit('init', {'data': f"Connecté en tant que {user_email}"}, room=f"user_{user['id']}")
     except Exception as e:
         print(f"Erreur de décodage du JWT : {e}")
         disconnect()
@@ -71,6 +64,9 @@ def handle_chat_message(data):
         if "service" in data:
             if data["service"] == "notification":
                 parse_service_notification(data)
+                return
+            elif data["service"] == "message":
+                parse_service_message(data)
                 return
     except Exception as e:
         print("Erreur de décodage JSON :", e)
@@ -111,7 +107,7 @@ def send_all_notifications(user_id):
             cur.execute('SELECT * FROM users WHERE id = %s', (notif["emmiter"],))
             user_emitter = cur.fetchone()
             if user_emitter is None:
-                cursor.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif["id"],))
+                cur.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif["id"],))
                 db.commit()
                 continue
             socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
@@ -141,3 +137,30 @@ def update_available_chats(user_id):
     print(f"Utilisateur {user_id} : {available_chats}")
     if len(available_chats) > 0:
         socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
+
+
+def parse_service_message(data):
+    if not "receiver" in data or not "message" in data:
+        return
+    # send_notification(data["emitter"], data["receiver"], "message", data["message"])
+    emmiter_informations = connected_users[request.sid]
+    if data["receiver"] not in emmiter_informations["available_chats"]:
+        return
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE id = %s', (emmiter_informations["id"],))
+        user_emitter = cur.fetchone()
+        cur.execute('SELECT * FROM users WHERE id = %s', (data["receiver"],))
+        user_receiver = cur.fetchone()
+        if user_receiver is None or user_emitter is None:
+            return
+        try:
+            cur.execute('INSERT INTO messages (emitter_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], data["message"]))
+            db.commit()
+        except Exception as e:
+            print(f"Erreur d'insertion de message : {e}")
+            socketio.emit('error', {'message':'Failed to send message'}, room=f"user_{emmiter_informations['id']}")
+            return
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{data['receiver']}")
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{emmiter_informations['id']}")
+    return
