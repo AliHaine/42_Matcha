@@ -1,6 +1,9 @@
 #chat-header {
+    display: flex;
     height: 10%;
-    background-color: #f5f5f5;
+    align-items: center;
+    justify-content: space-between;
+    vertical-align: center;
 }
 
 #chat-box {
@@ -11,4 +14,51 @@
 #chat-footer {
     height: 10%;
     background-color: #f5f5f5;
+}
+
+#left-content {
+    background-color: pink;
+    gap: 1%;
+    display: flex;
+}
+
+#left-content img {
+    background-color: black;
+    width: 10px;
+    height: 10px;
+}
+
+#text-area {
+    justify-content: space-around;
+}
+
+#online-area {
+    display: flex;
+    gap: 1%;
+    color: var(--color-green)
+}
+
+#status-circle {
+    background-color: var(--color-green);
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+#right-content {
+    background-color: red;
+}
+
+.img {
+    margin-right: 2vmin;
+    width: 4vmin;
+    aspect-ratio: 1;
+    display: inline-block;
+    background: var(--color-1);
+    transition: transform 0.5s, background 0.5s;
+}
+
+.img:hover {
+    background: var(--color-2);
+    transform: scale(1.1) translateY(-0.1vmin);
 }
