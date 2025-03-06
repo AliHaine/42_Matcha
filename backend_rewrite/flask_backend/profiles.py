@@ -59,7 +59,7 @@ def convert_to_public_profile(user):
         'fame_rate': user['fame_rate'],
     }
 
-def convert_to_chat_profile(user, user_getting):
+def convert_to_chat_profile(user, user_getting, all_messages=False):
     cityID = user['city_id']
     city = ""
     db = get_db()
@@ -68,25 +68,40 @@ def convert_to_chat_profile(user, user_getting):
             cursor.execute("SELECT cityname FROM cities WHERE id = %s", (cityID,))
             cityElement = cursor.fetchone()
             city = cityElement['cityname']
-    messages = []
-    with db.cursor() as cursor:
-        cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
-        messagesList = cursor.fetchall()
-        for message in messagesList:
-            messages.append({
-                'id': message['id'],
-                'author': message['sender_id'],
-                'content': message['message'],
-            })
-    return {
+    base_return = {
         'id': user['id'],
         'firstname': user['firstname'],
-        'lastname': user['lastname'],
+        'age': user['age'],
         'city': city,
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
-        'messages': messages,
     }
+    with db.cursor() as cursor:
+        if all_messages == True:
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            allMessages = cursor.fetchall()
+            messages = []
+            for message in allMessages:
+                messages.append({
+                    'message': message['message'],
+                    'created_at': message['created_at'].strftime("%H:%M"),
+                    'author_id': message['sender_id'],
+                })
+            base_return.update({
+                'allMessages': messages,
+            })
+        else:
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 1", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            lastMessage = cursor.fetchall()
+            message = {
+                'message': lastMessage[0]['message'],
+                'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),
+                'author_id': lastMessage[0]['sender_id'],
+            }
+            base_return.update({
+                'lastMessage': message,
+            })
+        return base_return
     
 
 
@@ -201,6 +216,8 @@ def get_profile(id):
             except Exception as e:
                 print("failed to update user views", e)
             if 'chat' in request.args and request.args['chat'] == 'true':
+                if 'all_messages' in request.args and request.args['all_messages'] == 'true':
+                    return jsonify({'success': True, 'user': convert_to_chat_profile(user, user_getting, all_messages=True), 'chat': True})
                 return jsonify({'success': True, 'user': convert_to_chat_profile(user, user_getting), 'chat': True})
             return jsonify({'success': True, 'user': convert_to_public_profile(user)})
         else:
