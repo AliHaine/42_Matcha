@@ -35,5 +35,5 @@
     height: 100%;
     width: 100%;
     border-radius: 50%;
-    border: solid red 3px;
+    border: solid var(--border-color) 3px;
 }

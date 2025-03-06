@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, input, InputSignal} from '@angular/core';
+import {ChatModel} from "../../../models/chat.model";
 
 @Component({
   selector: 'app-chatcard',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './chatcard.component.css'
 })
 export class ChatcardComponent {
-
+  chatModel: InputSignal<ChatModel> = input.required();
 }

@@ -1,12 +1,12 @@
 <div id="chatcard-content">
     <div id="profile-picture">
-        <img src="https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg">
+        <img src="https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg" [style.--border-color]="this.chatModel().status ? 'var(--color-green)': 'var(--color-error)'">
     </div>
     <div id="text-area">
         <div id="top">
-            <h3>Leila 18, Mulhouse</h3>
-            <h5>12:48</h5>
+            <h3>{{this.chatModel().firstname}} {{this.chatModel().age}}, {{this.chatModel().city}}</h3>
+            <h5>{{this.chatModel().lastMsgTime}}</h5>
         </div>
-        <p>Lorem ipsum espe fdafdaf afdaf a ...</p>
+        <p>{{this.chatModel().lastMessage}}</p>
     </div>
 </div>
