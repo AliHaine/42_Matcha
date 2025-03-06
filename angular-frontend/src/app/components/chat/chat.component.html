@@ -1,7 +1,7 @@
 <div id="chat">
     <div id="chat-list">
         <ul>
-            <app-chatcard *ngFor="let _ of chatService.availableChats()"></app-chatcard>
+            <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
         </ul>
     </div>
     <div id="chat-area">

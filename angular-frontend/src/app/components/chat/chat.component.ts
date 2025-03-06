@@ -14,5 +14,4 @@ import {NgForOf} from "@angular/common";
 })
 export class ChatComponent {
   chatService = inject(ChatService);
-
 }

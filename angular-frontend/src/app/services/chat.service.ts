@@ -1,4 +1,5 @@
 import {Injectable, signal} from '@angular/core';
+import {ChatModel} from "../models/chat.model";
 
 @Injectable({
   providedIn: 'root'
@@ -6,8 +7,24 @@ import {Injectable, signal} from '@angular/core';
 export class ChatService {
 
   activeChat = signal<number>(0);
-  availableChats = signal<number[]>([0,1,2,3,4]);
+  availableChats = signal<ChatModel[]>([]);
   currentChatMessages = signal<string[]>([]);
 
-  constructor() { }
+  constructor() {
+    const data = {
+      "firstname": "Leila",
+      "age": 19,
+      "city": "Mulhouse",
+      "status": false,
+      "lastMsgTime": '12:49',
+      "lastMessage": "Lorem ipsum espe fdafdaf afdaf a ..."
+    }
+
+    this.availableChats().push(new ChatModel(data))
+    data['status'] = true;
+    this.availableChats().push(new ChatModel(data))
+    this.availableChats().push(new ChatModel(data))
+    data['status'] = false;
+    this.availableChats().push(new ChatModel(data))
+  }
 }
