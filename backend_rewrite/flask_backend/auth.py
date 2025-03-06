@@ -34,6 +34,9 @@ def invalidate_token(jti):
     BLACKLIST.add(jti)
     save_blacklist()
 
+def is_token_revoked(jti):
+    return jti in BLACKLIST
+
 BLACKLIST = load_blacklist()
 
 def register_step1(data):

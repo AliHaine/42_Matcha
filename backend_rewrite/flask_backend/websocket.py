@@ -2,6 +2,11 @@ from flask_socketio import emit, disconnect, join_room, leave_room
 from flask import request, current_app
 from . import socketio
 from flask_jwt_extended import decode_token
+from flask_jwt_extended.exceptions import (
+    NoAuthorizationError, JWTDecodeError, ExpiredSignatureError,
+    InvalidHeaderError
+)
+from .auth import is_token_revoked
 from .db import get_db
 import json
 
@@ -10,13 +15,17 @@ connected_users = {}
 @socketio.on('connect')
 def handle_connect():
     token = request.args.get('access_token', None)
+    verify, decoded_token = check_jwt_validity(token)
+    if verify is False:
+        print(f"Connexion refusée : {decoded_token}")
+        disconnect()
+        return
     if not token:
         print("Connexion refusée : Pas de token JWT")
         disconnect()
         return
 
     try:
-        decoded_token = decode_token(token)
         user_email = decoded_token['sub']
         db = get_db()
         with db.cursor() as cur:
@@ -30,12 +39,14 @@ def handle_connect():
             db.commit()
             connected_users[request.sid] = {}
             connected_users[request.sid]['id'] = user['id']
+            connected_users[request.sid]['available_chats'] = []
+            connected_users[request.sid]['token'] = token
         print(f"Utilisateur {user_email} connecté via WebSocket")
         join_room(f"user_{user['id']}")
         update_available_chats(user["id"])
         send_all_notifications(user["id"])
     except Exception as e:
-        print(f"Erreur de décodage du JWT : {e}")
+        print(f"Erreur lors de la connexion WebSocket : {e}")
         disconnect()
 
 @socketio.on('disconnect')
@@ -46,8 +57,12 @@ def handle_disconnect():
         return
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('UPDATE users SET active_connections = active_connections - 1 WHERE id = %s', (user_elems["id"],))
-        cur.execute('UPDATE users SET status = FALSE WHERE active_connections = 0 AND id = %s', (user_elems["id"],))
+        cur.execute('''
+            UPDATE users 
+            SET active_connections = active_connections - 1, 
+                status = CASE WHEN active_connections - 1 = 0 THEN FALSE ELSE status END 
+            WHERE id = %s;
+        ''', (user_elems["id"],))
         db.commit()
         leave_room(f"user_{user_elems['id']}")
         del connected_users[request.sid]
@@ -55,6 +70,11 @@ def handle_disconnect():
 
 @socketio.on('message')
 def handle_chat_message(data):
+    verify, error = check_jwt_validity(connected_users[request.sid]["token"])
+    if verify is False:
+        print(f"Deconnexion forcee de {connected_users[request.sid]['id']} : {error}")
+        disconnect()
+        return
     print("Message reçu :", data, type(data))
     try:
         if type(data) == str:
@@ -164,3 +184,43 @@ def parse_service_message(data):
         socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{data['receiver']}")
         socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{emmiter_informations['id']}")
     return
+
+
+def check_jwt_validity(token):
+    """
+    Vérifie la validité d'un token JWT et sa révocation.
+    Retourne (bool, dict ou str):
+      - True + données du token si valide.
+      - False + message d'erreur si invalide.
+    """
+    if not token:
+        return False, "Token manquant"
+
+    try:
+        decoded_token = decode_token(token)
+
+        # Vérifier l'expiration du token
+        if "exp" in decoded_token:
+            import datetime
+            exp_timestamp = decoded_token["exp"]
+            now_timestamp = datetime.datetime.utcnow().timestamp()
+            if now_timestamp > exp_timestamp:
+                return False, "Token expiré"
+
+        # Vérifier si le token a été révoqué
+        jti = decoded_token.get("jti")
+        if is_token_revoked(jti):
+            return False, "Token révoqué"
+
+        return True, decoded_token  # Token valide
+
+    except ExpiredSignatureError:
+        return False, "Token expiré"
+    except NoAuthorizationError:
+        return False, "Autorisation manquante"
+    except JWTDecodeError:
+        return False, "Token invalide"
+    except InvalidHeaderError:
+        return False, "Header JWT invalide"
+    except Exception as e:
+        return False, f"Erreur inconnue : {str(e)}"
