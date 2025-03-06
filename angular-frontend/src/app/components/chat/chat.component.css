@@ -15,12 +15,10 @@
 }
 
 #chat-area {
-    width: 75%;
-    background-color: red;
+    flex: 1;
 }
 
 #chat-list {
     width: 25%;
-    background-color: var(--color-4);
     border-right: 2px solid white;
 }

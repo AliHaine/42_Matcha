@@ -1,0 +1,14 @@
+#chat-header {
+    height: 10%;
+    background-color: #f5f5f5;
+}
+
+#chat-box {
+    height: 80%;
+    background-color: red;
+}
+
+#chat-footer {
+    height: 10%;
+    background-color: #f5f5f5;
+}

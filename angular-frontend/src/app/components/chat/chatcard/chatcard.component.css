@@ -2,10 +2,15 @@
     display: flex;
     background-color: var(--color-3);
     padding: 20px;
+    height: 10%;
 }
 
 #chatcard-content:hover {
     background-color: var(--color-4);
+}
+
+.selected-card {
+    background-color: var(--color-2);
 }
 
 #text-area {
@@ -27,7 +32,6 @@
 
 #profile-picture {
     width: 25%;
-    height: 100px;
     box-sizing: border-box;
 }
 
@@ -35,5 +39,5 @@
     height: 100%;
     width: 100%;
     border-radius: 50%;
-    border: solid var(--border-color) 3px;
+    border: solid var(--border-color) 4px;
 }
