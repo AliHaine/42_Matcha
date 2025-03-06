@@ -20,35 +20,45 @@ socketio = SocketIO(cors_allowed_origins="*")
 
 sys.setdefaultencoding('utf-8') if hasattr(sys, 'setdefaultencoding') else None
 
+import re
+
 def export_constraints(app, cur):
     table_name = "users"
-    columns_names = ["searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", 'firstname', 'lastname', "description"]
+    columns_names = {"searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "firstname", "lastname", "description"}
     constraints = {}
 
     query = f"""
-    SELECT pg_get_constraintdef(oid) 
+    SELECT pg_get_constraintdef(oid) as constraint_def 
     FROM pg_constraint 
     WHERE contype = 'c' 
-    AND conrelid = %s::regclass
-    AND pg_get_constraintdef(oid) LIKE %s;
+    AND conrelid = %s::regclass;
     """
-    for column_name in columns_names:
-        cur.execute(query, (table_name, f'%{column_name}%'))
-        results = cur.fetchall()
-        for result in results:
-            if result:
-                constraint_def = result["pg_get_constraintdef"]
-                match = re.search(r'ARRAY\[(.*?)\]', constraint_def)
+    
+    cur.execute(query, (table_name,))
+    results = cur.fetchall()
+
+    regex_pattern = re.compile(r"""
+        ARRAY\[(?P<values>[^\]]+)\]        # Capture ARRAY[...] (list of values)
+        |                                  # OR
+        [~|SIMILAR TO]\s+'(?P<regex>.*?)'  # Capture regex constraint
+    """, re.VERBOSE)
+
+    for row in results:
+        constraint_def = row["constraint_def"]
+        
+        # Identifier la colonne concernée
+        for column in columns_names:
+            if column in constraint_def:
+                match = regex_pattern.search(constraint_def)
                 if match:
-                    values = match.group(1).split(", ")
-                    values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in values]
-                    constraints[column_name] = values
-                match_regex = re.search(r"[~|SIMILAR TO]\s+'(.*?)'", constraint_def)
-                if match_regex:
-                    extracted_regex = match_regex.group(1)
-                    extracted_regex = extracted_regex.replace("\\\\", "\\")
-                    constraints[column_name] = extracted_regex
+                    if match.group("values"):
+                        values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in match.group("values").split(", ")]
+                        constraints[column] = values
+                    elif match.group("regex"):
+                        constraints[column] = match.group("regex").replace("\\\\", "\\")
+
     app.config['CONSTRAINTS'] = constraints
+
 
 
 def init_cities():
@@ -124,8 +134,11 @@ def create_app(test_config=None):
             except Exception as e:
                 print("Failed to create instance folder", e)
         try:
-            mail = Mail(app)
-            app.config['MAIL'] = mail
+            if app.config['MAIL_USERNAME'] == '' or app.config['MAIL_PASSWORD'] == '':
+                print("Mail server not initialized : No credentials provided")
+            else:
+                mail = Mail(app)
+                app.config['MAIL'] = mail
         except Exception as e:
             print("Failed to initialize mail server", e)
 
