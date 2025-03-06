@@ -27,4 +27,9 @@ export class ChatService {
     data['status'] = false;
     this.availableChats().push(new ChatModel(data))
   }
+
+  getChatModelAt(index: number) {
+    console.log(this.availableChats().at(index))
+    return this.availableChats().at(index);
+  }
 }

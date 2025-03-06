@@ -3,6 +3,11 @@
         <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
     </div>
     <div id="chat-area">
-        <app-chatarea></app-chatarea>
+        <app-chatarea *ngIf="chatService.getChatModelAt(0) as chatModel; else errorChat"
+              [chatModel]=chatModel>
+        </app-chatarea>
+        <ng-template #errorChat>
+            <div>Error: Chat model not found!</div>
+        </ng-template>
     </div>
 </div>
