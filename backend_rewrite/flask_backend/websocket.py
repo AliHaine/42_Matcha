@@ -3,8 +3,7 @@ from flask import request, current_app
 from . import socketio
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import (
-    NoAuthorizationError, JWTDecodeError, ExpiredSignatureError,
-    InvalidHeaderError
+    NoAuthorizationError, JWTDecodeError, InvalidHeaderError
 )
 from .auth import is_token_revoked
 from .db import get_db
@@ -213,9 +212,6 @@ def check_jwt_validity(token):
             return False, "Token révoqué"
 
         return True, decoded_token  # Token valide
-
-    except ExpiredSignatureError:
-        return False, "Token expiré"
     except NoAuthorizationError:
         return False, "Autorisation manquante"
     except JWTDecodeError:

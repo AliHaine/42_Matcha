@@ -17,7 +17,6 @@ import sys
 from .jwt_handler import missing_token_callback, expired_token_callback, invalid_token_callback, revoked_token_callback
 
 socketio = SocketIO(cors_allowed_origins="*")
-from . import websocket
 
 sys.setdefaultencoding('utf-8') if hasattr(sys, 'setdefaultencoding') else None
 
@@ -96,72 +95,75 @@ def create_app(test_config=None):
         MAIL_USERNAME=os.getenv('MAIL_USERNAME', default=''),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', default=''),
     )
-    app.app_context().push()
-    # initialize the database
-    if 'init-db' in sys.argv:
-        from . import db
-        db.init_app(app)
-        return app
-    try:
-        database = get_db()
-        with database.cursor() as cur:
-            cur.execute('SELECT name FROM interests')
-            result = cur.fetchall()
-            app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
-            export_constraints(app, cur)
-            cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
-            database.commit()
-            init_cities()
-    except Exception as e:
-        print("INIT ERROR : Failed to get interests list from database", e)
-        app.config['AVAILABLE_INTERESTS'] = []
-        print("INIT ERROR : Did you initialize the database ?")
-
-    # ensure the instance folder exists
-    if not os.path.exists(app.instance_path):
-        print("Creating instance folder")
+    with app.app_context():
+        # initialize the database
+        if 'init-db' in sys.argv:
+            from . import db
+            db.init_app(app)
+            return app
         try:
-            os.makedirs(app.instance_path)
+            database = get_db()
+            with database.cursor() as cur:
+                cur.execute('SELECT name FROM interests')
+                result = cur.fetchall()
+                app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
+                export_constraints(app, cur)
+                cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
+                database.commit()
+                init_cities()
         except Exception as e:
-            print("Failed to create instance folder", e)
-    try:
-        mail = Mail(app)
-        app.config['MAIL'] = mail
-    except Exception as e:
-        print("Failed to initialize mail server", e)
+            print("INIT ERROR : Failed to get interests list from database", e)
+            app.config['AVAILABLE_INTERESTS'] = []
+            print("INIT ERROR : Did you initialize the database ?")
+
+        # ensure the instance folder exists
+        if not os.path.exists(app.instance_path):
+            print("Creating instance folder")
+            try:
+                os.makedirs(app.instance_path)
+            except Exception as e:
+                print("Failed to create instance folder", e)
+        try:
+            mail = Mail(app)
+            app.config['MAIL'] = mail
+        except Exception as e:
+            print("Failed to initialize mail server", e)
 
 
-    # registering blueprints (routes)
-    from . import auth
-    from . import profiles
-    from . import research
-    from . import matcha
-    from . import get_informations
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(profiles.bp)
-    app.register_blueprint(research.bp)
-    app.register_blueprint(matcha.bp)
-    app.register_blueprint(get_informations.bp)
+        # registering blueprints (routes)
+        from . import auth
+        from . import profiles
+        from . import research
+        from . import matcha
+        from . import get_informations
+        app.register_blueprint(auth.bp)
+        app.register_blueprint(profiles.bp)
+        app.register_blueprint(research.bp)
+        app.register_blueprint(matcha.bp)
+        app.register_blueprint(get_informations.bp)
 
-    @app.route('/test')
-    def test():
-        msg = Message("Hello",sender=app.config["MAIL_USERNAME"],recipients=[""])
-        msg.body = "testing"
-        mail.send(msg)
-        return "Hello, World!"
+        @app.route('/test')
+        def test():
+            msg = Message("Hello",sender=app.config["MAIL_USERNAME"],recipients=[""])
+            msg.body = "testing"
+            mail.send(msg)
+            return "Hello, World!"
 
-    # registering jwt and its callbacks
-    jwt = JWTManager(app)
-    @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_header, jwt_payload):
-        from .auth import BLACKLIST
-        return jwt_payload["jti"] in BLACKLIST
-    app.config['JWT_BLACKLIST_ENABLED'] = True
-    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-    jwt.unauthorized_loader(missing_token_callback)
-    jwt.expired_token_loader(expired_token_callback)
-    jwt.invalid_token_loader(invalid_token_callback)
-    jwt.revoked_token_loader(revoked_token_callback)
-    socketio.init_app(app, async_mode='eventlet')
+        # registering jwt and its callbacks
+        jwt = JWTManager(app)
+        @jwt.token_in_blocklist_loader
+        def check_if_token_is_revoked(jwt_header, jwt_payload):
+            from .auth import BLACKLIST
+            return jwt_payload["jti"] in BLACKLIST
+        app.config['JWT_BLACKLIST_ENABLED'] = True
+        app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+        jwt.unauthorized_loader(missing_token_callback)
+        jwt.expired_token_loader(expired_token_callback)
+        jwt.invalid_token_loader(invalid_token_callback)
+        jwt.revoked_token_loader(revoked_token_callback)
+        
+        from . import websocket
+        
+        socketio.init_app(app, async_mode='eventlet')
     return app
 
