@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable} from 'rxjs';
+import {catchError, map, Observable, of, switchMap} from 'rxjs';
 import {backendIP} from "../app.config";
 
 @Injectable({
@@ -30,5 +30,26 @@ export class ApiService {
 
     removeAccessToken() {
       localStorage.removeItem('access_token');
+    }
+
+    getClientIp(): Observable<string> {
+        return this.http.get("https://checkip.amazonaws.com/", {responseType: "text"}).pipe(
+          catchError(error => {
+            console.error("Error fetching IP:", error);
+            return "Mulhouse";
+          })
+        );
+    }
+
+    getClientCityFromIp(): Observable<string> {
+      return this.getClientIp().pipe(
+          switchMap(ipAddress => this.http.get<any>("http://ip-api.com/json/" + ipAddress).pipe(
+              catchError(error => {
+                console.error("Error fetching city:", error);
+                return of({ city: "Mulhouse" })
+              })
+          )),
+          map(value => value.city)
+      )
     }
 }

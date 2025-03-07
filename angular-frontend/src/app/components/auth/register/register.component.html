@@ -63,7 +63,14 @@
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
 
-<form *ngIf="this.registerService.getStep() == 2" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+<div class="form-style-1" *ngIf="this.registerService.getStep() == 2 && !this.isCityGet()">
+    <h1>Do you agree to share your location ?</h1>
+    <button (click)="getLocationFromIp()">Yes</button>
+    <button (click)="getLocationFromIp()">No</button>
+    <p></p>
+</div>
+
+<form *ngIf="this.registerService.getStep() == 2 && this.isCityGet()" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
 	<h1>Complete your profile</h1>
 	<div>
 		<div style="display: flex; flex-direction: column;">

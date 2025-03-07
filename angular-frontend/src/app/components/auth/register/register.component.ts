@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {
     AbstractControl, FormArray,
     FormControl,
@@ -32,6 +32,7 @@ export class RegisterComponent {
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);
+    isCityGet = signal(false);
     errorMessage: string = "";
 
     formControlGroupStep1 = new FormGroup({
@@ -123,9 +124,16 @@ export class RegisterComponent {
         }
     }
 
-  setLocation(value: string) {
-      this.formControlGroupStep2.controls.city.setValue(value);
-  }
+    setLocation(value: string) {
+        this.formControlGroupStep2.controls.city.setValue(value);
+    }
+
+    getLocationFromIp() {
+        this.apiService.getClientCityFromIp().subscribe(city => {
+            this.formControlGroupStep2.controls.city.setValue(city);
+            this.isCityGet.set(true);
+        });
+    }
 }
 
 export const passwordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
