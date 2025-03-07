@@ -1,12 +1,11 @@
 #chatcard-content {
     display: flex;
-    background-color: var(--color-3);
     padding: 20px;
     height: 10%;
 }
 
 #chatcard-content:hover {
-    background-color: var(--color-4);
+    background-color: var(--color-3);
 }
 
 .selected-card {

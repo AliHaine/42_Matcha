@@ -24,6 +24,10 @@ export class ChatService {
     data['status'] = true;
     this.availableChats().push(new ChatModel(data))
     this.availableChats().push(new ChatModel(data))
+    this.availableChats().push(new ChatModel(data))
+    this.availableChats().push(new ChatModel(data))
+    this.availableChats().push(new ChatModel(data))
+    this.availableChats().push(new ChatModel(data))
     data['status'] = false;
     this.availableChats().push(new ChatModel(data))
   }

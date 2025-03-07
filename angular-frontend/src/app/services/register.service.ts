@@ -7,7 +7,7 @@ import {ApiService} from "./api.service";
 export class RegisterService {
 
     apiService = inject(ApiService);
-    private currentStep = signal<number>(2);
+    private currentStep = signal<number>(1);
     INTERESTS = signal<{ [key: string]: string[] }>({});
 
     constructor() {
