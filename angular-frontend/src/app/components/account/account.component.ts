@@ -28,7 +28,7 @@ export class AccountComponent {
   apiService = inject(ApiService);
   authService = inject(AuthService);
   locationService = inject(LocationService);
-  errorMessage: string = "Error msg example";
+  placeHolderMessage: string = "";
   formGroup: FormGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -40,6 +40,7 @@ export class AccountComponent {
     email: new FormControl(''),
     password: new FormControl(''),
     description: new FormControl(''),
+    picture: new FormControl(''),
   } as {[key: string]: any});
 
   constructor() {
@@ -53,14 +54,32 @@ export class AccountComponent {
 
   applyTrigger() {
     console.log(this.formGroup.value)
-    this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
+    const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
+    let file;
+
+    if (pictureAsHtml.files && pictureAsHtml.files.length > 0)
+      file = pictureAsHtml.files[0];
+    console.log(file)
+    /*this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       console.log(result);
       if (result['disconnect'])
         this.authService.logout();
-    });
+      if (!result['success'])
+        this.placeHolderMessage = result['error'];
+      else
+        this.placeHolderMessage = "Successfully updated";
+    });*/
+  }
+
+  test(event: Event) {
+
   }
 
   setLocation(name: string) {
     this.formGroup.controls["city"].setValue(name);
+  }
+
+  keyPressed() {
+    this.placeHolderMessage = "";
   }
 }

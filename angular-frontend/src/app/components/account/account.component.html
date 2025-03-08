@@ -1,6 +1,6 @@
 <div id="account-content">
     <h1>Edit your profile</h1>
-    <form id="inputs" [formGroup]="this.formGroup">
+    <form id="inputs" [formGroup]="this.formGroup" (keydown)="keyPressed()">
         <div class="input-area">
             <label>Firstname</label>
             <input class="input-style-1" formControlName="firstname">
@@ -81,9 +81,11 @@
             </textarea>
             </mat-form-field>
         </div>
+
+        <input id="picture" type="file" formControlName="picture">
     </form>
 
-    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
+    <p class="error" *ngIf="this.placeHolderMessage.length > 0">{{this.placeHolderMessage}}</p>
     <div id="buttons-area">
         <button class="button-style-1" (click)="this.applyTrigger()">Apply</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>
