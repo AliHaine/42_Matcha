@@ -10,7 +10,7 @@ import {NgForOf} from "@angular/common";
   imports: [
     InterestComponent,
     RouterLink,
-    NgForOf
+    NgForOf,
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'

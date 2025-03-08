@@ -12,9 +12,12 @@ export class ProfileFactory {
         const profile = new ProfileModel(data);
         if (profile.picturesNumber !== 0) {
             this.apiService.getDataImg("/profiles/profile_pictures", {"user_id": profile.userId, "photo_number": 0}).subscribe(result => {
-                console.log(result);
-
-            })
+                const reader = new FileReader();
+                reader.readAsDataURL(result);
+                reader.onloadend = () => {
+                    profile.profilePicturePath = reader.result as string;
+                }
+            });
         }
         return profile;
     }

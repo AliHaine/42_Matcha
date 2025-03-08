@@ -17,7 +17,7 @@ export class ApiService {
     }
 
     getDataImg(targetUrl: string, paramsToSend: any): Observable<any> {
-        return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, responseType: "text" });
+        return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, responseType: "blob" });
     }
 
     postData(targetUrl: string, dataToPost: any): Observable<any> {

@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
 import {ProfileFactory} from "./profile.factory";
@@ -10,10 +10,9 @@ export class CardService {
 
     apiService = inject(ApiService);
     profileFactory = inject(ProfileFactory);
-    private profiles: ProfileModel[] = [];
+    private profiles = signal<ProfileModel[]>([]);
 
     constructor() {
-
         this.refreshProfile();
 /*
         this.profiles.push(new CardModel({
@@ -115,15 +114,15 @@ export class CardService {
       }
 
       refreshProfile() {
-        this.profiles = [];
+        this.profiles.set([]);
           this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
               for (const data of result["result"]) {
-                  this.profiles.push(this.profileFactory.getNewProfile(data));
+                  this.profiles().push(this.profileFactory.getNewProfile(data));
               }
           });
       }
 
       getProfiles(): ProfileModel[] {
-          return this.profiles;
+          return this.profiles();
       }
 }
