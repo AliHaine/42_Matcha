@@ -16,8 +16,16 @@ export class ApiService {
       return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend });
     }
 
+    getDataImg(targetUrl: string, paramsToSend: any): Observable<any> {
+        return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, responseType: "text" });
+    }
+
     postData(targetUrl: string, dataToPost: any): Observable<any> {
         return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost);
+    }
+
+    putData(targetUrl: string, dataToPost: any): Observable<any> {
+      return this.http.put(`${this.baseUrl}${targetUrl}`, dataToPost);
     }
 
     saveAccessToken(token: string) {

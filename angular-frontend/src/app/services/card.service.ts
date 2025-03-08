@@ -1,6 +1,7 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
+import {ProfileFactory} from "./profile.factory";
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import {ProfileModel} from "../models/profile.model";
 export class CardService {
 
     apiService = inject(ApiService);
+    profileFactory = inject(ProfileFactory);
     private profiles: ProfileModel[] = [];
 
     constructor() {
@@ -116,7 +118,7 @@ export class CardService {
         this.profiles = [];
           this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
               for (const data of result["result"]) {
-                  this.profiles.push(new ProfileModel(data));
+                  this.profiles.push(this.profileFactory.getNewProfile(data));
               }
           });
       }

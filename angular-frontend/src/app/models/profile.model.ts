@@ -33,7 +33,7 @@ export class ProfileModel {
             new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
         ];
         this.picturesNumber = data["picturesNumber"];
-        this.profilePicturePath = data['picturesNumber'] === 0 ? "defaultpp.jpg" : "defaultpp.jpg";
+        this.profilePicturePath = "defaultpp.jpg";
         this.status = data["status"];
         this.userId = data["id"];
     }

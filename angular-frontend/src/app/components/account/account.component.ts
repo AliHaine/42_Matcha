@@ -55,11 +55,17 @@ export class AccountComponent {
   applyTrigger() {
     console.log(this.formGroup.value)
     const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
-    let file;
+    let file: File | undefined;
 
-    if (pictureAsHtml.files && pictureAsHtml.files.length > 0)
-      file = pictureAsHtml.files[0];
+    const formaData = new FormData();
+    //if (pictureAsHtml.files && pictureAsHtml.files.length > 0)
+    file = pictureAsHtml.files?.[0];
+    if (!file) return;
+    formaData.append("picture", file);
     console.log(file)
+    this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
+      console.log(result);
+    })
     /*this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       console.log(result);
       if (result['disconnect'])
