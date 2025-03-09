@@ -4,6 +4,7 @@ import {ApiService} from "./api.service";
 import {NotificationService} from "./notification.service";
 import {NotificationModel} from "../models/notification.model";
 import {backendIP} from "../app.config";
+import {ChatService} from "./chat.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class WebsocketService {
 
   private websocket: Socket | undefined;
   private apiService = inject(ApiService);
+  private chatService = inject(ChatService);
   private notificationService = inject(NotificationService);
 
   constructor() {
@@ -35,8 +37,12 @@ export class WebsocketService {
       this.notificationService.notifications.push(new NotificationModel(msg.author_id, msg.author_name, msg.action))
     });
 
-    this.websocket.on('available_chats', (msg: any) => {
+    this.websocket.on('message', (msg: any) => {
       console.log(msg)
+    });
+
+    this.websocket.on('available_chats', (msg: any) => {
+      this.chatService.updateAvailableChats(msg["users"]);
     });
 
     this.websocket.on('disconnect', () => {

@@ -13,7 +13,7 @@
     </div>
     <div id="right-content">
         <img class="giftIcon" src="/icons/gift.png">
-        <a routerLink="/profile/5" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
+        <a [routerLink]="['/profile/', this.chatModel().userId]" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
 </div>
 
