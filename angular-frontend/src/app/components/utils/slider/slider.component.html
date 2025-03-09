@@ -1,14 +1,6 @@
-<div id="parent">
-    <img class="picture" [src]=this.currentImagePath>
-    <div class="arrows">
-        <div *ngIf="images().length > 1" class="arrow arrow-left" (click)="arrowLeftClick()"> </div>
-        <div *ngIf="images().length > 1" class="arrow arrow-right" (click)="arrowRightClick()"> </div>
-    </div>
-    <div class="caption">
-        <img *ngFor="let icon of this.icons()" class="caption-img" [src]=icon.currentImage (mouseenter)="icon.currentImage = icon.srcImgHover" (mouseleave)="icon.currentImage = icon.srcImg" >
-
-        <img class="caption-img" [src]=this.currentImagePath>
-        <img class="caption-img" [src]=this.currentImagePath>
-        <img class="caption-img" [src]=this.currentImagePath>
-    </div>
+<img class="picture" [src]=this.currentImagePath>
+<div class="arrows">
+    <div *ngIf="images().length > 1" class="arrow arrow-left" (click)="arrowLeftClick()"> </div>
+    <div *ngIf="images().length > 1" class="arrow arrow-right" (click)="arrowRightClick()"> </div>
 </div>
+

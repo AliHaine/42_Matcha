@@ -1,6 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
+import {concatMap, from} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -10,15 +11,19 @@ export class ProfileFactory {
 
     getNewProfile(data: any): ProfileModel {
         const profile = new ProfileModel(data);
-        if (profile.picturesNumber !== 0) {
-            this.apiService.getDataImg("/profiles/profile_pictures", {"user_id": profile.userId, "photo_number": 0}).subscribe(result => {
-                const reader = new FileReader();
-                reader.readAsDataURL(result);
-                reader.onloadend = () => {
-                    profile.profilePicturePath = reader.result as string;
-                }
-            });
-        }
+        if (profile.picturesNumber === 0)
+            return profile;
+        profile.profilePicturePath.pop();
+        const array = Array.from({length: profile.picturesNumber}, (_, i) => i);
+        from(array).pipe(
+            concatMap(value => this.apiService.getDataImg("/profiles/profile_pictures", {"user_id": profile.userId, "photo_number": value}))
+        ).subscribe(result => {
+            const reader = new FileReader();
+            reader.readAsDataURL(result);
+            reader.onloadend = () => {
+                profile.profilePicturePath.push(reader.result as string);
+            }
+        });
         return profile;
     }
 }

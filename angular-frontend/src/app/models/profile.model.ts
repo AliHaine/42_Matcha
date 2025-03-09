@@ -12,7 +12,7 @@ export class ProfileModel {
     health: [];
     interests: InterestModel[];
     picturesNumber: number;
-    profilePicturePath: string;
+    profilePicturePath: string[] = [];
     status: string;
     userId: number;
 
@@ -33,7 +33,7 @@ export class ProfileModel {
             new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
         ];
         this.picturesNumber = data["picturesNumber"];
-        this.profilePicturePath = "defaultpp.jpg";
+        this.profilePicturePath.push("defaultpp.jpg");
         this.status = data["status"];
         this.userId = data["id"];
     }

@@ -1,6 +1,6 @@
 <div id="main">
     <div id="pictureAndIcons">
-        <img class="profilePic" [src]=profile().profilePicturePath/>
+        <img class="profilePic" [src]=profile().profilePicturePath.at(0) />
         <div class="profilePicIcons">
             <img class="overlayIcon giftIcon" src="/icons/gift.png">
             <img class="overlayIcon heartIcon" (click)="likeUser()" src="/icons/heart.png">

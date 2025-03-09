@@ -1,19 +1,16 @@
-import {Component, input, InputSignal, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {IconModel} from "../../../models/icon.model";
+import {Component, effect, input, InputSignal, OnInit} from '@angular/core';
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-slider',
   imports: [
     NgIf,
-    NgForOf
   ],
   templateUrl: './slider.component.html',
   styleUrl: './slider.component.css'
 })
 export class SliderComponent implements OnInit {
   images: InputSignal<string[]> = input.required();
-  icons = input<IconModel[] | undefined>();
   currentImagePath: string = "";
   currentIndex: number = 0;
 
