@@ -18,7 +18,7 @@ import {TextFieldModule} from '@angular/cdk/text-field';
     MatFormFieldModule,
     MatInputModule,
     TextFieldModule,
-    NgIf
+    NgIf,
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -45,6 +45,7 @@ export class AccountComponent {
 
   constructor() {
     this.apiService.getData("/profiles/me", {}).subscribe(result => {
+      console.log(result)
       for (const value in result["user"])
         if (this.formGroup.value[value] !== undefined)
           this.formGroup.controls[value].setValue(result["user"][value]);

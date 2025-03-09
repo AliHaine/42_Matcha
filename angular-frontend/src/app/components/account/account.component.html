@@ -1,6 +1,26 @@
 <div id="account-content">
     <h1>Edit your profile</h1>
     <form id="inputs" [formGroup]="this.formGroup" (keydown)="keyPressed()">
+
+        <div>
+
+        </div>
+
+        <div class="input-area">
+            <mat-label>Description</mat-label>
+            <mat-form-field>
+                <textarea id="description"
+                          matInput
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="4"
+                          cdkAutosizeMaxRows="6"
+                          formControlName="description">
+            </textarea>
+            </mat-form-field>
+        </div>
+
+        <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
+
         <div class="input-area">
             <label>Firstname</label>
             <input class="input-style-1" formControlName="firstname">
@@ -27,7 +47,7 @@
         </div>
 
         <div class="input-area">
-            <label>Gender</label>
+            <label class="fieldset-label">Gender</label>
             <fieldset>
 			 	 <div>
 					<input type="radio" value="M" formControlName="gender" />
@@ -41,11 +61,11 @@
         </div>
 
         <div class="input-area">
-            <label>Sexual orientation</label>
+            <label class="fieldset-label">Sexual orientation</label>
             <fieldset>
                 <div>
                     <input type="radio" [value]=true formControlName="hetero" />
-                    <label>Heterosexual</label>
+                    <label>Hetero</label>
                 </div>
                 <div>
                     <input type="radio" [value]=false formControlName="hetero" />
@@ -68,21 +88,6 @@
             <label>Password</label>
             <input type="password" class="input-style-1" formControlName="password">
         </div>
-
-        <div class="input-area">
-            <mat-label>Description</mat-label>
-            <mat-form-field>
-                <textarea id="description"
-                          matInput
-                          cdkTextareaAutosize
-                          cdkAutosizeMinRows="4"
-                          cdkAutosizeMaxRows="6"
-                          formControlName="description">
-            </textarea>
-            </mat-form-field>
-        </div>
-
-        <input id="picture" type="file" formControlName="picture">
     </form>
 
     <p class="error" *ngIf="this.placeHolderMessage.length > 0">{{this.placeHolderMessage}}</p>

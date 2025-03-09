@@ -44,3 +44,13 @@ button {
     font-weight: bold;
     text-align: center;
 }
+
+fieldset {
+    border: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+.fieldset-label {
+    text-align: center;
+}
