@@ -1,3 +1,7 @@
-<div>
-    <img src="" alt="">
+<div id="parent">
+    <img class="picture" [src]=this.currentImagePath>
+    <div class="arrows">
+        <div class="arrow arrow-left" (click)="arrowLeftClick()"> </div>
+        <div class="arrow arrow-right" (click)="arrowRightClick()"> </div>
+    </div>
 </div>

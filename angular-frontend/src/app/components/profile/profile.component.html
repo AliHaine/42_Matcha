@@ -1,9 +1,11 @@
+<app-slider [images]="[this.profile().profilePicturePath, 'b']"></app-slider>
+
 <div id="profile">
     <h1 id="header">{{this.profile().firstname}} {{this.profile().lastname}}'s profile</h1>
     <div id="profile-infos">
         <div id="infos-left">
             <div id="profile-picture">
-                <img id="picture" [src]=this.profile().profilePicturePath>
+                <img id="picture" [src]=this.profile().profilePicturePath [style.--border-color]="this.profile().status ? 'var(--color-green)': 'var(--color-error)'">
                 <div id="profile-picture-icons">
                     <img class="overlayIcon giftIcon" src="/icons/gift.png">
                     <img class="overlayIcon heartIcon" src="/icons/heart.png">
@@ -11,9 +13,8 @@
                 <div id="arrow-right" class="arrow"> </div>
                 <div id="arrow-left" class="arrow"> </div>
             </div>
-            <div id="city-status">
+            <div id="city">
                 {{this.profile().age}} years old, from {{this.profile().city}}.
-                <div>{{ this.profile().status ? "Online": "Offline" }}</div>
             </div>
             <div id="buttons">
                 <button class="button-style-2 button">Send message</button>

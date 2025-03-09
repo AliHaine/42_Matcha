@@ -14,8 +14,8 @@ export class CardService {
 
     constructor() {
         this.refreshProfile();
-/*
-        this.profiles.push(new CardModel({
+
+        /*this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Enzo",
             'age': "17",
             'city': "Paris",
@@ -27,7 +27,7 @@ export class CardService {
             'profilePicturePath': 'https://i.pinimg.com/originals/e5/1c/80/e51c80027ee944f8db032995fb37051c.jpg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Manon",
             'age': "18",
             'city': "Metz",
@@ -39,7 +39,7 @@ export class CardService {
             'profilePicturePath': 'https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Marie",
             'age': "28",
             'city': "Metz",
@@ -51,7 +51,7 @@ export class CardService {
             'profilePicturePath': 'https://img.wattpad.com/533a915c6bc0730244fd229e31e920937bbe8b38/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f77705077786868544c5f555936673d3d2d3237332e313439336635316662653138623462653433363938373839353537302e6a7067?s=fit&w=720&h=720'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Emily",
             'age': "38",
             'city': "Metz",
@@ -63,7 +63,7 @@ export class CardService {
             'profilePicturePath': 'https://www.sciencesetavenir.fr/assets/img/2018/08/31/cover-r4x3w1200-5b8964e9c16e5-snapchat-dysmorphie-selfie.jpg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Nathan",
             'age': "20",
             'city': "Mulhouse",
@@ -75,7 +75,7 @@ export class CardService {
             'profilePicturePath': 'https://cdn.intra.42.fr/users/c3a0ea6cea763a36acd687089feb55ea/ngalzand.jpeg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Leila",
             'age': "24",
             'city': "Mulhouse",
@@ -87,7 +87,7 @@ export class CardService {
             'profilePicturePath': 'https://i.pinimg.com/originals/49/0f/2e/490f2edad1288b07eb1e973d4b58df0d.jpg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Jerome",
             'age': "30",
             'city': "Mulhouse",
@@ -99,7 +99,7 @@ export class CardService {
             'profilePicturePath': 'https://cdn.intra.42.fr/users/c150436de6d3e0978aa71fa2c4eb04f4/jmathieu.jpeg'
         }));
 
-        this.profiles.push(new CardModel({
+        this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Marie-jeanne",
             'age': "42",
             'city': "Saint-goerge les ails",

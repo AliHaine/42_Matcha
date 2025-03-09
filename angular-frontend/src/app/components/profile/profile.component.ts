@@ -5,11 +5,13 @@ import {ActivatedRoute} from "@angular/router";
 import {take} from "rxjs";
 import {ProfileFactory} from "../../services/profile.factory";
 import {NgForOf} from "@angular/common";
+import {SliderComponent} from "../utils/slider/slider.component";
 
 @Component({
   selector: 'app-profile',
   imports: [
-    NgForOf
+    NgForOf,
+    SliderComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
