@@ -96,7 +96,8 @@ export class RegisterComponent {
               this.apiService.saveAccessToken(response['access_token'])
           if (this.registerService.getStep() === 3) {
               this.authService.login();
-              this.router.navigate([''])
+              this.router.navigate(['']);
+              this.registerService.setStep(1);
           }
           this.registerService.increaseStep();
           this.errorMessage = "";

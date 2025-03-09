@@ -6,6 +6,7 @@ import {take} from "rxjs";
 import {ProfileFactory} from "../../services/profile.factory";
 import {NgForOf} from "@angular/common";
 import {SliderComponent} from "../utils/slider/slider.component";
+import {IconService} from "../../services/icon.service";
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +20,7 @@ import {SliderComponent} from "../utils/slider/slider.component";
 export class ProfileComponent {
 
   apiService = inject(ApiService);
+  iconService = inject(IconService);
   route = inject(ActivatedRoute);
   profile = signal<ProfileModel>(new ProfileModel({}));
   profileFactory = inject(ProfileFactory);
