@@ -127,12 +127,14 @@ def create_app(test_config=None):
             print("INIT ERROR : Did you initialize the database ?")
 
         # ensure the instance folder exists
-        if not os.path.exists(app.instance_path):
-            print("Creating instance folder")
-            try:
+        
+        try:
+            if not os.path.exists(app.instance_path):
                 os.makedirs(app.instance_path)
-            except Exception as e:
-                print("Failed to create instance folder", e)
+            if not os.path.exists(app.config['PROFILE_PICTURES_DIR']):
+                os.makedirs(app.config['PROFILE_PICTURES_DIR'])
+        except Exception as e:
+            print("Failed to create path", e)
         try:
             if app.config['MAIL_USERNAME'] == '' or app.config['MAIL_PASSWORD'] == '':
                 print("Mail server not initialized : No credentials provided")
