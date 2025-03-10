@@ -1,13 +1,14 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {ChatModel} from "../models/chat.model";
 import {ApiService} from "./api.service";
+import {concatMap, from} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
-  activeChat = signal<number>(0);
+  activeChat = signal<ChatModel>(new ChatModel({}));
   availableChats = signal<ChatModel[]>([]);
   apiService = inject(ApiService);
   currentChatMessages = signal<string[]>([]);
@@ -41,14 +42,20 @@ export class ChatService {
 
   updateAvailableChats(data: number[]) {
     this.availableChats.set([]);
-    data.forEach((userId) => {
+    console.log(data);
+    from(data).pipe(
+        concatMap(userId => this.apiService.getData(`/profiles/${userId}`, {}))
+    ).subscribe(result => {
+      this.availableChats().push(new ChatModel(result["user"]))
+    });
+    /*data.forEach((userId) => {
       this.apiService.getData(`/profiles/${userId}`, {}).subscribe(profile => {
         this.availableChats().push(new ChatModel(profile["user"]))
       });
 
-      this.apiService.getData(`/profiles/${userId}` , {chat: true, all_messages: true} ).subscribe(data => {
+      /*this.apiService.getData(`/profiles/${userId}` , {chat: true, all_messages: true} ).subscribe(data => {
         console.log("data", data);
-      });
-    });
+      });*/
+    //});
   }
 }
