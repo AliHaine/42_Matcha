@@ -8,87 +8,132 @@ import re
 connection = psycopg2.connect(database="matcha", user="admin", password="admin/0123456789", host="localhost", port=6000)
 cursor = connection.cursor()
 
-link = "https://randomuser.me/api/?nat=fr"
-city_link = "https://geo.api.gouv.fr/communes"
+link = "https://randomuser.me/api/?nat=fr&inc=name,dob,gender&results="
 
-city_data = requests.get(city_link).json()
+def populate_cities():
+    city_link = "https://geo.api.gouv.fr/communes?limit=1000&fields=nom,code,departement,region,centre"
+    city_data = requests.get(city_link).json()
+    if not city_data:
+        print("Aucune donnée de ville disponible.")
+        return
 
-#interests = requests.get("http://localhost:5000/api/getInformations/interests").json()['interests']
-#def get_interests():
- #   return [
- #       sample(interests['Other'], 2),
- #       sample(interests['Culture'], 2),
- #       sample(interests['Sport'], 2),
- #    ]
+    query = """
+    INSERT INTO cities (cityname, citycode, departementname, departementcode, regionname, regioncode, centerlon, centerlat) 
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+    """
+    
+    data_list = []
+    for city in city_data:
+        try:
+            lon, lat = city["centre"]["coordinates"]
+            data_list.append((
+                city["nom"], 
+                city["code"],
+                city["departement"]["nom"],
+                city["departement"]["code"],
+                city["region"]["nom"],
+                city["region"]["code"],
+                city["centre"]["coordinates"][0],
+                city["centre"]["coordinates"][1],
+            ))
+        except KeyError:
+            print(f"⚠ Données manquantes pour {city}")
 
-commitment = {
-    "searching": ["Friends", "Love", "Talking"],
-    "commitment": ["Short term", "Long term", "Undecided"],
-    "frequency": ["Daily", "Weekly", "Occasionally"]
-}
-def get_commitment(data_to_send):
-    data_to_send["searching"] = choice(commitment['searching'])
-    data_to_send["commitment"] = choice(commitment['commitment'])
-    data_to_send["frequency"] = choice(commitment['frequency'])
+    if data_list:
+        cursor.executemany(query, data_list)
+        connection.commit()
+        print(f"{len(data_list)} villes insérées dans la base de données.")
+    else:
+        print("Aucune ville à insérer.")
 
 
-def get_user():
-    request = requests.get(link)
+weight_choices = ['-50', '51-60', '61-70', '71-80', '81-90', '91-100', '+100']
+size_choices = ['-150', '151-160', '161-170', '171-180', '181-190', '191-200', '+200']
+shape_choices = ['Skinny', 'Normal', 'Sporty', 'Fat']
+smoking_choices = [True, False]
+alcohol_choices = ['Never', 'Occasionally', 'Every week', 'Every day']
+diet_choices = ['Omnivor', 'Vegetarian', 'Vegan', 'Rich in protein']
+searching_choices = ['Friends', 'Love', 'Talking']
+commitment_choices = ['Short term', 'Long term', 'Undecided']
+frequency_choices = ['Daily', 'Weekly', 'Occasionally']
+
+def get_user(batch=1):
+    request = requests.get(link + str(batch))
     result = request.json()['results']
     return result
 
 
+from unidecode import unidecode
 def get_data_to_send(result):
-    data_to_send = {}
-    data_to_send['firstname'] = result[0]['name']['first']
-    data_to_send['lastname'] = result[0]['name']['last']
-    data_to_send['age'] = result[0]['dob']['age']
-    data_to_send['gender'] = result[0]['gender'][0].upper()
-    data_to_send['email'] = f"{data_to_send['firstname']}.{data_to_send['lastname']}{data_to_send['age']}@gmail.com".lower().replace(" ", "")
-    data_to_send['email'] = re.sub(r"[^a-zA-Z@.]", "", data_to_send['email'])
-    data_to_send['password'] = generate_password_hash("Panda666!")
-    data_to_send['description'] = "default descritiopn"
-    data_to_send['city'] = choice(city_data)["nom"]
-    #data_to_send['interests'] = get_interests()
-    get_commitment(data_to_send)
-    return data_to_send
-
-##city_id               | integer                     |           |          |
-## created_at            | timestamp without time zone |           | not null | CURRENT_TIMESTAMP
-## status                | character varying(255)      |           |          | 'Inactive'::character varying
-## pictures_number       | integer                     |           |          | 0
-## registration_complete | boolean                     |           |          | false
-
-def execute_sql(data_to_send):
-    cursor.execute("""
-        INSERT INTO users (firstname, lastname, gender, age, email, password, description, weight, size, shape, smoking, alcohol, diet, searching, commitment, frequency, registration_complete, hetero) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-    """, (
-        data_to_send['firstname'],
-        data_to_send['lastname'],
-        data_to_send['gender'],
-        data_to_send['age'],
-        data_to_send['email'],
-        data_to_send['password'],
-        data_to_send['description'],
-        "91-100",
-        "181-190",
-        'Normal',
-        choice([True, False]),  # Boolean value for smoking
-        'Never',  # Static string value for drink
-        'Omnivor',  # Static value for diet
-        data_to_send['searching'],
-        data_to_send['commitment'],
-        data_to_send['frequency'],
-        True,
+    return (
+        result['name']['first'],
+        result['name']['last'],
+        unidecode(f"{result['name']['first']}.{result['name']['last']}{min_mail}@randomusers.py".lower().replace(" ", "")),
+        generate_password_hash("Panda666!"),
+        result['dob']['age'] % 12 + 18,
+        result['gender'][0].upper(),
+        choice(city_ids),
+        choice(searching_choices),
+        choice(commitment_choices),
+        choice(frequency_choices),
+        "default description",
+        choice(weight_choices),
+        choice(size_choices),
+        choice(shape_choices),
+        choice(smoking_choices),
+        choice(alcohol_choices),
+        choice(diet_choices),
         choice([True, False]),
-        #data_to_send['city'],
-        #data_to_send['interests'],
-    ))
+        True,
+        True,
+    )
+
+
+def insert_users(data):
+    query = """
+        INSERT INTO users (firstname, lastname, email, password, age, gender, city_id, searching, commitment, frequency, description, weight, size, shape, smoking, alcohol, diet, hetero, registration_complete, email_verified)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+    cursor.executemany(query, data)
     connection.commit()
 
-for i in range(int(sys.argv[1])):
-    user_response = get_user()
-    data_to_send = get_data_to_send(user_response)
-    execute_sql(data_to_send)
-    print("New user created", data_to_send)
+print("User generator started")
+cursor.execute("SELECT COUNT(*) FROM cities")
+if cursor.fetchone()[0] == 0:
+    populate_cities()
+cursor.execute("SELECT id FROM cities")
+city_ids = cursor.fetchall()
+city_ids = [city[0] for city in city_ids]
+max_users = int(sys.argv[1])
+cursor.execute("SELECT COUNT(*) FROM users")
+min_mail = cursor.fetchone()[0]
+if min_mail > 0:
+    print(f"La base de données contient déjà {min_mail} utilisateurs.")
+batch_size = 1000
+try:
+    while max_users > 0:
+        if max_users > 5000:
+            print(f"Fetching 5000 users")
+            users = get_user(5000)
+            max_users -= 5000
+        else:
+            print(f"Fetching {max_users} users")
+            users = get_user(max_users)
+            max_users = 0
+        print(f"{len(users)} users fetched, starting conversion")
+        for i in range(0, len(users), batch_size):
+            batch = users[i:i + batch_size]
+            data = []
+            for user in batch:
+                min_mail += 1
+                data.append(get_data_to_send(user))
+            print("conversion done, starting insertion")
+            insert_users(data)
+            print(f"Insertion done, {len(batch)} users inserted in this batch.")
+        
+except Exception as e:
+    print(e)
+finally:
+    cursor.close()
+    connection.close()
+
