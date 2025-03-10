@@ -1,5 +1,9 @@
 .PHONY: backend frontend flask database
 
+both: database
+	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"
+	@npx concurrently "make frontend" "make flask-bash"
+
 up:
 	$(MAKE) database
 	$(MAKE) frontend
