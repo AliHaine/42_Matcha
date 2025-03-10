@@ -169,15 +169,21 @@ def parse_service_message(data):
         user_receiver = cur.fetchone()
         if user_receiver is None or user_emitter is None:
             return
+        import re
+        from markupsafe import escape
+
+        if re.match(r'^\s*$', data["message"]):
+            return
         try:
-            cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], data["message"]))
+            sanitized_message = escape(data["message"])
+            cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], sanitized_message))
             db.commit()
         except Exception as e:
             print(f"Erreur d'insertion de message : {e}")
             socketio.emit('error', {'message':'Failed to send message'}, room=f"user_{emmiter_informations['id']}")
             return
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{data['receiver']}")
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':data["message"]}, room=f"user_{emmiter_informations['id']}")
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message}, room=f"user_{data['receiver']}")
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message}, room=f"user_{emmiter_informations['id']}")
     return
 
 
