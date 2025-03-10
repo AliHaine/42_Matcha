@@ -23,7 +23,6 @@ def handle_connect():
         print("Connexion refusée : Pas de token JWT")
         disconnect()
         return
-
     try:
         user_email = decoded_token['sub']
         db = get_db()
@@ -42,7 +41,7 @@ def handle_connect():
             connected_users[request.sid]['token'] = token
         print(f"Utilisateur {user_email} connecté via WebSocket")
         join_room(f"user_{user['id']}")
-        update_available_chats(user["id"])
+        update_available_chats(request.sid)
         send_all_notifications(user["id"])
     except Exception as e:
         print(f"Erreur lors de la connexion WebSocket : {e}")
@@ -93,7 +92,9 @@ def handle_chat_message(data):
 
 def send_notification(emitter, receiver, action, message):
     if action == "match" or action == "unmatch":
-        update_available_chats(emitter)
+        for sid ,user in connected_users.items():
+            if user["id"] == emitter:
+                update_available_chats()
     try:
         db = get_db()
         print(f"Notification de {emitter} à {receiver} : {action} - {message}")
@@ -138,21 +139,15 @@ def parse_service_notification(data):
         delete_all_notifications(connected_users[request.sid]["id"])
         return
     
-def update_available_chats(user_id):
+def update_available_chats(sid):
+    user_id = connected_users[sid]["id"]
     available_chats = []
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT uv1.viewed_id AS matched_user FROM user_views uv1 JOIN user_views uv2 ON uv1.viewer_id = uv2.viewed_id AND uv1.viewed_id = uv2.viewer_id WHERE uv1.liked = TRUE AND uv2.liked = TRUE AND uv1.viewer_id = %s", (user_id,))
         for row in cur.fetchall():
             available_chats.append(row["matched_user"])
-    user_sid = None
-    for sid, user in connected_users.items():
-        if user["id"] == user_id:
-            user_sid = sid
-            break
-    if user_sid is None:
-        return
-    connected_users[user_sid]['available_chats'] = available_chats
+    connected_users[sid]['available_chats'] = available_chats
     print(f"Utilisateur {user_id} : {available_chats}")
     if len(available_chats) > 0:
         socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
@@ -165,6 +160,7 @@ def parse_service_message(data):
     emmiter_informations = connected_users[request.sid]
     if data["receiver"] not in emmiter_informations["available_chats"]:
         return
+    print("TEST RECEIVER")
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE id = %s', (emmiter_informations["id"],))
@@ -174,7 +170,7 @@ def parse_service_message(data):
         if user_receiver is None or user_emitter is None:
             return
         try:
-            cur.execute('INSERT INTO messages (emitter_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], data["message"]))
+            cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], data["message"]))
             db.commit()
         except Exception as e:
             print(f"Erreur d'insertion de message : {e}")

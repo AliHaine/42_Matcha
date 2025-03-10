@@ -36,6 +36,8 @@ def registration_completed(f):
                 if len(interests) == 0:
                     return jsonify({'success': False, 'error': 'Registration not completed', 'step':3})
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_mail,))
+                db.commit()
+
         return f(*args, **kwargs)
 
     return decorated_function

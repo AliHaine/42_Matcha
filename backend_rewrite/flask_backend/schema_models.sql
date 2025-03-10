@@ -67,6 +67,9 @@ CREATE TABLE users (
     pictures_number INT DEFAULT 0,
     fame_rate FLOAT DEFAULT 0,
     registration_complete BOOLEAN DEFAULT FALSE,
+    email_token VARCHAR(255),
+    email_verified BOOLEAN DEFAULT FALSE,
+    premium BOOLEAN DEFAULT FALSE,
 
     -- constraint setup
     CONSTRAINT firstname_not_empty CHECK (firstname <> ''),

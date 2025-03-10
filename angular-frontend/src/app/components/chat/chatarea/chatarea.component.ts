@@ -20,7 +20,7 @@ export class ChatareaComponent {
 
   sendMessage(event: Event) {
     event.preventDefault();
-    this.webSocketService.sendMessage({"receiver": this.chatModel().userId, "message": "salut"})
+    this.webSocketService.sendMessage({"receiver": this.chatModel().userId, "message": "salut", "service": "message"});
     this.messageInput.setValue('');
   }
 }

@@ -22,7 +22,16 @@ def dynamic_regex(digits=False, special=False, accents=False, spaces=False):
     regex += "]+$"
     return regex
 
-    
+def generate_confirm_email_token(email):
+    import random
+    import string
+    token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('UPDATE users SET email_token = %s WHERE email = %s', (token, email))
+    db.commit()
+    return token
+
 
 FIELDS_UPDATABLE = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
 STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender", "hetero"]
@@ -291,7 +300,7 @@ def check_registration_status(other_email=None):
                 return True
             else:
                 for key, value in user.items():
-                    if key == 'city_id':
+                    if key == 'city_id' or key == 'email_token':
                         continue
                     if value is None:
                         return False
@@ -303,6 +312,17 @@ def check_registration_status(other_email=None):
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
+                mail_token = generate_confirm_email_token(user_email)
+                print("Mail token : ", mail_token)
+                try:
+                    mail = current_app.config['MAIL']
+                    if mail:
+                        from flask_mail import Message
+                        msg = Message("Matcha - confirm email",sender=current_app.config["MAIL_USERNAME"],recipients=[user_email])
+                        msg.body = "Click on the following link to confirm your email : http://localhost:4200/auth/confirm_email/" + mail_token
+                        mail.send(msg)
+                except Exception as e:
+                    print("Failed to send email to confirm email (func : check_registration_status, file : user.py). Error : ", e)
                 db.commit()
                 return True
     except Exception as e:
