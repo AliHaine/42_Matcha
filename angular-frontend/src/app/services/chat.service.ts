@@ -30,16 +30,25 @@ export class ChatService {
     this.availableChats().push(new ChatModel(data))*/
   }
 
-  getChatModelAt(index: number) {
-    console.log(this.availableChats().at(index))
-    return this.availableChats().at(index);
+  getChatModelAt(index: number): ChatModel {
+    console.log("enter");
+    const chatModel: ChatModel = <ChatModel>this.availableChats().at(index);
+    /*this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
+      console.log("data", data);
+    });*/
+    return chatModel;
   }
 
   updateAvailableChats(data: number[]) {
+    this.availableChats.set([]);
     data.forEach((userId) => {
       this.apiService.getData(`/profiles/${userId}`, {}).subscribe(profile => {
         this.availableChats().push(new ChatModel(profile["user"]))
-      })
-    })
+      });
+
+      this.apiService.getData(`/profiles/${userId}` , {chat: true, all_messages: true} ).subscribe(data => {
+        console.log("data", data);
+      });
+    });
   }
 }

@@ -89,4 +89,10 @@ export class AccountComponent {
   keyPressed() {
     this.placeHolderMessage = "";
   }
+
+  delete() {
+    this.apiService.deleteData("/profiles/profile_pictures", {"file_number": 0}).subscribe(result => {
+      console.log(result);
+    })
+  }
 }

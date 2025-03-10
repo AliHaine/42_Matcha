@@ -33,7 +33,7 @@ export class WebsocketService {
     });
 
     this.websocket.on('notification', (msg: any) => {
-      console.log(msg)
+      console.log("notification")
       this.notificationService.notifications.push(new NotificationModel(msg.author_id, msg.author_name, msg.action))
     });
 

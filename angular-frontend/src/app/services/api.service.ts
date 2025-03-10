@@ -28,6 +28,10 @@ export class ApiService {
       return this.http.put(`${this.baseUrl}${targetUrl}`, dataToPost);
     }
 
+    deleteData(targetUrl: string, paramsToSend: any): Observable<any> {
+      return this.http.delete(`${this.baseUrl}${targetUrl}`, { params: paramsToSend });
+    }
+
     saveAccessToken(token: string) {
       localStorage.setItem('access_token', token);
     }
