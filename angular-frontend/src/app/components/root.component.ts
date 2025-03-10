@@ -23,6 +23,5 @@ import {NgIf} from "@angular/common";
   styles: ['#root-content { height: 100vh; display: flex; flex-direction: column;} #footer-content { margin-top: auto; }']
 })
 export class RootComponent {
-  protected readonly inject = inject;
   authService = inject(AuthService);
 }

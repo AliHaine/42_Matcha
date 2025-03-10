@@ -46,7 +46,7 @@ export class ChatService {
     from(data).pipe(
         concatMap(userId => this.apiService.getData(`/profiles/${userId}`, {}))
     ).subscribe(result => {
-      this.availableChats().push(new ChatModel(result["user"]))
+      this.addNewChatModel(new ChatModel(result["user"]));
     });
     /*data.forEach((userId) => {
       this.apiService.getData(`/profiles/${userId}`, {}).subscribe(profile => {
@@ -57,5 +57,9 @@ export class ChatService {
         console.log("data", data);
       });*/
     //});
+  }
+
+  addNewChatModel(newChatModel: ChatModel) {
+    this.availableChats.set([...this.availableChats(), newChatModel]);
   }
 }

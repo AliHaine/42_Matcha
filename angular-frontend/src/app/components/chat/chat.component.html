@@ -1,4 +1,4 @@
-<div id="chat">
+<div id="chat" *ngIf="chatService.availableChats().length > 0; else errorChat">
     <div id="chat-list">
         <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
     </div>
@@ -11,3 +11,6 @@
         </ng-template>
     </div>
 </div>
+<ng-template #errorChat>
+            <div>Error: Chat model not found!</div>
+</ng-template>
