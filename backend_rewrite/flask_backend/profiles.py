@@ -211,7 +211,8 @@ def get_profile(id):
                         cursor.execute("INSERT INTO user_views (viewer_id, viewed_id, accessed) VALUES (%s, %s, TRUE)", (user_getting["id"], user["id"],))
                     else:
                         cursor.execute("UPDATE user_views SET last_view = NOW(), accessed = TRUE WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
-                    send_notification(user_getting["id"], user["id"], "view", "User viewed your profile")
+                    if 'chat' in request.args and request.args['chat'] != 'true':
+                        send_notification(user_getting["id"], user["id"], "view", "User viewed your profile")
                     db.commit()
             except Exception as e:
                 print("failed to update user views", e)
