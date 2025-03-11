@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {WebsocketService} from "../../services/websocket.service";
 
@@ -10,11 +10,11 @@ import {WebsocketService} from "../../services/websocket.service";
 })
 export class NavbarComponent {
 
-  showNotif: boolean = false;
+  showNotif = signal<boolean>(false);
   websocketService = inject(WebsocketService);
 
   overtest() {
-    this.showNotif = true;
+    this.showNotif.set(true);
     this.websocketService.sendMessage({"service":"notification","action": "clear"})
   }
 }

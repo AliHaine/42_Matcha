@@ -18,8 +18,6 @@ export class WebsocketService {
 
   socketLoaderTmp() {
     console.log('Socket.IO Service Initialized');
-
-
     this.ngZone.runOutsideAngular(() => {
       this.websocket = io(`ws://${backendIP}:5000`, {
         transports: ['websocket'],
