@@ -268,9 +268,9 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
                 else:
-                    if len(data[field]) == 0:
+                    if len(data[field]) < 3:
                         result['success'] = False
-                        result['errors'].append(f"Field {field} is not valid (not enough interests)")
+                        result['errors'].append(f"Field interests is not valid, at least 3 interests are required")
                     for interest in data[field]:
                         if interest not in current_app.config['AVAILABLE_INTERESTS']:
                             result['success'] = False

@@ -33,6 +33,10 @@ def handle_connect():
                 print("Connexion refusée : Utilisateur non trouvé")
                 disconnect()
                 return
+            if user["registration_complete"] is False or user["email_verified"] is False:
+                print("Connexion refusée : Inscription non terminée")
+                disconnect()
+                return
             cur.execute('UPDATE users SET status = TRUE, active_connections = active_connections + 1 WHERE email = %s', (user_email,))
             db.commit()
             connected_users[request.sid] = {}
