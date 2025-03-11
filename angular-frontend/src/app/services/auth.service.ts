@@ -9,19 +9,19 @@ import {map, Observable, tap} from "rxjs";
 })
 export class AuthService {
 
-  isLoggedIn = signal< boolean | undefined>(undefined);
+  isLoggedIn = signal< boolean | undefined>(true);
   apiService = inject(ApiService);
   router = inject(Router);
   websocketService = inject(WebsocketService);
 
   constructor() {
-    const token: string | null = this.apiService.getAccessToken();
+    /*const token: string | null = this.apiService.getAccessToken();
     if (token === null)
-      this.loggedIn = false;
+      this.loggedIn = false;*/
   }
 
-  accessTokenCheck(): Observable<boolean> {
-      return this.apiService.getData("/auth/verify_token", {}).pipe(
+  accessTokenCheck(): boolean{
+      /*return this.apiService.getData("/auth/verify_token", {}).pipe(
           tap(result => {
             if (result["success"] === false)
               this.logout();
@@ -29,7 +29,8 @@ export class AuthService {
               this.login();
           }),
           map(result => result["success"])
-      );
+      );*/
+    return true;
   }
 
   login() {

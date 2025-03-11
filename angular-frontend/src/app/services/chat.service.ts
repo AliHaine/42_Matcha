@@ -10,8 +10,8 @@ export class ChatService {
 
   constructor() {
     const data = {
-      "firstname": "Leila",
-      "age": 19,
+      "firstname": "Fizz",
+      "age": 195488,
       "city": "Mulhouse",
       "status": false,
       "lastMsgTime": '12:49',

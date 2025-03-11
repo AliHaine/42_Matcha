@@ -7,8 +7,8 @@ import {ChatComponent} from "./components/chat/chat.component";
 import {loginGuard} from "./others/login.guard";
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [authGuard] },
-    { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
+    { path: '', component: HomeComponent},
+    { path: 'chat', component: ChatComponent},
     { path: 'auth', canActivate: [loginGuard], children: [{ path: 'register', component: RegisterComponent }, { path: 'login', component: LoginComponent }]},
     { path: '**', redirectTo: ''},
 ];

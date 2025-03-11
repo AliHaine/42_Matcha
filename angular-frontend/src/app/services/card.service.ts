@@ -19,11 +19,11 @@ export class CardService {
       refreshProfile() {
         console.log("call refreshProfile");
         this.profiles.set([]);
-          this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
+        /*  this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
               for (const data of result["result"]) {
                   this.profiles().push(this.profileFactory.getNewProfile(data));
               }
-          });
+          });*/
       }
 
       getProfiles() {
