@@ -99,12 +99,6 @@
     font-size: 20px;
 }
 
-#details {
-    display: flex;
-    justify-content: space-around;
-    font-size: 13px;
-}
-
 #description a {
     color: var(--color-2);
     font-weight: 1000;

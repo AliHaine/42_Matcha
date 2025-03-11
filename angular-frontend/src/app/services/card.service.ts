@@ -26,7 +26,7 @@ export class CardService {
           });
       }
 
-      getProfiles(): ProfileModel[] {
+      getProfiles() {
         console.log("call getProfiles");
           return this.profiles();
       }
