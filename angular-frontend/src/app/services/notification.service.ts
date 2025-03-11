@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {NotificationModel} from "../models/notification.model";
 
 @Injectable({
@@ -6,7 +6,9 @@ import {NotificationModel} from "../models/notification.model";
 })
 export class NotificationService {
 
-    notifications: NotificationModel[] = [];
+    notifications = signal<NotificationModel[]>([]);
 
-    constructor() { }
+    addNotification(newNotification: NotificationModel) {
+        this.notifications.set([...this.notifications(), newNotification]);
+    }
 }

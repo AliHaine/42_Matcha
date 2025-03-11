@@ -14,7 +14,7 @@ export class ChatService {
   currentChatMessages = signal<string[]>([]);
 
   constructor() {
-    /*const data = {
+    const data = {
       "firstname": "Leila",
       "age": 19,
       "city": "Mulhouse",
@@ -28,7 +28,7 @@ export class ChatService {
     this.availableChats().push(new ChatModel(data))
     this.availableChats().push(new ChatModel(data))
     data['status'] = false;
-    this.availableChats().push(new ChatModel(data))*/
+    this.availableChats().push(new ChatModel(data))
   }
 
   getChatModelAt(index: number): ChatModel {
@@ -38,6 +38,11 @@ export class ChatService {
       console.log("data", data);
     });*/
     return chatModel;
+  }
+
+  get allAvailableChats() {
+    console.log("enter 2")
+    return this.availableChats
   }
 
   updateAvailableChats(data: number[]) {

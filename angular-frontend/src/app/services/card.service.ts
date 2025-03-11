@@ -122,7 +122,8 @@ export class CardService {
           });
       }
 
-      getProfiles(): ProfileModel[] {
-          return this.profiles();
+      get getProfiles() {
+        console.log("gert profiles")
+          return this.profiles;
       }
 }

@@ -1,5 +1,5 @@
 <div id="notif-content">
-        <table *ngIf="notificationService.notifications.length > 0; else nothing">
+        <table *ngIf="notificationService.notifications().length > 0; else nothing">
             <caption>
                 Notifications
             </caption>
@@ -8,7 +8,7 @@
             <th scope="col">Name</th>
             <th scope="col">Action</th>
 
-            <tr *ngFor="let notif of notificationService.notifications">
+            <tr *ngFor="let notif of notificationService.notifications()">
                 <td>{{ notif.userId }}</td>
                 <td>{{ notif.userFullName }}</td>
                 <td>{{ notif.action }}</td>
