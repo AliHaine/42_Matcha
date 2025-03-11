@@ -64,11 +64,12 @@ def get_user(batch=1):
 
 
 from unidecode import unidecode
+from datetime import datetime
 def get_data_to_send(result):
     return (
         result['name']['first'],
         result['name']['last'],
-        unidecode(f"{result['name']['first']}.{result['name']['last']}{min_mail}@randomusers.py".lower().replace(" ", "")),
+        unidecode(f"{result['name']['first']}.{result['name']['last']}{user_id_start}@randomusers.py".lower().replace(" ", "")),
         generate_password_hash("Panda666!"),
         result['dob']['age'] % 12 + 18,
         result['gender'][0].upper(),
@@ -97,43 +98,70 @@ def insert_users(data):
     cursor.executemany(query, data)
     connection.commit()
 
-print("User generator started")
+def insert_interests(data):
+    query = """
+        INSERT INTO users_interests (user_id, interest_id)
+        VALUES (%s, %s);
+        """
+    cursor.executemany(query, data)
+    connection.commit()
+
 cursor.execute("SELECT COUNT(*) FROM cities")
 if cursor.fetchone()[0] == 0:
     populate_cities()
 cursor.execute("SELECT id FROM cities")
 city_ids = cursor.fetchall()
 city_ids = [city[0] for city in city_ids]
-max_users = int(sys.argv[1])
-cursor.execute("SELECT COUNT(*) FROM users")
-min_mail = cursor.fetchone()[0]
-if min_mail > 0:
-    print(f"La base de données contient déjà {min_mail} utilisateurs.")
-batch_size = 1000
+remaining_users = int(sys.argv[1])
+baseinput_users = remaining_users
+cursor.execute("SELECT id FROM users ORDER BY id DESC LIMIT 1")
+user_id_start = cursor.fetchone()
+if user_id_start is None:
+    user_id_start = 0
+else:
+    user_id_start = user_id_start[0]
+if user_id_start > 0:
+    print(f"La base de données contient déjà {user_id_start} utilisateurs.")
+batch_size = 5000
+start_time = datetime.now()
+cursor.execute("SELECT COUNT(*) FROM interests")
+possible_interests = cursor.fetchone()[0]
+print(f"Debut de la génération d'utilisateurs à : {start_time}")
 try:
-    while max_users > 0:
-        if max_users > 5000:
-            print(f"Fetching 5000 users")
+    while remaining_users > 0:
+        if remaining_users > 5000:
+            print(f"recuperation de 5000 utilisateurs")
             users = get_user(5000)
-            max_users -= 5000
+            remaining_users -= 5000
         else:
-            print(f"Fetching {max_users} users")
-            users = get_user(max_users)
-            max_users = 0
-        print(f"{len(users)} users fetched, starting conversion")
+            print(f"recuperation de {remaining_users} utilisateurs")
+            users = get_user(remaining_users)
+            remaining_users = 0
+        print(f"{len(users)} utilisateurs récupérés, debut de la conversion des données")
         for i in range(0, len(users), batch_size):
             batch = users[i:i + batch_size]
             data = []
+            interests = []
             for user in batch:
-                min_mail += 1
+                user_id_start += 1
                 data.append(get_data_to_send(user))
-            print("conversion done, starting insertion")
+                print(f"conversion de {len(data)}/{len(batch)} utilisateurs terminée", end="\r")
+                for _ in range(5):
+                    interest_id = choice(range(1, possible_interests + 1))
+                    while (user_id_start, interest_id) in interests:
+                        interest_id = choice(range(1, possible_interests + 1))
+                    interests.append((user_id_start, interest_id))
+            print("conversion des données terminée, debut de l'insertion")
             insert_users(data)
-            print(f"Insertion done, {len(batch)} users inserted in this batch.")
-        
+            insert_interests(interests)
+            print(f"Insertion de {len(data)} utilisateurs terminée, {remaining_users + len(users) - len(batch)}/{baseinput_users} restants, temps écoulé : {datetime.now() - start_time}")
 except Exception as e:
     print(e)
 finally:
     cursor.close()
     connection.close()
 
+print(f"Fin de la génération d'utilisateurs à : {datetime.now()}")
+print(f"Temps écoulé : {datetime.now() - start_time}")
+print(f"Nombre total d'utilisateurs insérés : {baseinput_users - remaining_users}")
+print(f"Nombre total d'utilisateurs restants : {remaining_users}")
