@@ -2,7 +2,7 @@
 
 both: database
 	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"
-	@npx concurrently "make frontend" "make flask-bash"
+	@npx concurrently --names "FRONTEND, BACKEND" "make frontend" "make flask-bash"
 
 up:
 	$(MAKE) database
