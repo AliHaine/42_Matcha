@@ -1,6 +1,6 @@
 <div id="chat">
     <div id="chat-list">
-        <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
+        <app-chatcard *ngFor="let chatModel of chatService.availableChatsList" [chatModel]="chatModel"></app-chatcard>
     </div>
     <div id="chat-area">
         <app-chatarea *ngIf="chatService.getChatModelAt(0) as chatModel; else errorChat"

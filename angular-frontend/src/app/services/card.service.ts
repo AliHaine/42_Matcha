@@ -9,7 +9,7 @@ import {ProfileFactory} from "./profile.factory";
 export class CardService {
 
     apiService = inject(ApiService);
-    profileFactory = inject(ProfileFactory);
+    //profileFactory = inject(ProfileFactory);
     private profiles = signal<ProfileModel[]>([]);
 
     constructor() {

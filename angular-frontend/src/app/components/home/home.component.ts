@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {CardComponent} from "../card/card/card.component";
+import {CardComponent} from "../card/card.component";
 import {CardService} from "../../services/card.service";
 import {NgForOf} from "@angular/common";
 

@@ -1,7 +1,7 @@
 import {Component, inject, input, InputSignal} from '@angular/core';
 import {RouterLink} from "@angular/router";
-import {ApiService} from "../../../services/api.service";
-import {ProfileModel} from "../../../models/profile.model";
+import {ApiService} from "../../services/api.service";
+import {ProfileModel} from "../../models/profile.model";
 
 @Component({
   selector: 'app-card',

@@ -35,6 +35,11 @@ export class ChatService {
     return chatModel;
   }
 
+  get availableChatsList() {
+    console.log("call availableChatsList");
+    return this.availableChats();
+  }
+
   /*updateAvailableChats(data: number[]) {
     this.availableChats.set([]);
     console.log(data);
