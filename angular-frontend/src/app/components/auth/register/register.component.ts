@@ -13,7 +13,6 @@ import {ApiService} from "../../../services/api.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
 import {AuthService} from "../../../services/auth.service";
-import {LocationService} from "../../../services/location.service";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -28,7 +27,6 @@ import {MatInput} from "@angular/material/input";
 export class RegisterComponent {
 
     apiService = inject(ApiService);
-    locationService = inject(LocationService);
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);
@@ -47,7 +45,7 @@ export class RegisterComponent {
     }, { validators: passwordValidator });
 
     formControlGroupStep2 = new FormGroup({
-        city: new FormControl('', Validators.required),
+        city: new FormControl('Mulhouse', Validators.required),
         searching: new FormControl('', Validators.required),
         commitment: new FormControl('', Validators.required),
         frequency: new FormControl('', Validators.required),
@@ -56,7 +54,7 @@ export class RegisterComponent {
         size: new FormControl('', Validators.required),
         shape: new FormControl('', Validators.required),
 
-        smoking: new FormControl('', Validators.required),
+        smoking: new FormControl(false, Validators.required),
         alcohol: new FormControl('', Validators.required),
         diet: new FormControl('', Validators.required),
     });
@@ -76,8 +74,6 @@ export class RegisterComponent {
                 });
             }
         });
-
-        this.locationService.observableToSubscribe(this.formControlGroupStep2.controls.city.valueChanges);
     }
 
     submit(event: Event, values: any) {
@@ -123,10 +119,6 @@ export class RegisterComponent {
             }
             values[key] = index;
         }
-    }
-
-    setLocation(value: string) {
-        this.formControlGroupStep2.controls.city.setValue(value);
     }
 
     getLocationFromIp() {
