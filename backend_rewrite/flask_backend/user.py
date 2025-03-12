@@ -74,6 +74,7 @@ def update_interests(interests, user_email):
         print("Failed to update interests (func : update_interests, file : user.py). Error : ", e)
         return False
 
+# TODO : need to protect sql queries here
 def update_user_fields(user_informations, user_email):
     if not isinstance(user_informations, dict):
         return False
@@ -312,10 +313,10 @@ def check_registration_status(other_email=None):
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
+                db.commit()
                 mail_token = generate_confirm_email_token(user_email)
-                print("Mail token : ", mail_token)
                 try:
-                    mail = current_app.config['MAIL']
+                    mail = current_app.config.get('MAIL', None)
                     if mail:
                         from flask_mail import Message
                         msg = Message("Matcha - confirm email",sender=current_app.config["MAIL_USERNAME"],recipients=[user_email])

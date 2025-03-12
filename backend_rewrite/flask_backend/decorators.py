@@ -36,9 +36,9 @@ def registration_completed(f):
                 if len(interests) == 0:
                     return jsonify({'success': False, 'error': 'Registration not completed', 'step':3})
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_mail,))
+                db.commit()
                 if user['email_verified'] == False:
                     return jsonify({'success': False, 'error': 'Email not verified'})
-                db.commit()
 
         return f(*args, **kwargs)
 

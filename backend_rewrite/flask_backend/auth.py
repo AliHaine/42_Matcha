@@ -167,8 +167,8 @@ def login_user(email, password, registering=False):
     if registering == False:
         if len(missing_steps) > 0:
             return {'success': False, 'error': 'Registration not completed', 'missing_steps': missing_steps, 'access_token': access_token}
-    if user['email_verified'] == False:
-        return {'success': False, 'error': 'Email not verified', 'access_token': access_token}
+        if user['email_verified'] == False:
+            return {'success': False, 'error': 'Email not verified', 'access_token': access_token}
     return {'success': True, 'access_token': access_token}
 
 @bp.route('/login', methods=['POST'])

@@ -127,7 +127,6 @@ def create_app(test_config=None):
             print("INIT ERROR : Did you initialize the database ?")
 
         # ensure the instance folder exists
-        
         try:
             if not os.path.exists(app.instance_path):
                 os.makedirs(app.instance_path)
@@ -138,6 +137,7 @@ def create_app(test_config=None):
         try:
             if app.config['MAIL_USERNAME'] == '' or app.config['MAIL_PASSWORD'] == '':
                 print("Mail server not initialized : No credentials provided")
+                app.config['MAIL'] = None
             else:
                 mail = Mail(app)
                 app.config['MAIL'] = mail
