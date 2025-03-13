@@ -41,7 +41,7 @@ def matcha():
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE id != %s AND registration_complete = TRUE ORDER BY id ASC', (user["id"],))
         users = cur.fetchall()
-        users = [convert_to_public_profile(u) for u in users]
+        users = [convert_to_public_profile(u, user_requesting=user) for u in users]
     users_send = []
     for i in range(0, nb_profiles):
         if len(users) == 0:
