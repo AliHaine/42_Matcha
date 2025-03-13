@@ -74,7 +74,6 @@ def update_interests(interests, user_email):
         print("Failed to update interests (func : update_interests, file : user.py). Error : ", e)
         return False
 
-# TODO : need to protect sql queries here
 def update_user_fields(user_informations, user_email):
     if not isinstance(user_informations, dict):
         return False

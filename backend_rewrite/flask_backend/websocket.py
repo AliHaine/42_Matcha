@@ -180,7 +180,7 @@ def parse_service_message(data):
         if re.match(r'^\s*$', data["message"]):
             return
         try:
-            sanitized_message = escape(data["message"])
+            sanitized_message = data["message"]
             cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], sanitized_message))
             db.commit()
         except Exception as e:

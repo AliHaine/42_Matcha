@@ -143,8 +143,8 @@ CREATE TABLE messages(
     message VARCHAR(1500),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT message_invalid CHECK (message ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ0-9 .,!?;:()\[\]-]+$')
+    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+    -- CONSTRAINT message_invalid CHECK (message ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ0-9 .,!?;:()\[\]-]+$')
 
 );
 
