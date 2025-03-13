@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {Component, EventEmitter, input, InputSignal, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -11,17 +11,20 @@ import {NgIf} from "@angular/common";
 })
 export class SliderComponent {
   images: InputSignal<string[]> = input.required();
+  @Output() currentIndexEvent = new EventEmitter<number>();
   currentIndex: number = 0;
 
   arrowLeftClick() {
     this.currentIndex--;
     if (this.currentIndex < 0)
       this.currentIndex = this.images().length-1;
+    this.currentIndexEvent.emit(this.currentIndex);
   }
 
   arrowRightClick() {
     this.currentIndex++;
     if (this.currentIndex > this.images().length-1)
       this.currentIndex = 0;
+    this.currentIndexEvent.emit(this.currentIndex);
   }
 }

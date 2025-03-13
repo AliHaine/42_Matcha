@@ -35,6 +35,7 @@ export class AccountComponent {
   profileFactory = inject(ProfileFactory);
   placeHolderMessage: string = "";
   profile = signal<ProfileModel>(new ProfileModel({}));
+  private currentImageIndex: number = 0;
   formGroup: FormGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -96,8 +97,12 @@ export class AccountComponent {
   }
 
   deletePicture() {
-    this.apiService.deleteData("/profiles/profile_pictures", {"file_number": 0}).subscribe(result => {
+    this.apiService.deleteData("/profiles/profile_pictures", {"file_number": this.currentImageIndex}).subscribe(result => {
       console.log(result);
     })
+  }
+
+  sliderTrigger(index: number) {
+    this.currentImageIndex = index;
   }
 }

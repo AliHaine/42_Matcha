@@ -3,8 +3,8 @@
     <form id="inputs" [formGroup]="this.formGroup" (keydown)="keyPressed()">
 
         <div id="profile-pictures">
-            <app-slider [images]="profile().profilePicturePath"></app-slider>
-            <div class="caption">
+            <app-slider [images]="profile().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
+            <div class="caption" *ngIf="profile().picturesNumber > 0">
                 <img class="caption-img" src="/icons/x.png" (click)="deletePicture()">
             </div>
         </div>
