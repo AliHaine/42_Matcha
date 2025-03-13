@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -8,6 +8,9 @@ import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
+import {SliderComponent} from "../utils/slider/slider.component";
+import {ProfileModel} from "../../models/profile.model";
+import {ProfileFactory} from "../../services/profile.factory";
 
 @Component({
   selector: 'app-account',
@@ -19,6 +22,7 @@ import {TextFieldModule} from '@angular/cdk/text-field';
     MatInputModule,
     TextFieldModule,
     NgIf,
+    SliderComponent,
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -28,7 +32,9 @@ export class AccountComponent {
   apiService = inject(ApiService);
   authService = inject(AuthService);
   locationService = inject(LocationService);
+  profileFactory = inject(ProfileFactory);
   placeHolderMessage: string = "";
+  profile = signal<ProfileModel>(new ProfileModel({}));
   formGroup: FormGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -45,7 +51,7 @@ export class AccountComponent {
 
   constructor() {
     this.apiService.getData("/profiles/me", {}).subscribe(result => {
-      console.log(result)
+      this.profile.set(this.profileFactory.getNewProfile(result["user"]));
       for (const value in result["user"])
         if (this.formGroup.value[value] !== undefined)
           this.formGroup.controls[value].setValue(result["user"][value]);
@@ -54,20 +60,14 @@ export class AccountComponent {
   }
 
   applyTrigger() {
-    console.log(this.formGroup.value)
     const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
     let file: File | undefined;
 
-    const formaData = new FormData();
-    //if (pictureAsHtml.files && pictureAsHtml.files.length > 0)
     file = pictureAsHtml.files?.[0];
-    if (!file) return;
-    formaData.append("picture", file);
-    console.log(file)
-    this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
-      console.log(result);
-    })
-    /*this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
+    if (file)
+      this.addPicture(file);
+
+    this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       console.log(result);
       if (result['disconnect'])
         this.authService.logout();
@@ -75,11 +75,7 @@ export class AccountComponent {
         this.placeHolderMessage = result['error'];
       else
         this.placeHolderMessage = "Successfully updated";
-    });*/
-  }
-
-  test(event: Event) {
-
+    });
   }
 
   setLocation(name: string) {
@@ -90,7 +86,16 @@ export class AccountComponent {
     this.placeHolderMessage = "";
   }
 
-  delete() {
+  addPicture(file: File) {
+    const formaData = new FormData();
+
+    formaData.append("picture", file);
+    this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  deletePicture() {
     this.apiService.deleteData("/profiles/profile_pictures", {"file_number": 0}).subscribe(result => {
       console.log(result);
     })

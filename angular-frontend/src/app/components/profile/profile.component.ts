@@ -37,4 +37,11 @@ export class ProfileComponent {
     //Need to active the chat with this user
     this.router.navigate(['chat'])
   }
+
+  reportTest() {
+    console.log("enter")
+    this.apiService.postData(`/profiles/${this.profile().userId}`, {"action": "block"}).subscribe(profile => {
+      console.log(profile);
+    });
+  }
 }

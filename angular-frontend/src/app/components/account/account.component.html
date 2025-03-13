@@ -2,8 +2,11 @@
     <h1>Edit your profile</h1>
     <form id="inputs" [formGroup]="this.formGroup" (keydown)="keyPressed()">
 
-        <div>
-
+        <div id="profile-pictures">
+            <app-slider [images]="profile().profilePicturePath"></app-slider>
+            <div class="caption">
+                <img class="caption-img" src="/icons/x.png" (click)="deletePicture()">
+            </div>
         </div>
 
         <div class="input-area">
