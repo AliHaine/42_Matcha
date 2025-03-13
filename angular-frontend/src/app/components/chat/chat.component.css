@@ -12,7 +12,7 @@
 }
 
 #chat-area {
-    flex: 1;
+    width: 75%;
 }
 
 #chat-list {

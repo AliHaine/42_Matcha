@@ -78,7 +78,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
     }
     with db.cursor() as cursor:
         if all_messages == True:
-            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             allMessages = cursor.fetchall()
             messages = []
             for message in allMessages:
@@ -93,6 +93,8 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
         else:
             cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 1", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             lastMessage = cursor.fetchall()
+            if not lastMessage:
+                return base_return
             message = {
                 'message': lastMessage[0]['message'],
                 'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),

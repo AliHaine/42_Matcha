@@ -2,69 +2,51 @@ import {inject, Injectable, signal} from '@angular/core';
 import {ChatModel} from "../models/chat.model";
 import {ApiService} from "./api.service";
 import {concatMap, from} from "rxjs";
+import {ChatBubbleModel} from "../models/chatbubble.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
-  activeChat = signal<ChatModel>(new ChatModel({}));
-  availableChats = signal<ChatModel[]>([]);
   apiService = inject(ApiService);
-  currentChatMessages = signal<string[]>([]);
+  activeChat = signal<ChatModel | undefined>(undefined);
+  availableChats = signal<ChatModel[]>([]);
+  currentChatBubbles = signal<ChatBubbleModel[]>([]);
 
-  constructor() {
-    const data = {
-      "firstname": "Leila",
-      "age": 19,
-      "city": "Mulhouse",
-      "status": false,
-      "lastMsgTime": '12:49',
-      "lastMessage": "Lorem ipsum espe fdafdaf afdaf a ..."
-    }
-
-    this.availableChats().push(new ChatModel(data))
-    data['status'] = true;
-    this.availableChats().push(new ChatModel(data))
-    this.availableChats().push(new ChatModel(data))
-    data['status'] = false;
-    this.availableChats().push(new ChatModel(data))
-  }
-
-  getChatModelAt(index: number): ChatModel {
+  updateCurrentChat(chatModel: ChatModel): ChatModel {
     console.log("enter");
-    const chatModel: ChatModel = <ChatModel>this.availableChats().at(index);
-    /*this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
+    this.activeChat.set(chatModel);
+    this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
       console.log("data", data);
-    });*/
+      this.setupAllBubbles(data["user"]["allMessages"]);
+    });
     return chatModel;
-  }
-
-  get allAvailableChats() {
-    console.log("enter 2")
-    return this.availableChats
   }
 
   updateAvailableChats(data: number[]) {
     this.availableChats.set([]);
     console.log(data);
     from(data).pipe(
-        concatMap(userId => this.apiService.getData(`/profiles/${userId}`, {}))
+        concatMap(userId => this.apiService.getData(`/profiles/${userId}`, {"chat": true, "all_messages": false}))
     ).subscribe(result => {
+      console.log(result)
       this.addNewChatModel(new ChatModel(result["user"]));
     });
-    /*data.forEach((userId) => {
-      this.apiService.getData(`/profiles/${userId}`, {}).subscribe(profile => {
-        this.availableChats().push(new ChatModel(profile["user"]))
-      });
+  }
 
-      /*this.apiService.getData(`/profiles/${userId}` , {chat: true, all_messages: true} ).subscribe(data => {
-        console.log("data", data);
-      });*/
-    //});
+  setupAllBubbles(data: []) {
+    this.currentChatBubbles.set([]);
+    data.forEach(value => {
+      this.addNewChatBubbleModel(value);
+    });
   }
 
   addNewChatModel(newChatModel: ChatModel) {
     this.availableChats.set([...this.availableChats(), newChatModel]);
+  }
+
+  addNewChatBubbleModel(data: {}) {
+    this.currentChatBubbles.set([ new ChatBubbleModel(data), ...this.currentChatBubbles()]);
   }
 }

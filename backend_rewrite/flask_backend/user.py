@@ -312,7 +312,7 @@ def check_registration_status(other_email=None):
                 for key, value in user_interests.items():
                     if value is None:
                         return False
-                cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
+                cur.execute('UPDATE users SET registration_complete = TRUE, email_verified = TRUE WHERE email = %s', (user_email,))
                 db.commit()
                 mail_token = generate_confirm_email_token(user_email)
                 try:

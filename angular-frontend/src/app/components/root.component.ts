@@ -14,7 +14,7 @@ import {NgIf} from "@angular/common";
     NgIf
   ],
   template: `<div id="root-content">
-              <app-navbar *ngIf="this.authService.isLoggedIn"></app-navbar>
+              <app-navbar *ngIf="this.authService.isLoggedIn()"></app-navbar>
               <router-outlet></router-outlet>
               <div id="footer-content">
                  <app-footer></app-footer>

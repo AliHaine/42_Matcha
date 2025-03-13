@@ -17,8 +17,8 @@
     </div>
 </div>
 
-<div id="chat-box" >
-
+<div id="chat-box">
+    <app-chatbubble *ngFor="let bubble of chatService.currentChatBubbles()" [chatBubble]="bubble"></app-chatbubble>
 </div>
 
 <div id="chat-footer">

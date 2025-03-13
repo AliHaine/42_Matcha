@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {ApiService} from "./api.service";
 import {Router} from "@angular/router";
 import {WebsocketService} from "./websocket.service";
@@ -9,7 +9,7 @@ import {map, Observable, tap} from "rxjs";
 })
 export class AuthService {
 
-  isLoggedIn: boolean | undefined = undefined;
+  isLoggedIn = signal<boolean | undefined>(undefined);
   apiService = inject(ApiService);
   router = inject(Router);
   websocketService = inject(WebsocketService);
@@ -17,7 +17,7 @@ export class AuthService {
   constructor() {
     const token: string | null = this.apiService.getAccessToken();
     if (token === null)
-      this.isLoggedIn = false;
+      this.isLoggedIn.set(false);
   }
 
   accessTokenCheck(): Observable<boolean> {
@@ -34,11 +34,11 @@ export class AuthService {
 
   login() {
     this.websocketService.socketLoaderTmp();
-    this.isLoggedIn = true;
+    this.isLoggedIn.set(true);
   }
 
   logout() {
-    this.isLoggedIn = false;
+    this.isLoggedIn.set(false);
     this.apiService.removeAccessToken();
     this.websocketService.closeSocket();
     this.router.navigate(['auth/login']);
