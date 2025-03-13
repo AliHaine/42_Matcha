@@ -20,6 +20,11 @@ export class NavbarComponent {
   notificationHover() {
     this.showNotif.set(true);
     if (this.notificationService.notifications().length > 0)
-      this.websocketService.sendMessage({"service":"notification","action": "clear"});
+      this.websocketService.sendMessage({"service": "notification", "action": "clear"});
+  }
+
+  notificationUnHover() {
+    this.showNotif.set(false);
+    this.notificationService.notifications.set([]);
   }
 }
