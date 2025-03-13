@@ -65,8 +65,8 @@
 
 <div class="form-style-1" *ngIf="this.registerService.getStep() == 2 && !this.isCityGet()">
     <h1>Do you agree to share your location ?</h1>
-    <button (click)="getLocationFromIp()">Yes</button>
-    <button (click)="getLocationFromIp()">No</button>
+    <button (click)="this.isCityGet.set(true)">Yes</button>
+    <button (click)="this.isCityGet.set(true)">No</button>
     <p></p>
 </div>
 

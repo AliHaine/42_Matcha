@@ -41,6 +41,6 @@ export class AuthService {
     this.isLoggedIn.set(false);
     this.apiService.removeAccessToken();
     this.websocketService.closeSocket();
-    this.router.navigate(['auth/login']);
+    window.location.reload();
   }
 }

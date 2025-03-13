@@ -77,6 +77,8 @@ export class RegisterComponent {
             }
         });
 
+        this.getLocationFromIp();
+
         this.locationService.observableToSubscribe(this.formControlGroupStep2.controls.city.valueChanges);
     }
 
@@ -132,7 +134,6 @@ export class RegisterComponent {
     getLocationFromIp() {
         this.apiService.getClientCityFromIp().subscribe(city => {
             this.formControlGroupStep2.controls.city.setValue(city);
-            this.isCityGet.set(true);
         });
     }
 }
