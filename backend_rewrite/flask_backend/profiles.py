@@ -12,7 +12,7 @@ from .user import check_registration_status
 
 bp = Blueprint('profiles', __name__, url_prefix='/api/profiles')
 
-def convert_to_public_profile(user):
+def convert_to_public_profile(user, user_requesting=None):
     cityID = user['city_id']
     city = ""
     db = get_db()
@@ -34,6 +34,7 @@ def convert_to_public_profile(user):
     health.append(user['alcohol'])
     health.append(user['diet'])
     interests = []
+    matching = "none"
     with db.cursor() as cursor:
         cursor.execute("SELECT interest_id FROM users_interests WHERE user_id = %s", (user['id'],))
         interestsList = cursor.fetchall()
@@ -41,6 +42,21 @@ def convert_to_public_profile(user):
             cursor.execute("SELECT name FROM interests WHERE id = %s", (interest['interest_id'],))
             interestElement = cursor.fetchone()
             interests.append(interestElement['name'])
+        if user_requesting is not None:
+            cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_requesting['id'], user['id'],))
+            user_view = cursor.fetchone()
+            if user_view is not None:
+                if user_view["blocked"] == True:
+                    matching = "block"
+                elif user_view["liked"] == True:
+                    matching = "like"
+                    cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE", (user['id'], user_requesting['id'],))
+                    user_viewed = cursor.fetchone()
+                    if user_viewed is not None:
+                        if user_viewed["liked"] == True:
+                            matching = "match"
+        else:
+            matching = "none"
     return {
         'id': user['id'],
         'firstname': user['firstname'],
@@ -57,6 +73,7 @@ def convert_to_public_profile(user):
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
         'fame_rate': user['fame_rate'],
+        "matching": matching
     }
 
 def convert_to_chat_profile(user, user_getting, all_messages=False):
@@ -225,7 +242,7 @@ def get_profile(id):
                 if 'all_messages' in request.args and request.args['all_messages'] == 'true':
                     return jsonify({'success': True, 'user': convert_to_chat_profile(user, user_getting, all_messages=True), 'chat': True})
                 return jsonify({'success': True, 'user': convert_to_chat_profile(user, user_getting), 'chat': True})
-            return jsonify({'success': True, 'user': convert_to_public_profile(user)})
+            return jsonify({'success': True, 'user': convert_to_public_profile(user, user_getting)})
         else:
             return jsonify({'success': False, 'error': f'User {user["id"]} did not complete the registration'})
     elif request.method == 'POST':
@@ -249,41 +266,34 @@ def get_profile(id):
             if action == 'like':
                 if user_view["blocked"]:
                     return jsonify({'success': False, 'error': 'User is blocked'})
+                liked = False
                 if user_view["liked"] == True:
-                    return jsonify({'success': False, 'error': 'User already liked'})
-                print("before sending notification")
-                cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
-                db.commit()
-                print("before sending notification")
-                send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
-                print("after sending notification")
+                    cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
+                    send_notification(user_getting["id"], user["id"], "dislike", "User unliked your profile")
+                else:
+                    cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
+                    send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
+                    liked = True
                 cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
                 user_viewed = cursor.fetchone()
                 print("user viewed", user_viewed)
                 if user_viewed is not None:
                     print("user viewed", user_viewed)
                     if user_viewed["liked"] == True:
-                        send_notification(user["id"], user_getting["id"], "match", "User matched with you")
-                        send_notification(user_getting["id"], user["id"], "match", "User matched with you")
-            elif action == 'unlike':
-                if user_view["blocked"]:
-                    return jsonify({'success': False, 'error': 'User is blocked'})
-                if user_view["liked"] == False:
-                    return jsonify({'success': False, 'error': 'User not liked'})
-                send_notification(user_getting["id"], user["id"], "dislike", "User unliked your profile")
-                cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
-                user_viewed = cursor.fetchone()
-                if user_viewed is not None:
-                    if user_viewed["liked"] == True:
-                        send_notification(user["id"], user_getting["id"], "unmatch", "User unmatched with you")
-                        send_notification(user_getting["id"], user["id"], "unmatch", "User unmatched with you")
-                cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
+                        if liked == True:
+                            send_notification(user["id"], user_getting["id"], "match", "User matched with you")
+                            send_notification(user_getting["id"], user["id"], "match", "User matched with you")
+                        else:
+                            send_notification(user["id"], user_getting["id"], "unmatch", "User unmatched with you")
+                            send_notification(user_getting["id"], user["id"], "unmatch", "User unmatched with you")
+                db.commit()
             elif action == 'block':
-                cursor.execute("UPDATE user_views SET blocked = TRUE WHERE id = %s", (user_view["id"],))
-                send_notification(user_getting["id"], user["id"], "block", "User blocked you")
-            elif action == 'unblock':
-                cursor.execute("UPDATE user_views SET blocked = FALSE WHERE id = %s", (user_view["id"],))
-                send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
+                if user_view["blocked"] == True:
+                    cursor.execute("UPDATE user_views SET blocked = FALSE WHERE id = %s", (user_view["id"],))
+                    send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
+                else:
+                    cursor.execute("UPDATE user_views SET blocked = TRUE WHERE id = %s", (user_view["id"],))
+                    send_notification(user_getting["id"], user["id"], "block", "User blocked you")
             elif action == 'report':
                 cursor.execute("UPDATE user_views SET reported = TRUE WHERE id = %s", (user_view["id"],))
             else:
