@@ -14,10 +14,12 @@ import {NotificationService} from "../../services/notification.service";
 export class NavbarComponent {
 
   showNotif = signal<boolean>(false);
+  websocketService = inject(WebsocketService);
   notificationService = inject(NotificationService);
 
   notificationHover() {
     this.showNotif.set(true);
-    this.notificationService.clearNotifications();
+    if (this.notificationService.notifications().length > 0)
+      this.websocketService.sendMessage({"service":"notification","action": "clear"});
   }
 }
