@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_socketio import emit, disconnect, join_room, leave_room
 from flask import request, current_app
 from . import socketio
@@ -96,9 +97,9 @@ def handle_chat_message(data):
 
 def send_notification(emitter, receiver, action, message):
     if action == "match" or action == "unmatch":
-        for sid ,user in connected_users.items():
-            if user["id"] == emitter:
-                update_available_chats()
+        sids_to_update = [sid for sid, user in connected_users.items() if user["id"] == emitter]
+        for sid in sids_to_update:
+            update_available_chats(sid)
     try:
         db = get_db()
         print(f"Notification de {emitter} à {receiver} : {action} - {message}")
@@ -186,8 +187,9 @@ def parse_service_message(data):
             print(f"Erreur d'insertion de message : {e}")
             socketio.emit('error', {'message':'Failed to send message'}, room=f"user_{emmiter_informations['id']}")
             return
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message}, room=f"user_{data['receiver']}")
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message}, room=f"user_{emmiter_informations['id']}")
+        actual_time = datetime.now().strftime("%H:%M")
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{data['receiver']}")
+        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{emmiter_informations['id']}")
     return
 
 

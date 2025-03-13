@@ -78,31 +78,31 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
     }
     with db.cursor() as cursor:
         if all_messages == True:
-            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             allMessages = cursor.fetchall()
-            messages = []
-            for message in allMessages:
-                messages.append({
-                    'message': message['message'],
-                    'created_at': message['created_at'].strftime("%H:%M"),
-                    'author_id': message['sender_id'],
+            if allMessages:
+                messages = []
+                for message in allMessages:
+                    messages.append({
+                        'message': message['message'],
+                        'created_at': message['created_at'].strftime("%H:%M"),
+                        'author_id': message['sender_id'],
+                    })
+                base_return.update({
+                    'allMessages': messages,
                 })
-            base_return.update({
-                'allMessages': messages,
-            })
         else:
             cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 1", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             lastMessage = cursor.fetchall()
-            if not lastMessage:
-                return base_return
-            message = {
-                'message': lastMessage[0]['message'],
-                'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),
-                'author_id': lastMessage[0]['sender_id'],
-            }
-            base_return.update({
-                'lastMessage': message,
-            })
+            if lastMessage:
+                message = {
+                    'message': lastMessage[0]['message'],
+                    'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),
+                    'author_id': lastMessage[0]['sender_id'],
+                }
+                base_return.update({
+                    'lastMessage': message,
+                })
         return base_return
     
 
@@ -111,6 +111,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
 @jwt_required()
 @registration_completed
 def me():
+    print("bonsoir ?")
     current_user = get_jwt_identity()
     db = get_db()
     cursor = db.cursor()
@@ -158,6 +159,7 @@ def me():
                         fields["step2"].append(field)
                     elif field in STEP3_FIELDS:
                         fields["step3"].append(field)
+                print("fields : ", fields, end="\n\n\n\n")
                 if len(fields["step1"]) > 0:
                     result = check_fields_step1(user_informations, email_exists_check=check_change_mail, fields=fields["step1"])
                     if result["success"] is False:
@@ -173,6 +175,7 @@ def me():
                 if 'password' in user_informations:
                     print("changing password : ", user_informations['password'], end="\n\n\n\n")
                     user_informations['password'] = generate_password_hash(user_informations['password'])
+                print("user informations : ", user_informations, end="\n\n\n\n")
                 update_user_fields(user_informations, user['email'])
                 db.commit()
                 from .auth import invalidate_token
@@ -234,6 +237,7 @@ def get_profile(id):
             action = data.get('action', None)
             if action is None:
                 return jsonify({'success': False, 'error': 'No action provided'})
+            print("data received : ", data)
             cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
             user_view = cursor.fetchone()
             if user_view is None:
@@ -241,16 +245,23 @@ def get_profile(id):
                 db.commit()
                 cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                 user_view = cursor.fetchone()
+            print("user view", user_view)
             if action == 'like':
                 if user_view["blocked"]:
                     return jsonify({'success': False, 'error': 'User is blocked'})
                 if user_view["liked"] == True:
                     return jsonify({'success': False, 'error': 'User already liked'})
+                print("before sending notification")
                 cursor.execute("UPDATE user_views SET liked = TRUE WHERE id = %s", (user_view["id"],))
+                db.commit()
+                print("before sending notification")
                 send_notification(user_getting["id"], user["id"], "like", "User liked your profile")
+                print("after sending notification")
                 cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
                 user_viewed = cursor.fetchone()
+                print("user viewed", user_viewed)
                 if user_viewed is not None:
+                    print("user viewed", user_viewed)
                     if user_viewed["liked"] == True:
                         send_notification(user["id"], user_getting["id"], "match", "User matched with you")
                         send_notification(user_getting["id"], user["id"], "match", "User matched with you")
@@ -280,7 +291,7 @@ def get_profile(id):
             db.commit()
             return jsonify({'success': True})
         except Exception as e:
-            print("failed to update user views", e)
+            print("failed to update user views", e, end="\n\n\n\n")
             return jsonify({'success': False, 'error': 'An error occured'})
     return jsonify({'success': False, 'error': 'Invalid method'})
 
