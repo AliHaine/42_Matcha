@@ -3,6 +3,7 @@ import {RouterLink} from "@angular/router";
 import {NotificationComponent} from "../notification/notification.component";
 import {NgIf} from "@angular/common";
 import {WebsocketService} from "../../services/websocket.service";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   selector: 'app-navbar',
@@ -13,10 +14,10 @@ import {WebsocketService} from "../../services/websocket.service";
 export class NavbarComponent {
 
   showNotif = signal<boolean>(false);
-  websocketService = inject(WebsocketService);
+  notificationService = inject(NotificationService);
 
-  overtest() {
+  notificationHover() {
     this.showNotif.set(true);
-    this.websocketService.sendMessage({"service":"notification","action": "clear"})
+    this.notificationService.clearNotifications();
   }
 }
