@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import sys
 from flask_socketio import emit, disconnect, join_room, leave_room
 from flask import request, current_app
 from . import socketio
@@ -87,10 +88,9 @@ def handle_chat_message(data):
         if "service" in data:
             if data["service"] == "notification":
                 parse_service_notification(data)
-                return
             elif data["service"] == "message":
                 parse_service_message(data)
-                return
+            sys.stdout.flush()
     except Exception as e:
         print("Erreur de décodage JSON :", e)
 
@@ -111,6 +111,9 @@ def send_notification(emitter, receiver, action, message):
             cur.execute('SELECT * FROM users WHERE id = %s', (receiver,))
             user_receiver = cur.fetchone()
             if user_receiver is None or user_emitter is None:
+                return
+            blocked = check_id_blocked(emitter, receiver)
+            if blocked:
                 return
             cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))
             db.commit()
@@ -154,25 +157,29 @@ def update_available_chats(sid):
             available_chats.append(row["matched_user"])
     connected_users[sid]['available_chats'] = available_chats
     print(f"Utilisateur {user_id} : {available_chats}")
-    if len(available_chats) > 0:
-        socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
+    socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
 
 
 def parse_service_message(data):
     if not "receiver" in data or not "message" in data:
         return
-    # send_notification(data["emitter"], data["receiver"], "message", data["message"])
     emmiter_informations = connected_users[request.sid]
     if data["receiver"] not in emmiter_informations["available_chats"]:
         return
     print("TEST RECEIVER")
     db = get_db()
     with db.cursor() as cur:
+        print("TEST RECEIVER 2")
         cur.execute('SELECT * FROM users WHERE id = %s', (emmiter_informations["id"],))
         user_emitter = cur.fetchone()
         cur.execute('SELECT * FROM users WHERE id = %s', (data["receiver"],))
         user_receiver = cur.fetchone()
         if user_receiver is None or user_emitter is None:
+            return
+        blocked, message = check_id_blocked(emmiter_informations["id"], data["receiver"])
+        if blocked:
+            socketio.emit('error', {'message':message}, room=f"user_{emmiter_informations['id']}")
+            print(f"Erreur d'envoi de message : {message}")
             return
         import re
         from markupsafe import escape
@@ -190,6 +197,12 @@ def parse_service_message(data):
         actual_time = datetime.now().strftime("%H:%M")
         socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{data['receiver']}")
         socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{emmiter_informations['id']}")
+        cur.execute("SELECT created_at FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 2", (emmiter_informations["id"], data["receiver"], data["receiver"], emmiter_informations["id"]))
+        messages = cur.fetchall()
+        if len(messages) == 2:
+            time_required = timedelta(seconds=300)
+            if messages[0]["created_at"] - messages[1]["created_at"] > time_required:
+                send_notification(emmiter_informations["id"], data["receiver"], "chat", f"Vous avez un nouveau message de {user_emitter['firstname']} {user_emitter['lastname']}")
     return
 
 
@@ -228,3 +241,15 @@ def check_jwt_validity(token):
         return False, "Header JWT invalide"
     except Exception as e:
         return False, f"Erreur inconnue : {str(e)}"
+
+def check_id_blocked(actual_id, target_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM user_views WHERE (viewer_id = %s AND viewed_id = %s AND blocked = TRUE) OR (viewer_id = %s AND viewed_id = %s AND blocked = TRUE)', (actual_id, target_id, target_id, actual_id))
+        resp = cur.fetchone()
+        if resp is not None:
+            message = "Cet utilisateur vous a bloqué"
+            if actual_id == resp["viewer_id"]:
+                message = "Vous avez bloqué cet utilisateur"
+            return True, message
+    return False, ""

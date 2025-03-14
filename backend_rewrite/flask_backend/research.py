@@ -81,7 +81,13 @@ def research():
         if 'fame_rate' in arguments:
             if arguments['fame_rate']:
                 orderBy = 'ORDER BY fame_rate DESC'
-        cur.execute(f'{baseRequest} {orderBy}', (get_jwt_identity(),))
+        blocked_filter = "AND users.id NOT IN (SELECT viewed_id FROM user_views WHERE viewer_id = %s AND blocked = TRUE UNION SELECT viewer_id FROM user_views WHERE viewed_id = %s AND blocked = TRUE)"
+        cur.execute('SELECT id FROM users WHERE email = %s', (get_jwt_identity(),))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'error': 'User not found'})
+        user = user['id']
+        cur.execute(f'{baseRequest} {blocked_filter} {orderBy}', (get_jwt_identity(), user, user,))
         users = cur.fetchall()
         start = (page - 1) * profile_per_page
         end = start + profile_per_page
