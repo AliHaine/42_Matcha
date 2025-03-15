@@ -53,6 +53,14 @@ def research():
                 arguments['fame_rate'] = False
             else:
                 errors.append('Invalid fameRate')
+        if 'showBlocks' in request.args:
+            fame_rate = request.args['showBlocks']
+            if fame_rate == 'true':
+                arguments['show_blocks'] = True
+            elif fame_rate == 'false':
+                arguments['show_blocks'] = False
+            else:
+                errors.append('Invalid fameRate')
     except Exception as e:
         print("failed arguments research", e)
         return jsonify({'error': 'Invalid parameters'})
@@ -81,7 +89,16 @@ def research():
         if 'fame_rate' in arguments:
             if arguments['fame_rate']:
                 orderBy = 'ORDER BY fame_rate DESC'
-        cur.execute(f'{baseRequest} {orderBy}', (get_jwt_identity(),))
+        blocked_filter = "AND users.id NOT IN (SELECT viewed_id FROM user_views WHERE viewer_id = %s AND blocked = TRUE UNION SELECT viewer_id FROM user_views WHERE viewed_id = %s AND blocked = TRUE)"
+        cur.execute('SELECT id FROM users WHERE email = %s', (get_jwt_identity(),))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'error': 'User not found'})
+        user = user['id']
+        if 'show_blocks' in arguments and arguments['show_blocks'] == True:
+            cur.execute(f'{baseRequest} {orderBy}', (get_jwt_identity(),))
+        else:
+            cur.execute(f'{baseRequest} {blocked_filter} {orderBy}', (get_jwt_identity(), user, user,))
         users = cur.fetchall()
         start = (page - 1) * profile_per_page
         end = start + profile_per_page

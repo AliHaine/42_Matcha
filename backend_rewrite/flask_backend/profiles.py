@@ -128,7 +128,6 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
 @jwt_required()
 @registration_completed
 def me():
-    print("bonsoir ?")
     current_user = get_jwt_identity()
     db = get_db()
     cursor = db.cursor()
@@ -202,7 +201,28 @@ def me():
                 return jsonify({'success': True})
             except Exception as e:
                 return jsonify({'success': False, 'error': str(e)})
-            
+
+@bp.route('/me/views', methods=['GET'])
+@jwt_required()
+@registration_completed
+def get_views():
+    current_user = get_jwt_identity()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM users WHERE email = %s", (current_user,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        cur.execute("SELECT * FROM user_views WHERE viewed_id = %s", (user['id'],))
+        views = cur.fetchall()
+        ids = []
+        for view in views:
+            ids.append(view['viewer_id'])
+        cur.execute("SELECT * FROM users WHERE id IN %s", (tuple(ids),))
+        users = cur.fetchall()
+        users = [convert_to_public_profile(u, user) for u in users]
+        return jsonify({'success': True, 'views': users})
+        
 
 @bp.route('/<int:id>', methods=['GET', 'POST'])
 @jwt_required()

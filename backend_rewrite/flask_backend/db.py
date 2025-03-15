@@ -1,20 +1,34 @@
+from asyncio import sleep
 import psycopg2
 import psycopg2.extras
 from datetime import datetime
+
+import time
 
 import click
 from flask import current_app, g
 
 def get_db():
     if 'db' not in g:
-        g.db = psycopg2.connect(
-            dbname=current_app.config['DATABASE'],
-            user=current_app.config['DATABASE_USER'],
-            password=current_app.config['DATABASE_PASSWORD'],
-            host=current_app.config['DATABASE_HOST'],
-            port=current_app.config['DATABASE_PORT']
-        )
-        g.db.cursor_factory = psycopg2.extras.RealDictCursor
+        loop = 0
+        while True:
+            loop += 1
+            try:
+                g.db = psycopg2.connect(
+                    dbname=current_app.config['DATABASE'],
+                    user=current_app.config['DATABASE_USER'],
+                    password=current_app.config['DATABASE_PASSWORD'],
+                    host=current_app.config['DATABASE_HOST'],
+                    port=current_app.config['DATABASE_PORT']
+                )
+                g.db.cursor_factory = psycopg2.extras.RealDictCursor
+                break
+            except Exception as e:
+                print(f'Error connecting to database (try number : {loop}) : {e}')
+                if loop > 5:
+                    print('Failed to connect to database after 5 tries, exiting')
+                    break
+                time.sleep(5)
     return g.db
 
 def close_db(e=None):
