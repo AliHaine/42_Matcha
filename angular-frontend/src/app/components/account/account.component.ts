@@ -1,7 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
-import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
@@ -48,16 +48,29 @@ export class AccountComponent {
     password: new FormControl(''),
     description: new FormControl(''),
     picture: new FormControl(''),
+    smoking: new FormControl(''),
+    alcohol: new FormControl(''),
+    diet: new FormControl(''),
   } as {[key: string]: any});
 
   constructor() {
     this.apiService.getData("/profiles/me", {}).subscribe(result => {
       this.profile.set(this.profileFactory.getNewProfile(result["user"]));
-      for (const value in result["user"])
+      console.log(result['user']);
+
+      this.arrayConvertor(result['user'], result["user"]["health"], ["smoking", "alcohol", "diet"]);
+
+      for (let value in result["user"])
         if (this.formGroup.value[value] !== undefined)
           this.formGroup.controls[value].setValue(result["user"][value]);
     })
     this.locationService.observableToSubscribe(this.formGroup.controls["city"].valueChanges)
+  }
+
+  arrayConvertor(baseValues: {[key: string]: any}, arrayToConvert: [], values: string[]) {
+    values.forEach((value, index) => {
+      baseValues[value] = arrayToConvert.at(index);
+    });
   }
 
   applyTrigger() {

@@ -71,12 +71,12 @@
 
             <div class="input-area">
                 <label>Diet</label>
-                <input class="input-style-1" formControlName="interests">
+                <input class="input-style-1" formControlName="diet">
             </div>
 
             <div class="input-area">
                 <label>Alcohol consumption</label>
-                <input class="input-style-1" formControlName="interests">
+                <input class="input-style-1" formControlName="alcohol">
             </div>
 
             <div class="input-area input-radio">
@@ -94,21 +94,21 @@
             </div>
 
             <div class="input-area input-radio">
-                <label class="fieldset-label">Gender</label>
+                <label class="fieldset-label">Smoking</label>
                 <fieldset>
                      <div>
-                        <input type="radio" value="M" formControlName="gender" />
-                        <label>Male</label>
+                        <input type="radio" [value]=true formControlName="smoking" />
+                        <label>Yes</label>
                     </div>
                     <div>
-                        <input type="radio" value="F" formControlName="gender" />
-                        <label>Female</label>
+                        <input type="radio" [value]=false formControlName="smoking" />
+                        <label>No</label>
                     </div>
                 </fieldset>
             </div>
 
             <div class="input-area input-radio">
-                <label>Smoking</label>
+                <label>Hetero</label>
                 <fieldset>
                     <div>
                         <input type="radio" [value]=true formControlName="hetero" />
