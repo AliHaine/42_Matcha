@@ -10,7 +10,7 @@ export class CardService {
 
     apiService = inject(ApiService);
     profileFactory = inject(ProfileFactory);
-    private profiles = signal<ProfileModel[]>([]);
+    profiles = signal<ProfileModel[]>([]);
 
     constructor() {
         this.refreshProfile();
@@ -111,19 +111,17 @@ export class CardService {
             'profilePicturePath': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7iSFR6QIn17S_j89EPHXhfRZmv3FS3OuUzQ&s'
         }));*/
 
-      }
+    }
 
       refreshProfile() {
         this.profiles.set([]);
-          this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
-              for (const data of result["result"]) {
-                  this.profiles().push(this.profileFactory.getNewProfile(data));
-              }
-          });
+        this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
+            for (const data of result["result"])
+                this.addNewProfileModel(this.profileFactory.getNewProfile(data));
+        });
       }
 
-      get getProfiles() {
-        console.log("gert profiles")
-          return this.profiles;
+      addNewProfileModel(newProfileModel: ProfileModel) {
+        this.profiles.set([...this.profiles(), newProfileModel]);
       }
 }

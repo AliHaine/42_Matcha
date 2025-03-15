@@ -3,6 +3,6 @@
         <img src="/logoicon.png" (click)="cardService.refreshProfile()">
     </div>
     <div id="cards">
-        <app-card *ngFor="let profile of cardService.getProfiles()" [profile]="profile"/>
+        <app-card *ngFor="let profile of cardService.profiles()" [profile]="profile"/>
     </div>
 </div>

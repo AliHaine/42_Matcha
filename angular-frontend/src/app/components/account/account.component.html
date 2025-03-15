@@ -1,101 +1,131 @@
 <div id="account-content">
     <h1>Edit your profile</h1>
-    <form id="inputs" [formGroup]="this.formGroup" (keydown)="keyPressed()">
+    <form [formGroup]="this.formGroup" (keydown)="keyPressed()">
 
-        <div id="profile-pictures">
-            <app-slider [images]="profile().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
-            <div class="caption" *ngIf="profile().picturesNumber > 0">
-                <img class="caption-img" src="/icons/x.png" (click)="deletePicture()">
+        <div id="pictures-description">
+            <div id="profile-pictures">
+                <app-slider [images]="profile().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
+                <div class="caption">
+                    <img *ngIf="profile().picturesNumber > 0" class="caption-img" src="/icons/x.png" (click)="deletePicture()">
+                    <label for="picture" style="height: 100%">
+                        <img class="caption-img" src="/icons/upload.png"/>
+                    </label>
+                    <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
+                </div>
+            </div>
+
+            <div id="description-container" class="input-area">
+                <mat-label>Description</mat-label>
+                <mat-form-field>
+                    <textarea id="description"
+                              matInput
+                              cdkTextareaAutosize
+                              cdkAutosizeMinRows="8"
+                              cdkAutosizeMaxRows="6"
+                              formControlName="description">
+                    </textarea>
+                </mat-form-field>
             </div>
         </div>
 
-        <div class="input-area">
-            <mat-label>Description</mat-label>
-            <mat-form-field>
-                <textarea id="description"
-                          matInput
-                          cdkTextareaAutosize
-                          cdkAutosizeMinRows="4"
-                          cdkAutosizeMaxRows="6"
-                          formControlName="description">
-            </textarea>
-            </mat-form-field>
-        </div>
+        <div id="inputs">
+            <div class="input-area">
+                <label>Email</label>
+                <input type="email" class="input-style-1" formControlName="email">
+            </div>
 
-        <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
+            <div class="input-area">
+                <label>Password</label>
+                <input type="password" class="input-style-1" formControlName="password">
+            </div>
 
-        <div class="input-area">
-            <label>Firstname</label>
-            <input class="input-style-1" formControlName="firstname">
-        </div>
+            <div class="input-area">
+                <label>Age</label>
+                <input type="number" class="input-style-1" formControlName="age">
+            </div>
 
-        <div class="input-area">
-            <label>Lastname</label>
-            <input class="input-style-1" formControlName="lastname">
-        </div>
+            <div class="input-area">
+                <label>Firstname</label>
+                <input class="input-style-1" formControlName="firstname">
+            </div>
 
-        <div class="input-area">
-            <label>City</label>
-            <input class="input-style-1" formControlName="city">
-            <div class="dropdown">
-                <div class="dropdown-menu" style="display: flex; flex-direction: column; color: var(--color-4);">
-                    <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
+            <div class="input-area">
+                <label>Lastname</label>
+                <input class="input-style-1" formControlName="lastname">
+            </div>
+
+            <div class="input-area">
+                <label>City</label>
+                <input class="input-style-1" formControlName="city">
+                <div class="dropdown">
+                    <div class="dropdown-menu" style="display: flex; flex-direction: column; color: var(--color-4);">
+                        <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="input-area">
-            <label>Age</label>
-            <input type="number" class="input-style-1" formControlName="age">
-        </div>
+            <div class="input-area">
+                <label>Interests</label>
+                <input class="input-style-1" formControlName="interests">
+            </div>
 
-        <div class="input-area">
-            <label class="fieldset-label">Gender</label>
-            <fieldset>
-			 	 <div>
-					<input type="radio" value="M" formControlName="gender" />
-					<label>Male</label>
-			  	</div>
-				<div>
-					<input type="radio" value="F" formControlName="gender" />
-					<label>Female</label>
-				</div>
-			</fieldset>
-        </div>
+            <div class="input-area">
+                <label>Diet</label>
+                <input class="input-style-1" formControlName="interests">
+            </div>
 
-        <div class="input-area">
-            <label class="fieldset-label">Sexual orientation</label>
-            <fieldset>
-                <div>
-                    <input type="radio" [value]=true formControlName="hetero" />
-                    <label>Hetero</label>
-                </div>
-                <div>
-                    <input type="radio" [value]=false formControlName="hetero" />
-                    <label>Other</label>
-                </div>
-            </fieldset>
-        </div>
+            <div class="input-area">
+                <label>Alcohol consumption</label>
+                <input class="input-style-1" formControlName="interests">
+            </div>
 
-        <div class="input-area">
-            <label>Interests</label>
-            <input class="input-style-1" formControlName="interests">
-        </div>
+            <div class="input-area input-radio">
+                <label class="fieldset-label">Gender</label>
+                <fieldset>
+                     <div>
+                        <input type="radio" value="M" formControlName="gender" />
+                        <label>Male</label>
+                    </div>
+                    <div>
+                        <input type="radio" value="F" formControlName="gender" />
+                        <label>Female</label>
+                    </div>
+                </fieldset>
+            </div>
 
-        <div class="input-area">
-            <label>Email</label>
-            <input type="email" class="input-style-1" formControlName="email">
-        </div>
+            <div class="input-area input-radio">
+                <label class="fieldset-label">Gender</label>
+                <fieldset>
+                     <div>
+                        <input type="radio" value="M" formControlName="gender" />
+                        <label>Male</label>
+                    </div>
+                    <div>
+                        <input type="radio" value="F" formControlName="gender" />
+                        <label>Female</label>
+                    </div>
+                </fieldset>
+            </div>
 
-        <div class="input-area">
-            <label>Password</label>
-            <input type="password" class="input-style-1" formControlName="password">
+            <div class="input-area input-radio">
+                <label>Smoking</label>
+                <fieldset>
+                    <div>
+                        <input type="radio" [value]=true formControlName="hetero" />
+                        <label>Hetero</label>
+                    </div>
+                    <div>
+                        <input type="radio" [value]=false formControlName="hetero" />
+                        <label>Other</label>
+                    </div>
+                </fieldset>
+            </div>
         </div>
     </form>
 
     <p class="error" *ngIf="this.placeHolderMessage.length > 0">{{this.placeHolderMessage}}</p>
     <div id="buttons-area">
-        <button class="button-style-1" (click)="this.applyTrigger()">Apply</button>
+        <button class="button-style-1" (click)="this.applyTrigger()">Submit</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>
     </div>
 </div>

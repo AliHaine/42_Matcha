@@ -69,7 +69,6 @@ export class AccountComponent {
       this.addPicture(file);
 
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
-      console.log(result);
       if (result['disconnect'])
         this.authService.logout();
       if (!result['success'])

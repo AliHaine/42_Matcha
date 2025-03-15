@@ -47,6 +47,6 @@ export class ChatService {
   }
 
   addNewChatBubbleModel(data: {}) {
-    this.currentChatBubbles.set([ new ChatBubbleModel(data), ...this.currentChatBubbles()]);
+    this.currentChatBubbles.set([new ChatBubbleModel(data), ...this.currentChatBubbles()]);
   }
 }
