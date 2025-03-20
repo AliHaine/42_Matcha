@@ -84,9 +84,9 @@ export class RegisterComponent {
 
     submit(event: Event, values: any) {
       event.preventDefault();
-      values['step'] = this.registerService.getStep();
+      values['step'] = this.registerService.currentStep();
 
-      if (this.registerService.getStep() === 3)
+      if (this.registerService.currentStep() === 3)
           this.setupInterests(values);
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
@@ -94,9 +94,9 @@ export class RegisterComponent {
               this.errorMessage = response['error'];
               return;
           }
-          if (this.registerService.getStep() === 1)
+          if (this.registerService.currentStep() === 1)
               this.apiService.saveAccessToken(response['access_token'])
-          if (this.registerService.getStep() === 3) {
+          if (this.registerService.currentStep() === 3) {
               this.authService.login();
               this.router.navigate(['']);
               this.registerService.setStep(1);

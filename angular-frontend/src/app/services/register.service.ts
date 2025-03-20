@@ -7,21 +7,21 @@ import {ApiService} from "./api.service";
 export class RegisterService {
 
     apiService = inject(ApiService);
-    private currentStep = signal<number>(1);
+    currentStep = signal<number>(1);
     INTERESTS = signal<{ [key: string]: string[] }>({});
+    registerInfo = signal<{ [key: string]: string[] }>({});
 
     constructor() {
-        this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
+       /* this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
             this.INTERESTS.set(data["interests"]);
+        });*/
+        this.apiService.getData("/getInformations/register", {}).subscribe((data: any) => {
+            this.registerInfo.set(data["registerInfo"]);
         });
     }
 
     setStep(step: number) {
         this.currentStep.set(step);
-    }
-
-    getStep() {
-        return this.currentStep();
     }
 
     increaseStep() {

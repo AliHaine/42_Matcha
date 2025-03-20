@@ -1,5 +1,5 @@
 <script src="../../../services/register.service.ts"></script>
-<form *ngIf="this.registerService.getStep() == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
+<form *ngIf="this.registerService.currentStep() == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
 	<div class="area-multiple">
 		<div>
@@ -63,14 +63,14 @@
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
 
-<div class="form-style-1" *ngIf="this.registerService.getStep() == 2 && !this.isCityGet()">
+<div class="form-style-1" *ngIf="this.registerService.currentStep() == 2 && !this.isCityGet()">
     <h1>Do you agree to share your location ?</h1>
     <button (click)="this.isCityGet.set(true)">Yes</button>
     <button (click)="this.isCityGet.set(true)">No</button>
     <p></p>
 </div>
 
-<form *ngIf="this.registerService.getStep() == 2 && this.isCityGet()" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet()" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
 	<h1>Complete your profile</h1>
 	<div>
 		<div style="display: flex; flex-direction: column;">
@@ -88,27 +88,24 @@
         <div>
             <label>Searching</label>
             <select id="searching" formControlName='searching'>
-                <option>Friends</option>
-                <option>Love</option>
-                <option>Just talking</option>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['searching']" [value]="val">{{val}}</option>
             </select>
         </div>
 
         <div>
           <label>Commitment </label>
           <select id="commitment" formControlName='commitment'>
-              <option>Short term</option>
-              <option>Long term</option>
-              <option>Undecided</option>
+              <option value='' disabled selected>-- Select an option --</option>
+              <option *ngFor="let val of this.registerService.registerInfo()['commitment']" [value]="val">{{val}}</option>
           </select>
         </div>
 
         <div>
           <label>Contact frequency</label>
           <select id="frequency" formControlName='frequency'>
-              <option>Daily</option>
-              <option>Weekly</option>
-              <option>Occasionally</option>
+              <option value='' disabled selected>-- Select an option --</option>
+               <option *ngFor="let val of this.registerService.registerInfo()['frequency']" [value]="val">{{val}}</option>
           </select>
         </div>
     </div>
@@ -118,36 +115,24 @@
         <div>
             <label>Weight (KG)</label>
             <select id="weight" formControlName='weight'>
-                <option>+100</option>
-                <option>91-100</option>
-                <option>81-90</option>
-                <option>71-80</option>
-                <option>61-70</option>
-                <option>51-60</option>
-                <option>-50</option>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['weight']" [value]="val">{{val}}</option>
             </select>
         </div>
 
         <div>
           <label>Size (CM)</label>
           <select id="size" formControlName='size'>
-              <option>+200</option>
-              <option>191-200</option>
-              <option>181-190</option>
-              <option>171-180</option>
-              <option>161-170</option>
-              <option>151-160</option>
-              <option>-150</option>
+              <option value='' disabled selected>-- Select an option --</option>
+              <option *ngFor="let val of this.registerService.registerInfo()['size']" [value]="val">{{val}}</option>
           </select>
         </div>
 
         <div>
           <label>shape</label>
           <select id="shape" formControlName='shape'>
-              <option>Skinny</option>
-              <option>Normal</option>
-              <option>Sporty</option>
-              <option>Fat</option>
+              <option value='' disabled selected>-- Select an option --</option>
+              <option *ngFor="let val of this.registerService.registerInfo()['shape']" [value]="val">{{val}}</option>
           </select>
         </div>
     </div>
@@ -171,20 +156,16 @@
         <div>
           <label>Alcohol consumption</label>
           <select id="alcohol" formControlName="alcohol">
-              <option>Never</option>
-              <option>Occasionally</option>
-              <option>Every week</option>
-              <option>Every day</option>
+              <option value='' disabled selected>-- Select an option --</option>
+              <option *ngFor="let val of this.registerService.registerInfo()['alcohol']" [value]="val">{{val}}</option>
           </select>
         </div>
 
         <div>
           <label>diet</label>
           <select id="diet" formControlName="diet">
-              <option>Omnivor</option>
-              <option>Vegetarian</option>
-              <option>Vegan</option>
-              <option>Rich in protein</option>
+              <option value='' disabled selected>-- Select an option --</option>
+              <option *ngFor="let val of this.registerService.registerInfo()['diet']" [value]="val">{{val}}</option>
           </select>
         </div>
     </div>
@@ -192,7 +173,7 @@
 	<button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
 </form>
 
-<form *ngIf="this.registerService.getStep() >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
+<form *ngIf="this.registerService.currentStep() >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
     <h1>Finish your profile</h1>
     <div id="checkbox-area">
         <fieldset *ngFor="let formArrayName of this.getGroupForm3()" [formArrayName]=formArrayName>
