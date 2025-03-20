@@ -6,9 +6,9 @@
             <div id="profile-pictures">
                 <app-slider [images]="profile().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
                 <div class="caption">
-                    <img *ngIf="profile().picturesNumber > 0" class="caption-img" src="/icons/x.png" (click)="deletePicture()">
-                    <label for="picture" style="height: 100%">
-                        <img class="caption-img" src="/icons/upload.png"/>
+                    <div *ngIf="profile().picturesNumber > 0" class="img" style="-webkit-mask: url('/icons/x.png') center/contain" (click)="deletePicture()"></div>
+                    <label for="picture" style="height: 100%; align-content: center">
+                         <div class="img" style="-webkit-mask: url('/icons/upload.png') center/contain"></div>
                     </label>
                     <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
                 </div>
