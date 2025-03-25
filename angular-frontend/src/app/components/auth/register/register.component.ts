@@ -17,10 +17,11 @@ import {LocationService} from "../../../services/location.service";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {LocationComponent} from "../../location/location.component";
 
 @Component({
     selector: 'app-register',
-    imports: [ReactiveFormsModule, RouterLink, NgIf, NgForOf, TextFieldModule, MatFormField, MatInput],
+    imports: [ReactiveFormsModule, RouterLink, NgIf, NgForOf, TextFieldModule, MatFormField, MatInput, LocationComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -78,8 +79,6 @@ export class RegisterComponent {
         });
 
         this.getLocationFromIp();
-
-        this.locationService.observableToSubscribe(this.formControlGroupStep2.controls.city.valueChanges);
     }
 
     submit(event: Event, values: any) {
@@ -125,10 +124,6 @@ export class RegisterComponent {
             }
             values[key] = index;
         }
-    }
-
-    setLocation(value: string) {
-        this.formControlGroupStep2.controls.city.setValue(value);
     }
 
     getLocationFromIp() {

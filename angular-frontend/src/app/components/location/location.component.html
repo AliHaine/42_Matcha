@@ -1,0 +1,5 @@
+<div class="dropdown">
+    <div class="dropdown-menu" style="display: flex; flex-direction: column; color: var(--color-4);">
+        <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
+    </div>
+</div>

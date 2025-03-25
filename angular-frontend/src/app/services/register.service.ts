@@ -12,9 +12,9 @@ export class RegisterService {
     registerInfo = signal<{ [key: string]: string[] }>({});
 
     constructor() {
-       /* this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
+        this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
             this.INTERESTS.set(data["interests"]);
-        });*/
+        });
         this.apiService.getData("/getInformations/register", {}).subscribe((data: any) => {
             this.registerInfo.set(data["registerInfo"]);
         });

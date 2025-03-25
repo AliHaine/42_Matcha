@@ -1,7 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {Form, FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
@@ -11,6 +11,7 @@ import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
 import {ProfileModel} from "../../models/profile.model";
 import {ProfileFactory} from "../../services/profile.factory";
+import {LocationComponent} from "../location/location.component";
 
 @Component({
   selector: 'app-account',
@@ -23,6 +24,7 @@ import {ProfileFactory} from "../../services/profile.factory";
     TextFieldModule,
     NgIf,
     SliderComponent,
+    LocationComponent,
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -36,7 +38,7 @@ export class AccountComponent {
   placeHolderMessage: string = "";
   profile = signal<ProfileModel>(new ProfileModel({}));
   private currentImageIndex: number = 0;
-  formGroup: FormGroup = new FormGroup({
+  formGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
     city: new FormControl(''),
@@ -64,7 +66,6 @@ export class AccountComponent {
         if (this.formGroup.value[value] !== undefined)
           this.formGroup.controls[value].setValue(result["user"][value]);
     })
-    this.locationService.observableToSubscribe(this.formGroup.controls["city"].valueChanges)
   }
 
   arrayConvertor(baseValues: {[key: string]: any}, arrayToConvert: [], values: string[]) {
@@ -89,10 +90,6 @@ export class AccountComponent {
       else
         this.placeHolderMessage = "Successfully updated";
     });
-  }
-
-  setLocation(name: string) {
-    this.formGroup.controls["city"].setValue(name);
   }
 
   keyPressed() {
