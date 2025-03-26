@@ -5,35 +5,38 @@
             <div id="profile-picture" [style.--border-color]="this.profile().status ? 'var(--color-green)': 'var(--color-error)'">
                 <app-slider [images]="this.profile().profilePicturePath"></app-slider>
                 <div class="caption">
-                    <img class="caption-img" src="/icons/gift.png">
-                    <img class="caption-img" src="/icons/heart.png">
+                    <div class="imgOver" style="-webkit-mask: url('/icons/alarme.png') center/contain" (click)="reportTest()"></div>
+                    <div class="imgOver" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
+                    <img class="img giftIcon" src="/icons/gift.png">
+                    <img class="img heartIcon" src="/icons/heart.png">
                 </div>
             </div>
             <div id="city">
                 {{this.profile().age}} years old, from {{this.profile().city}}.
             </div>
-            <div id="buttons">
-                <button class="button-style-2 button" (click)="sendMessageTrigger()">Send message</button>
-                <button class="button-style-2 button" (click)="reportTest()">Report</button>
-            </div>
         </div>
         <div id="infos-right">
-            <div>
-                <h3>Looking for</h3>
-                <p>I want to meet friends in a long term relation with occasional contact</p>
+            <h3>Shape</h3>
+            <div class="content">
+                <div class="c">{{this.profile().shape.at(2)}}</div>
+                <div class="c">{{this.profile().shape.at(0)}}CM</div>
+                <div class="c">{{this.profile().shape.at(1)}}KG</div>
             </div>
-            <div>
-                <h3>Health</h3>
-                <p>Im vegan, I don’t smoke and drink alcohol {{this.profile().health.at(1)}}  </p>
+            <h3>Health</h3>
+            <div class="content">
+                <div class="c">Vegan</div>
+                <div class="c">Don't smoke</div>
+                <div class="c">Drink alcohol occasionally</div>
             </div>
-            <div>
-                <h3>Shape</h3>
-                <p>My shape is {{this.profile().shape.at(2)}}, I’m {{this.profile().shape.at(0)}} CM tall and weigh {{this.profile().shape.at(1)}} KG</p>
+            <h3>Looking for</h3>
+            <div class="content">
+                <div class="c">Meet friends</div>
+                <div class="c">Long term relation</div>
+                <div class="c">Occasional contact</div>
             </div>
-            <div>
-                <h3>Interests</h3>
-                <span>Im interested by </span>
-                <span *ngFor="let interest of this.profile().interests.at(0)?.interests">{{interest}}, </span>
+            <h3>Interests</h3>
+            <div class="content">
+                <div *ngFor="let interest of this.profile().interests.at(0)?.interests" class="c">{{interest}}</div>
             </div>
         </div>
     </div>
