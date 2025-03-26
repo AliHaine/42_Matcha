@@ -1,7 +1,6 @@
 .PHONY: backend frontend flask database
 
 both: database
-	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"
 	@npx concurrently --names "FRONTEND, BACKEND" "make frontend" "make flask-bash"
 
 up:
@@ -29,3 +28,4 @@ flask:
 
 database:
 	docker-compose -f backend_rewrite/tools/database/docker-compose.yml --env-file ./settings/.database.env up -d
+	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"

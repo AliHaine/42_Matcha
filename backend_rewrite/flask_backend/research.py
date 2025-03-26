@@ -45,65 +45,115 @@ def research():
             arguments['location'] = request.args['location']
         if 'interest' in request.args:
             arguments['interest'] = request.args['interest']
-        if 'fameRate' in request.args:
-            fame_rate = request.args['fameRate']
-            if fame_rate == 'true':
-                arguments['fame_rate'] = True
-            elif fame_rate == 'false':
-                arguments['fame_rate'] = False
-            else:
-                errors.append('Invalid fameRate')
         if 'showBlocks' in request.args:
-            fame_rate = request.args['showBlocks']
-            if fame_rate == 'true':
+            show_blocks = request.args['showBlocks']
+            if show_blocks == 'true':
                 arguments['show_blocks'] = True
-            elif fame_rate == 'false':
+            elif show_blocks == 'false':
                 arguments['show_blocks'] = False
             else:
-                errors.append('Invalid fameRate')
+                errors.append('Invalid showBlocks')
+        if 'sortOrder' in request.args:
+            sort_order = request.args['sortOrder']
+            if sort_order == 'ASC' or sort_order == 'DESC':
+                arguments['sort_order'] = sort_order
+            else:
+                errors.append('Invalid sortOrder')
+        if 'sortBy' in request.args:
+            sort_by = request.args['sortBy']
+            if sort_by in ['common_interests', 'fame_rate', 'age', 'distance']:
+                arguments['sort_by'] = sort_by
+            else:
+                errors.append('Invalid sortBy')
     except Exception as e:
         print("failed arguments research", e)
         return jsonify({'error': 'Invalid parameters'})
     db = get_db()
     with db.cursor() as cur:
-        baseRequest = 'SELECT * FROM users WHERE email != %s AND registration_complete = TRUE'
+        cur.execute('SELECT id, city_id FROM users WHERE email = %s', (get_jwt_identity(),))
+        current_user = cur.fetchone()
+        if current_user is None:
+            return jsonify({'error': 'User not found'})
+        user_id = current_user['id']
+        my_city_id = current_user['city_id']
+        baseRequest = '''
+            SELECT 
+                users.*,
+                COUNT(DISTINCT common.interest_id) AS common_interests,
+                ST_Distance(user_city.geom::geography, my_city.geom::geography) AS distance
+            FROM users
+            JOIN cities user_city ON users.city_id = user_city.id
+            JOIN cities my_city ON my_city.id = %s
+            LEFT JOIN users_interests other ON other.user_id = users.id
+            LEFT JOIN users_interests common 
+                ON common.interest_id = other.interest_id AND common.user_id = %s
+            WHERE users.id != %s AND users.registration_complete = TRUE
+        '''
+        params = [my_city_id, user_id, user_id]
         if 'age_min' in arguments:
-            baseRequest += f' AND age >= {arguments["age_min"]}'
+            baseRequest += f' AND users.age >= %s'
+            params.append(arguments['age_min'])
         if 'age_max' in arguments:
-            baseRequest += f' AND age <= {arguments["age_max"]}'
+            baseRequest += f' AND users.age <= %s'
+            params.append(arguments['age_max'])
         if 'location' in arguments:
             cur.execute('SELECT id FROM cities WHERE cityname = %s', (arguments['location'],))
             location = cur.fetchone()
             if location is None:
                 errors.append('Invalid location')
             else:
-                baseRequest += f' AND city_id = {location["id"]}'
+                baseRequest += f' AND users.city_id = %s'
+                params.append(location['id'])
         if 'interest' in arguments:
             cur.execute('SELECT id FROM interests WHERE name = %s', (arguments['interest'],))
             interest = cur.fetchone()
             if interest is None:
                 errors.append('Invalid interest')
             else:
-                baseRequest += f' AND id IN (SELECT user_id FROM users_interests WHERE interest_id = {interest["id"]})'
-        orderBy = 'ORDER BY id ASC'
-        if 'fame_rate' in arguments:
-            if arguments['fame_rate']:
-                orderBy = 'ORDER BY fame_rate DESC'
-        blocked_filter = "AND users.id NOT IN (SELECT viewed_id FROM user_views WHERE viewer_id = %s AND blocked = TRUE UNION SELECT viewer_id FROM user_views WHERE viewed_id = %s AND blocked = TRUE)"
-        cur.execute('SELECT id FROM users WHERE email = %s', (get_jwt_identity(),))
-        user = cur.fetchone()
-        if user is None:
-            return jsonify({'error': 'User not found'})
-        user = user['id']
-        if 'show_blocks' in arguments and arguments['show_blocks'] == True:
-            cur.execute(f'{baseRequest} {orderBy}', (get_jwt_identity(),))
-        else:
-            cur.execute(f'{baseRequest} {blocked_filter} {orderBy}', (get_jwt_identity(), user, user,))
+                baseRequest += f'''
+                    AND users.id IN (
+                        SELECT user_id FROM users_interests WHERE interest_id = %s
+                    )
+                '''
+                params.append(interest['id'])
+        if not arguments.get('show_blocks', False):
+            baseRequest += '''
+                AND users.id NOT IN (
+                    SELECT viewed_id FROM user_views WHERE viewer_id = %s AND blocked = TRUE
+                    UNION
+                    SELECT viewer_id FROM user_views WHERE viewed_id = %s AND blocked = TRUE
+                )
+            '''
+            params.extend([user_id, user_id])
+        baseRequest += ' GROUP BY users.id, user_city.geom, my_city.geom'
+        sort_order = arguments.get('sort_order', 'DESC')
+        if sort_order not in ['ASC', 'DESC']:
+            sort_order = 'DESC'
+        sort_by = arguments.get('sort_by', "")
+        if sort_by not in ['common_interests', 'fame_rate', 'age', 'distance']:
+            sort_by = 'id'
+        print("sort by", sort_by)
+        if sort_by == 'common_interests':
+            baseRequest += f' ORDER BY common_interests {sort_order}'
+        elif sort_by == 'fame_rate':
+            baseRequest += f' ORDER BY users.fame_rate {sort_order}'
+        elif sort_by == 'age':
+            baseRequest += f' ORDER BY users.age {sort_order}'
+        elif sort_by == 'distance':
+            baseRequest += f' ORDER BY distance {sort_order}'
+        elif sort_by == 'id':
+            print("sort by id")
+            baseRequest += f' ORDER BY users.id {sort_order}'
+        cur.execute(baseRequest, tuple(params))
         users = cur.fetchall()
         start = (page - 1) * profile_per_page
         end = start + profile_per_page
         for user in users[start:end]:
-            research_results.append(convert_to_public_profile(user))
+            test = {
+                "distance": int(user["distance"] // 1000),
+                "common_interests": user['common_interests'],
+            }
+            research_results.append({**convert_to_public_profile(user), **test})
     max_page = len(users) // profile_per_page
     if len(users) % profile_per_page != 0:
         max_page += 1
