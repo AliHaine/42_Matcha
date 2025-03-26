@@ -1,8 +1,8 @@
 import {Component, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
-import {Form, FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -17,7 +17,6 @@ import {LocationComponent} from "../location/location.component";
   selector: 'app-account',
   imports: [
     ReactiveFormsModule,
-    NgForOf,
     CdkTextareaAutosize,
     MatFormFieldModule,
     MatInputModule,
@@ -33,7 +32,6 @@ export class AccountComponent {
 
   apiService = inject(ApiService);
   authService = inject(AuthService);
-  locationService = inject(LocationService);
   profileFactory = inject(ProfileFactory);
   placeHolderMessage: string = "";
   profile = signal<ProfileModel>(new ProfileModel({}));

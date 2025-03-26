@@ -13,7 +13,6 @@ import {ApiService} from "../../../services/api.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
 import {AuthService} from "../../../services/auth.service";
-import {LocationService} from "../../../services/location.service";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -29,7 +28,6 @@ import {LocationComponent} from "../../location/location.component";
 export class RegisterComponent {
 
     apiService = inject(ApiService);
-    locationService = inject(LocationService);
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);

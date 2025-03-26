@@ -13,11 +13,7 @@
         <div>
             <label>Location</label>
             <input class="input-style-1" placeholder="Type a city" formControlName="location">
-            <div class="dropdown">
-                <div class="dropdown-menu">
-                    <span (click)="setLocation(item)" class="dropdown-content" *ngFor="let item of locationService.locations">{{ item }}</span>
-                </div>
-            </div>
+            <app-location [cityFormControl]="this.formGroup.controls.location"></app-location>
         </div>
         <div>
             <label>Interest</label>
