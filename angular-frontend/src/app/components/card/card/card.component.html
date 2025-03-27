@@ -1,10 +1,9 @@
-<div id="main">
+<div id="main" [routerLink]="['/profile/', profile().userId]">
     <div id="pictureAndIcons">
         <img class="profilePic" [src]=profile().profilePicturePath.at(0) />
         <div class="profilePicIcons">
-            <img class="overlayIcon giftIcon" src="/icons/gift.png">
-            <img class="overlayIcon heartIcon" (click)="likeUser()" src="/icons/heart.png">
-            <a [routerLink]="['/profile/', profile().userId]" class="overlayIcon img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
+            <img class="giftIcon" src="/icons/gift.png">
+            <img class="heartIcon" (click)="likeUser()" src="/icons/heart.png">
         </div>
     </div>
 

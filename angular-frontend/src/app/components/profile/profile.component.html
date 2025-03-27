@@ -5,10 +5,10 @@
             <div id="profile-picture" [style.--border-color]="this.profile().status ? 'var(--color-green)': 'var(--color-error)'">
                 <app-slider [images]="this.profile().profilePicturePath"></app-slider>
                 <div class="caption">
-                    <div class="imgOver" style="-webkit-mask: url('/icons/alarme.png') center/contain" (click)="reportTest()"></div>
-                    <div class="imgOver" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
-                    <img class="img giftIcon" src="/icons/gift.png">
-                    <img class="img heartIcon" src="/icons/heart.png">
+                    <div class="icon" style="-webkit-mask: url('/icons/alarme.png') center/contain" (click)="reportTest()"></div>
+                    <div class="icon" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
+                    <img class="giftIcon">
+                    <img class="heartIcon">
                 </div>
             </div>
             <div id="city">

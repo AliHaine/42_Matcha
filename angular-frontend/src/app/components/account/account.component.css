@@ -82,14 +82,3 @@ fieldset {
 .input-radio {
     align-items: center;
 }
-
-.img {
-    height: 80%;
-    aspect-ratio: 1;
-    background: var(--color-4);
-    transition: transform 0.5s, background 0.5s;
-}
-
-.img:hover {
-    background: var(--color-2);
-}

@@ -12,8 +12,8 @@
         </div>
     </div>
     <div id="right-content">
-        <img class="giftIcon" src="/icons/gift.png">
-        <a [routerLink]="['/profile/', this.chatModel().userId]" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
+        <img class="giftIcon" style="width: 4vmin; margin-right: 3vmin">
+        <a [routerLink]="['/profile/', this.chatModel().userId]" class="icon chatarea-img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
 </div>
 
@@ -24,7 +24,7 @@
 <div id="chat-footer">
     <textarea placeholder="Enter your message here" rows="1" [formControl]=this.messageInput (keydown.enter)="sendMessage($event)"></textarea>
     <div>
-        <a routerLink="/profile/5" class="img" style="-webkit-mask: url('/icons/fileInput.png') center/contain"></a>
-        <div class="img" style="-webkit-mask: url('/icons/sendArrow.png') center/contain" (click)="sendMessage($event)"></div>
+        <a routerLink="/profile/5" class="icon chatarea-img" style="-webkit-mask: url('/icons/fileInput.png') center/contain"></a>
+        <div class="icon chatarea-img" style="-webkit-mask: url('/icons/sendArrow.png') center/contain" (click)="sendMessage($event)"></div>
     </div>
 </div>
