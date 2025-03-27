@@ -1,9 +1,8 @@
 nav {
     background-color: var(--color-4);
-    width: 100%;
     margin: 0;
-    padding: 1vmin;
-    font-size: 2.2vmin;
+    padding: 0.5vw;
+    font-size: 1.5vw;
     color: var(--color-1);
     display: flex;
     align-items: center;
@@ -17,7 +16,7 @@ nav {
 }
 
 #leftElements li {
-    margin-left: 2vmin;
+    margin-left: 0.7vw;
     transition: transform 0.5s, color 0.5s;
 }
 
@@ -39,7 +38,7 @@ nav {
     margin-inline: auto;
     width: fit-content;
     font-family: 'Jua';
-    font-size: 4vmin;
+    font-size: 2.8vw;
 }
 
 #middleLogo a {
@@ -47,12 +46,12 @@ nav {
 }
 
 #rightElements img {
-    margin-right: 2vmin;
+    margin-right: 0.7vw;
 }
 
 .img {
-    margin-right: 2vmin;
-    width: 4vmin;
+    margin-right: 0.7vw;
+    width: 1.9vw;
     aspect-ratio: 1;
     display: inline-block;
     background: var(--color-1);

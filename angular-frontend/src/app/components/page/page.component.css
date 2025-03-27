@@ -1,16 +1,12 @@
 #page {
     background-color: var(--color-4);
     color: var(--color-1);
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70%;
-    height: 80%;
-    transform: translate(-50%, -50%);
     overflow: auto;
+    max-width: 80%;
+    max-height: 80vh;
     scrollbar-color: var(--color-4) var(--color-1);
     box-shadow: 0 0 1.5vmin black;
+    margin: auto;
 }
 
 #page-title {

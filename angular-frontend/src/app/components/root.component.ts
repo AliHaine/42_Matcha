@@ -15,12 +15,12 @@ import {NgIf} from "@angular/common";
   ],
   template: `<div id="root-content">
               <app-navbar *ngIf="this.authService.isLoggedIn()"></app-navbar>
-              <router-outlet></router-outlet>
-              <div id="footer-content">
-                 <app-footer></app-footer>
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%">
+                <router-outlet></router-outlet>
               </div>
+              <app-footer></app-footer>
             </div>`,
-  styles: ['#root-content { height: 100vh; display: flex; flex-direction: column;} #footer-content { margin-top: auto; }']
+  styles: ['#root-content { width: 100vw; height: 100vh; display: flex; flex-direction: column;}']
 })
 export class RootComponent {
   authService = inject(AuthService);
