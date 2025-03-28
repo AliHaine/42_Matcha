@@ -1,6 +1,6 @@
 .right-bubble {
     margin-left: auto;
-    flex-direction: row-reverse; /* ✅ Reverses the order of elements */
+    flex-direction: row-reverse;
 }
 
 
