@@ -15,7 +15,7 @@
             {{profile().description}} <a [routerLink]="'/profile/'+ profile().userId">SEE MORE</a>
         </div>
         <div id="details">
-            <app-interest *ngFor="let interest of this.profile().interests" [interest]="interest"/>
+            <app-interest *ngFor="let interest of this.profile().interestsModels" [interest]="interest"/>
         </div>
     </div>
 </div>

@@ -4,9 +4,9 @@
 
         <div id="pictures-description">
             <div id="profile-pictures">
-                <app-slider [images]="profile().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
+                <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
                 <div class="caption">
-                    <div *ngIf="profile().picturesNumber > 0" class="icon" style="-webkit-mask: url('/icons/x.png') center/contain" (click)="deletePicture()"></div>
+                    <div *ngIf="authService.currentUserProfileModel().picturesNumber > 0" class="icon" style="-webkit-mask: url('/icons/x.png') center/contain" (click)="deletePicture()"></div>
                     <label for="picture" class="icon" style="-webkit-mask: url('/icons/upload.png') center/contain"></label>
                     <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
                 </div>
