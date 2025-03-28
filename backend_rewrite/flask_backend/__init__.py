@@ -81,8 +81,7 @@ def create_app(test_config=None):
     }})
     # load dotenv file
     from dotenv import load_dotenv
-    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../settings/.flask.env'))
-    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../settings/.database.env'))
+    load_dotenv()
     app.config.from_mapping(
         SECRET_KEY=os.getenv('SECRET_KEY', default='dev'),
         DATABASE_HOST=os.getenv('POSTGRES_HOST', default='localhost'),
