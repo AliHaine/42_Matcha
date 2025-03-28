@@ -1,8 +1,5 @@
-<div class="chatbubble-content">
+<div class="chatbubble-content" [ngClass]="isSelfBubble() ? 'right-bubble' : 'left-bubble'">
     <img src="https://i.pinimg.com/736x/21/f8/07/21f8077a1288fc475acf6d85dba83ffe.jpg">
-    <div class="message-area">
-        <div>{{chatBubble().message}}</div>
-        <div>{{chatBubble().created_at}}</div>
-    </div>
-
+    <div class="message">{{chatBubble().message}}</div>
+    <div>{{chatBubble().created_at}}</div>
 </div>

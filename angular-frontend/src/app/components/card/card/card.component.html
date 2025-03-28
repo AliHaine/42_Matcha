@@ -1,7 +1,7 @@
 <div id="main" [routerLink]="['/profile/', profile().userId]">
     <div id="pictureAndIcons">
         <img class="profilePic" [src]=profile().profilePicturePath.at(0) />
-        <div class="profilePicIcons">
+        <div class="profilePicIcons" (click)="$event.stopPropagation()">
             <img class="giftIcon" src="/icons/gift.png">
             <img class="heartIcon" (click)="likeUser()" src="/icons/heart.png">
         </div>

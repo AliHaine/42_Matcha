@@ -30,8 +30,8 @@
 
 #left-content img {
     background-color: black;
-    width: 80px;
-    height: 80px;
+    width: 8%;
+    aspect-ratio: 1/1;
     border-radius: 50%;
 }
 
@@ -62,6 +62,11 @@
 
 /* Chat box area */
 
+#chat-box {
+    gap: 2%;
+    scrollbar-color: var(--color-4) var(--color-1);
+    padding: 1%;
+}
 
 /* */
 

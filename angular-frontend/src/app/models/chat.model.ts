@@ -8,7 +8,6 @@ export class ChatModel {
     lastMessage: string = "Send your first message now.";
 
     constructor(data: {[key: string]: any}) {
-        console.log(data)
         this.userId = data['id'];
         this.firstname = data['firstname'];
         this.age = data['age'];

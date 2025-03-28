@@ -11,8 +11,4 @@ import {ChatService} from "../../../services/chat.service";
 export class ChatcardComponent {
   chatModel: InputSignal<ChatModel> = input.required();
   chatService = inject(ChatService);
-
-  test() {
-    console.log("test")
-  }
 }

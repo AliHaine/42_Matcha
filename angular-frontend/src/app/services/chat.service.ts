@@ -15,7 +15,6 @@ export class ChatService {
   currentChatBubbles = signal<ChatBubbleModel[]>([]);
 
   updateCurrentChat(chatModel: ChatModel): ChatModel {
-    console.log("enter");
     this.activeChat.set(chatModel);
     this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
       console.log("data", data);
@@ -26,7 +25,6 @@ export class ChatService {
 
   updateAvailableChats(data: number[]) {
     this.availableChats.set([]);
-    console.log(data);
     from(data).pipe(
         concatMap(userId => this.apiService.getData(`/profiles/${userId}`, {"chat": true, "all_messages": false}))
     ).subscribe(result => {
