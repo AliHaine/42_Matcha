@@ -40,17 +40,17 @@ services:
       - flask-backend_data:/app
     networks:
       - matcha-network
-  # angular-frontend:
-  #   container_name: angular-frontend
-  #   build:
-  #     context: ../frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4200:4200"
-  #   depends_on:
-  #     - flask-backend
-  #   networks:
-  #     - matcha-network
+  angular-frontend:
+    container_name: angular-frontend
+    build:
+      context: ./angular-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - flask-backend
+    networks:
+      - matcha-network
 
 networks:
   matcha-network:

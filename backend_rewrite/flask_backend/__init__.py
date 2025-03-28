@@ -106,15 +106,16 @@ def create_app(test_config=None):
     )
     with app.app_context():
         # initialize the database
-        if 'init-db' in sys.argv:
-            from . import db
-            db.init_app(app)
-            return app
         try:
             database = get_db()
             with database.cursor() as cur:
                 cur.execute('SELECT name FROM interests')
                 result = cur.fetchall()
+                if len(result) <= 5:
+                    from .db import init_db
+                    init_db()
+                    cur.execute('SELECT name FROM interests')
+                    result = cur.fetchall()
                 app.config['AVAILABLE_INTERESTS'] = [r['name'] for r in result]
                 export_constraints(app, cur)
                 cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
