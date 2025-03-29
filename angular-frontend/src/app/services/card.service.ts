@@ -1,19 +1,19 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal, WritableSignal} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
 import {ProfileFactory} from "./profile.factory";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class CardService {
 
-    apiService = inject(ApiService);
-    profileFactory = inject(ProfileFactory);
-    profiles = signal<ProfileModel[]>([]);
+    apiService: ApiService = inject(ApiService);
+    profileFactory: ProfileFactory = inject(ProfileFactory);
+    profiles: WritableSignal<ProfileModel[]> = signal<ProfileModel[]>([]);
 
     constructor() {
-        this.refreshProfile();
+        this.refreshProfile(24);
 
         /*this.profiles().push(this.profileFactory.getNewProfile({
             'firstname': "Enzo",
@@ -113,15 +113,23 @@ export class CardService {
 
     }
 
-      refreshProfile() {
-        this.profiles.set([]);
-        this.apiService.getData("/matcha", {nb_profiles: 8}).subscribe(result => {
+    refreshProfile(numberToGet: number): void {
+        this.removeProfilesModel(8);
+        this.apiService.getData("/matcha", {nb_profiles: numberToGet}).subscribe(result => {
             for (const data of result["result"])
                 this.addNewProfileModel(this.profileFactory.getNewProfile(data));
         });
-      }
+    }
 
-      addNewProfileModel(newProfileModel: ProfileModel) {
+    addNewProfileModel(newProfileModel: ProfileModel): void {
         this.profiles.set([...this.profiles(), newProfileModel]);
-      }
+    }
+
+    removeProfilesModel(numberToRemove: number): void {
+        this.profiles.update(profiles => [...profiles.slice(numberToRemove)]);
+    }
+
+    removeProfileAtIndex(index: number): void {
+
+    }
 }
