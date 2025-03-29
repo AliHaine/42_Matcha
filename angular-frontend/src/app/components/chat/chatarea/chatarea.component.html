@@ -12,13 +12,13 @@
         </div>
     </div>
     <div id="right-content">
-        <img class="giftIcon" style="width: 4vmin; margin-right: 3vmin">
+        <img class="giftIcon chatarea-img">
         <a [routerLink]="['/profile/', this.chatModel().userId]" class="icon chatarea-img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
 </div>
 
 <div id="chat-box">
-    <app-chatbubble *ngFor="let bubble of chatService.currentChatBubbles()" [chatBubble]="bubble" [userId]="chatModel().userId" class="right-bubble"></app-chatbubble>
+    <app-chatbubble *ngFor="let bubble of chatService.currentChatBubbles()" [chatBubble]="bubble" [chatModel]="chatModel()" class="right-bubble"></app-chatbubble>
 </div>
 
 <div id="chat-footer">

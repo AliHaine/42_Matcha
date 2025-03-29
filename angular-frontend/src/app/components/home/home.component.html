@@ -1,8 +1,10 @@
 <div id="home-content">
     <div id="refresh-button">
-        <img src="/logoicon.png" (click)="cardService.refreshProfile()">
+        <img src="/logoicon.png" (click)="cardService.refreshProfile(8)">
     </div>
     <div id="cards">
-        <app-card *ngFor="let profile of cardService.profiles()" [profile]="profile"/>
+        @for (profile of cardService.profiles().slice(0, 8); track profile.userId) {
+            <app-card [profile]="profile"/>
+        }
     </div>
 </div>

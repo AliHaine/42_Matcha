@@ -9,7 +9,6 @@ export class ChatModel {
     picturePath: string = "defaultpp.jpg";
 
     constructor(data: {[key: string]: any}) {
-        console.log(data)
         this.userId = data['id'];
         this.firstname = data['firstname'];
         this.age = data['age'];

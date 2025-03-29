@@ -18,9 +18,11 @@
         <div id="infos-right">
             <h3>Shape</h3>
             <div class="content">
-                <div class="c">{{this.profile().shape.at(2)}}</div>
-                <div class="c">{{this.profile().shape.at(0)}}CM</div>
-                <div class="c">{{this.profile().shape.at(1)}}KG</div>
+                @if (this.profile().shape) {
+                    <div class="c">{{ this.profile().shape.at(2) }}</div>
+                    <div class="c">{{ this.profile().shape.at(0) }}CM</div>
+                    <div class="c">{{ this.profile().shape.at(1) }}KG</div>
+                }
             </div>
             <h3>Health</h3>
             <div class="content">
@@ -36,7 +38,7 @@
             </div>
             <h3>Interests</h3>
             <div class="content">
-                <div *ngFor="let interest of this.profile().interests.at(0)?.interests" class="c">{{interest}}</div>
+                <div *ngFor="let interest of this.profile().interestsModels.at(0)?.interests" class="c">{{interest}}</div>
             </div>
         </div>
     </div>

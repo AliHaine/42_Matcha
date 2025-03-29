@@ -3,6 +3,8 @@ import {ApiService} from "./api.service";
 import {Router} from "@angular/router";
 import {WebsocketService} from "./websocket.service";
 import {map, Observable, tap} from "rxjs";
+import {ProfileModel} from "../models/profile.model";
+import {ProfileFactory} from "./profile.factory";
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +12,10 @@ import {map, Observable, tap} from "rxjs";
 export class AuthService {
 
   isLoggedIn = signal<boolean | undefined>(undefined);
+  currentUserProfileModel = signal<ProfileModel>(new ProfileModel({}));
   apiService = inject(ApiService);
   router = inject(Router);
+  profileFactory = inject(ProfileFactory)
   websocketService = inject(WebsocketService);
 
   constructor() {
@@ -35,6 +39,9 @@ export class AuthService {
   login() {
     this.websocketService.socketLoaderTmp();
     this.isLoggedIn.set(true);
+    this.apiService.getData('/profiles/me', {}).subscribe(result => {
+      this.currentUserProfileModel.set(this.profileFactory.getNewProfile(result['user']));
+    });
   }
 
   logout() {
@@ -42,5 +49,11 @@ export class AuthService {
     this.apiService.removeAccessToken();
     this.websocketService.closeSocket();
     window.location.reload();
+  }
+
+  refreshCurrentProfile():void {
+    this.apiService.getData('/profiles/me', {}).subscribe(result => {
+      this.currentUserProfileModel.set(this.profileFactory.getNewProfile(result['user']));
+    });
   }
 }

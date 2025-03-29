@@ -1,16 +1,14 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {LocationService} from "../../services/location.service";
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
 import {ProfileModel} from "../../models/profile.model";
-import {ProfileFactory} from "../../services/profile.factory";
 import {LocationComponent} from "../location/location.component";
 
 @Component({
@@ -32,9 +30,7 @@ export class AccountComponent {
 
   apiService = inject(ApiService);
   authService = inject(AuthService);
-  profileFactory = inject(ProfileFactory);
   placeHolderMessage: string = "";
-  profile = signal<ProfileModel>(new ProfileModel({}));
   private currentImageIndex: number = 0;
   formGroup = new FormGroup({
     firstname: new FormControl(''),
@@ -54,16 +50,16 @@ export class AccountComponent {
   } as {[key: string]: any});
 
   constructor() {
-    this.apiService.getData("/profiles/me", {}).subscribe(result => {
-      this.profile.set(this.profileFactory.getNewProfile(result["user"]));
-      console.log(result['user']);
-
-      this.arrayConvertor(result['user'], result["user"]["health"], ["smoking", "alcohol", "diet"]);
-
-      for (let value in result["user"])
+    effect(() => {
+      const profileAsDict = this.authService.currentUserProfileModel().dumpAsDict();
+      if (!profileAsDict['email'])
+        return;
+      this.arrayConvertor(profileAsDict, profileAsDict["health"], ["smoking", "alcohol", "diet"]);
+      for (let value in profileAsDict)
         if (this.formGroup.value[value] !== undefined)
-          this.formGroup.controls[value].setValue(result["user"][value]);
-    })
+          this.formGroup.controls[value].setValue(profileAsDict[value]);
+
+    });
   }
 
   arrayConvertor(baseValues: {[key: string]: any}, arrayToConvert: [], values: string[]) {
@@ -85,8 +81,10 @@ export class AccountComponent {
         this.authService.logout();
       if (!result['success'])
         this.placeHolderMessage = result['error'];
-      else
+      else {
         this.placeHolderMessage = "Successfully updated";
+        this.authService.refreshCurrentProfile()
+      }
     });
   }
 
@@ -105,8 +103,11 @@ export class AccountComponent {
 
   deletePicture() {
     this.apiService.deleteData("/profiles/profile_pictures", {"file_number": this.currentImageIndex}).subscribe(result => {
-      console.log(result);
-    })
+      if (result['success'])
+        this.authService.refreshCurrentProfile();
+      else
+        this.placeHolderMessage = result['error'];
+    });
   }
 
   sliderTrigger(index: number) {

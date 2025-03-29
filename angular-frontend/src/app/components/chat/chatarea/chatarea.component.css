@@ -25,12 +25,13 @@
 
 #left-content {
     display: flex;
-    margin-left: 3vmin;
+    margin-left: 1.7vw;
+    max-width: 50%;
 }
 
 #left-content img {
     background-color: black;
-    width: 8%;
+    width: 14%;
     aspect-ratio: 1/1;
     border-radius: 50%;
 }
