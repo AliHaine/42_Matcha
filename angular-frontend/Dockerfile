@@ -1,8 +1,10 @@
-FROM node:22-slim
+FROM node:22-slim AS build
 
 COPY . /app
 WORKDIR /app
 
 RUN npm install
+RUN npm run build
 
-CMD [ "npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200" ]
+FROM nginx:1.25-alpine
+COPY --from=build /app/dist/my-app/browser /usr/share/nginx/html
