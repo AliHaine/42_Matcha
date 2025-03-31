@@ -2,8 +2,13 @@ import sys
 from random import sample, choice, random
 import requests
 import psycopg2
-from werkzeug.security import check_password_hash, generate_password_hash
-import re
+from tqdm import tqdm
+from werkzeug.security import generate_password_hash
+from concurrent.futures import ThreadPoolExecutor  # ou ProcessPoolExecutor
+
+import os
+
+max_workers = os.cpu_count() - 1
 
 connection = psycopg2.connect(database="matcha", user="admin", password="admin/0123456789", host="localhost", port=6000)
 cursor = connection.cursor()
@@ -65,15 +70,16 @@ def get_user(batch=1):
 
 from unidecode import unidecode
 from datetime import datetime
-def get_data_to_send(result):
+def get_data_to_send(args):
+    user, user_id = args
     return (
-        result['name']['first'],
-        result['name']['last'],
-        unidecode(f"{result['name']['first']}.{result['name']['last']}{user_id_start}@randomusers.py".lower().replace(" ", "")),
+        user['name']['first'],
+        user['name']['last'],
+        unidecode(f"{user['name']['first']}.{user['name']['last']}{user_id}@randomusers.py".lower().replace(" ", "")),
         generate_password_hash("Panda666!"),
-        result['dob']['age'] % 12 + 18,
-        result['gender'][0].upper(),
-        choice(city_ids),
+        user['dob']['age'] % 50 + 15,
+        user['gender'][0].upper(),
+        173,
         choice(searching_choices),
         choice(commitment_choices),
         choice(frequency_choices),
@@ -107,7 +113,7 @@ def insert_interests(data):
     connection.commit()
 
 cursor.execute("SELECT COUNT(*) FROM cities")
-if cursor.fetchone()[0] == 0:
+if cursor.fetchone()[0] < 10:
     populate_cities()
 cursor.execute("SELECT id FROM cities")
 city_ids = cursor.fetchall()
@@ -140,23 +146,33 @@ try:
         print(f"{len(users)} utilisateurs récupérés, debut de la conversion des données")
         for i in range(0, len(users), batch_size):
             batch = users[i:i + batch_size]
-            data = []
+            print(f"conversion de {len(batch)} utilisateurs…")
+
+            # Préparer les arguments avec leurs IDs
+            batch_ids = list(range(user_id_start + 1, user_id_start + 1 + len(batch)))
+            args = list(zip(batch, batch_ids))
+
+            # Conversion parallèle
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:  # Ajuste selon ton CPU
+                data = list(tqdm(executor.map(get_data_to_send, args), total=len(args), desc=f"🔄 Conversion batch"))
+            # Mise à jour de l'ID de départ
+            user_id_start += len(data)
+
+            # Génération des intérêts
             interests = []
-            for user in batch:
-                user_id_start += 1
-                data.append(get_data_to_send(user))
-                print(f"conversion de {len(data)}/{len(batch)} utilisateurs terminée", end="\r")
+            for uid in range(user_id_start - len(data) + 1, user_id_start + 1):
                 for _ in range(5):
                     interest_id = choice(range(1, possible_interests + 1))
-                    while (user_id_start, interest_id) in interests:
+                    while (uid, interest_id) in interests:
                         interest_id = choice(range(1, possible_interests + 1))
-                    interests.append((user_id_start, interest_id))
+                    interests.append((uid, interest_id))
+
             print("conversion des données terminée, debut de l'insertion")
             insert_users(data)
             insert_interests(interests)
-            print(f"Insertion de {len(data)} utilisateurs terminée, {remaining_users + len(users) - len(batch)}/{baseinput_users} restants, temps écoulé : {datetime.now() - start_time}")
+            print(f"Insertion de {len(data)} utilisateurs terminée, temps écoulé : {datetime.now() - start_time}")
 except Exception as e:
-    print(e)
+    print(e, "Erreur lors de l'insertion des utilisateurs")
 finally:
     cursor.close()
     connection.close()

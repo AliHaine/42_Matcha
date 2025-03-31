@@ -80,7 +80,7 @@ CREATE TABLE users (
     CONSTRAINT email_unique UNIQUE (email),
     CONSTRAINT email_invalid CHECK (email ~ '^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9.-]+$'),
     CONSTRAINT password_not_empty CHECK (password <> ''),
-    CONSTRAINT age_positive CHECK (age > 15 AND age < 80),
+    CONSTRAINT age_positive CHECK (age > 14 AND age < 81),
     CONSTRAINT gender_check CHECK (gender IN ('M', 'F')),
     CONSTRAINT fk_city_id FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE SET NULL,  -- Clé étrangère activée
     CONSTRAINT searching_invalid CHECK (searching IN ('Friends', 'Love', 'Talking')),
@@ -157,7 +157,8 @@ BEGIN
             (COUNT(CASE WHEN liked THEN 1 END) * 2) + 
             (COUNT(*) / 10) + 
             (COUNT(CASE WHEN last_chat > now() - INTERVAL '7 days' THEN 1 END) * 3) - 
-            (COUNT(CASE WHEN report THEN 1 END) * 5)
+            (COUNT(CASE WHEN report THEN 1 END) * 5) +
+            CASE WHEN premium THEN 20 ELSE 0 END
         FROM user_views
         WHERE viewed_id = NEW.viewed_id
     )
