@@ -168,7 +168,7 @@ def login_user(email, password, registering=False):
         if len(missing_steps) > 0:
             return {'success': False, 'error': 'Registration not completed', 'missing_steps': missing_steps, 'access_token': access_token}
         if user['email_verified'] == False:
-            return {'success': False, 'error': 'Email not verified', 'access_token': access_token}
+            return {'success': True, 'error': 'Email not verified', 'access_token': access_token, 'need_confirmation': True}
     return {'success': True, 'access_token': access_token}
 
 @bp.route('/login', methods=['POST'])
@@ -182,6 +182,8 @@ def login():
             return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
         return jsonify({'success': False, 'error': 'Failed to login'})
     else:
+        if 'need_confirmation' in response:
+            return jsonify({'success': True, 'error': 'Email not verified', 'access_token': response['access_token'], 'need_confirmation': True})
         return jsonify({'success': True, 'access_token': response['access_token']})
 
 @bp.route('/logout', methods=['POST'])
