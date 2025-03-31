@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {Component, effect, inject} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -8,7 +8,6 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
-import {ProfileModel} from "../../models/profile.model";
 import {LocationComponent} from "../location/location.component";
 
 @Component({
