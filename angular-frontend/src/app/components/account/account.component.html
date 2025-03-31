@@ -6,7 +6,10 @@
             <div id="profile-pictures">
                 <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
                 <div class="caption">
-                    <div *ngIf="authService.currentUserProfileModel().picturesNumber > 0" class="icon" style="-webkit-mask: url('/icons/x.png') center/contain" (click)="deletePicture()"></div>
+                    @if (authService.currentUserProfileModel().picturesNumber > 0) {
+                        <div class="icon" style="-webkit-mask: url('/icons/x.png') center/contain"
+                             (click)="deletePicture()"></div>
+                    }
                     <label for="picture" class="icon" style="-webkit-mask: url('/icons/upload.png') center/contain"></label>
                     <input id="picture" type="file" formControlName="picture" accept="image/png, image/jpeg">
                 </div>
@@ -117,7 +120,9 @@
         </div>
     </form>
 
-    <p class="error" *ngIf="this.placeHolderMessage.length > 0">{{this.placeHolderMessage}}</p>
+    @if (this.placeHolderMessage.length > 0) {
+        <p class="error">{{ this.placeHolderMessage }}</p>
+    }
     <div id="buttons-area">
         <button class="button-style-1" (click)="this.applyTrigger()">Submit</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>

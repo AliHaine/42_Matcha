@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
-import {EmailValidator, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
