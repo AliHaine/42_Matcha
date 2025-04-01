@@ -16,7 +16,7 @@ cursor = connection.cursor()
 link = "https://randomuser.me/api/?nat=fr&inc=name,dob,gender&results="
 
 def populate_cities():
-    city_link = "https://geo.api.gouv.fr/communes?limit=1000&fields=nom,code,departement,region,centre"
+    city_link = "https://geo.api.gouv.fr/communes?limit=10&fields=nom,code,departement,region,centre"
     city_data = requests.get(city_link).json()
     if not city_data:
         print("Aucune donnée de ville disponible.")
@@ -79,7 +79,7 @@ def get_data_to_send(args):
         generate_password_hash("Panda666!"),
         user['dob']['age'] % 50 + 15,
         user['gender'][0].upper(),
-        173,
+        choice(city_ids),
         choice(searching_choices),
         choice(commitment_choices),
         choice(frequency_choices),

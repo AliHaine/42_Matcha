@@ -14,9 +14,9 @@ def get_city_id(cityname):
             break
     if not city_found:
         return None
-    city_informations["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["nom"]) if unicodedata.category(c) != 'Mn'))
-    city_informations["departement"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["departement"]["nom"]) if unicodedata.category(c) != 'Mn'))
-    city_informations["region"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["region"]["nom"]) if unicodedata.category(c) != 'Mn'))
+    # city_informations["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["nom"]) if unicodedata.category(c) != 'Mn'))
+    # city_informations["departement"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["departement"]["nom"]) if unicodedata.category(c) != 'Mn'))
+    # city_informations["region"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["region"]["nom"]) if unicodedata.category(c) != 'Mn'))
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM cities WHERE cityname = %s', (city_informations["nom"],))
