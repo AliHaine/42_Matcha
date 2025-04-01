@@ -16,7 +16,7 @@ def registration_completed(f):
             user = cur.fetchone()
             if user is None:
                 return jsonify({'success': False, 'error': 'User not found'})
-            if user['registration_complete'] == True and user['email_verified'] == True:
+            if user['registration_complete'] == True:
                 return f(*args, **kwargs)
             else:
                 step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
@@ -37,8 +37,6 @@ def registration_completed(f):
                     return jsonify({'success': False, 'error': 'Registration not completed', 'step':3})
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_mail,))
                 db.commit()
-                if user['email_verified'] == False:
-                    return jsonify({'success': False, 'error': 'Email not verified'})
 
         return f(*args, **kwargs)
 

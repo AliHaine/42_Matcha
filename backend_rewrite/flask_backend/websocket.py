@@ -35,7 +35,7 @@ def handle_connect():
                 print("Connexion refusée : Utilisateur non trouvé")
                 disconnect()
                 return
-            if user["registration_complete"] is False or user["email_verified"] is False:
+            if user["registration_complete"] is False:
                 print("Connexion refusée : Inscription non terminée")
                 disconnect()
                 return

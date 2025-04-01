@@ -167,8 +167,6 @@ def login_user(email, password, registering=False):
     if registering == False:
         if len(missing_steps) > 0:
             return {'success': False, 'error': 'Registration not completed', 'missing_steps': missing_steps, 'access_token': access_token}
-        if user['email_verified'] == False:
-            return {'success': True, 'error': 'Email not verified', 'access_token': access_token, 'need_confirmation': True}
     return {'success': True, 'access_token': access_token}
 
 @bp.route('/login', methods=['POST'])
@@ -225,7 +223,7 @@ def confirm_email():
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
         if user['email_verified'] == True:
-            return jsonify({'success': False, 'error': 'Email already verified'})
+            return jsonify({'success': True, 'error': 'Email already verified'})
         if user['email_token'] != token:
             return jsonify({'success': False, 'error': 'Invalid token'})
         cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user_email,))
