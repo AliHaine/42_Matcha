@@ -37,6 +37,7 @@ def matcha():
         users_send = second_layer_algo(user, list_of_users, nb_profiles)
         if users_send is None or len(users_send) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
+        users_send = [convert_to_public_profile(user) for user in users_send]
     return jsonify({'success': True, 'result': users_send}), 200
 
 
@@ -55,7 +56,6 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
         "hetero": user['hetero'],
         "gender": user['gender']
     }
-    print(cur.mogrify(base_request, params))
     cur.execute(base_request, params)
     users = cur.fetchall()
     return users

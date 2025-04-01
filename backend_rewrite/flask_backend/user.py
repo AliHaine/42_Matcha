@@ -311,20 +311,29 @@ def check_registration_status(other_email=None):
                 for key, value in user_interests.items():
                     if value is None:
                         return False
-                cur.execute('UPDATE users SET registration_complete = TRUEWHERE email = %s', (user_email,))
+                cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
                 db.commit()
-                mail_token = generate_confirm_email_token(user_email)
-                try:
-                    mail = current_app.config.get('MAIL', None)
-                    if mail:
-                        from flask_mail import Message
-                        msg = Message("Matcha - confirm email",sender=current_app.config["MAIL_USERNAME"],recipients=[user_email])
-                        msg.body = "Click on the following link to confirm your email : http://localhost:4200/auth/confirm_email/" + mail_token
-                        mail.send(msg)
-                except Exception as e:
-                    print("Failed to send email to confirm email (func : check_registration_status, file : user.py). Error : ", e)
+                send_confirmation_email(user_email)
                 db.commit()
                 return True
     except Exception as e:
         print("Failed to check registration status (func : check_registration_status, file : user.py). Error : ", e)
+        return False
+    
+
+def send_confirmation_email(email):
+    mail_token = generate_confirm_email_token(email)
+    try:
+        mail = current_app.config.get('MAIL', None)
+        if mail:
+            from flask_mail import Message
+            msg = Message("Matcha - confirm email", sender=current_app.config["MAIL_USERNAME"], recipients=[email])
+            msg.body = "Click on the following link to confirm your email : http://localhost:4200/emailconfirm/" + mail_token
+            mail.send(msg)
+            return True
+        else:
+            print("Mail not configured")
+            return True
+    except Exception as e:
+        print("Failed to send email to confirm email (func : send_confirmation_email, file : user.py). Error : ", e)
         return False

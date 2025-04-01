@@ -132,7 +132,6 @@ def research():
         sort_by = arguments.get('sort_by', "")
         if sort_by not in ['common_interests', 'fame_rate', 'age', 'distance']:
             sort_by = 'id'
-        print("sort by", sort_by)
         if sort_by == 'common_interests':
             baseRequest += f' ORDER BY common_interests {sort_order}'
         elif sort_by == 'fame_rate':
@@ -142,7 +141,6 @@ def research():
         elif sort_by == 'distance':
             baseRequest += f' ORDER BY distance {sort_order}'
         elif sort_by == 'id':
-            print("sort by id")
             baseRequest += f' ORDER BY users.id {sort_order}'
         cur.execute(baseRequest, tuple(params))
         users = cur.fetchall()

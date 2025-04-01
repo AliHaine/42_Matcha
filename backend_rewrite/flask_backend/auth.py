@@ -228,4 +228,21 @@ def confirm_email():
             return jsonify({'success': False, 'error': 'Invalid token'})
         cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user_email,))
         db.commit()
-    return jsonify({'success': True}), 200
+    return jsonify({'success': True})
+
+@bp.route('/resend_confirmation', methods=['POST'])
+@jwt_required()
+def resend_confirmation():
+    user_email = get_jwt_identity()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        if user['email_verified'] == True:
+            return jsonify({'success': True, 'error': 'Email already verified'})
+        from .user import send_confirmation_email
+        if send_confirmation_email(user['email']) == False:
+            return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
+    return jsonify({'success': True})
