@@ -156,7 +156,6 @@ def update_available_chats(sid):
         for row in cur.fetchall():
             available_chats.append(row["matched_user"])
     connected_users[sid]['available_chats'] = available_chats
-    print(f"Utilisateur {user_id} : {available_chats}")
     socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
 
 
@@ -166,10 +165,8 @@ def parse_service_message(data):
     emmiter_informations = connected_users[request.sid]
     if data["receiver"] not in emmiter_informations["available_chats"]:
         return
-    print("TEST RECEIVER")
     db = get_db()
     with db.cursor() as cur:
-        print("TEST RECEIVER 2")
         cur.execute('SELECT * FROM users WHERE id = %s', (emmiter_informations["id"],))
         user_emitter = cur.fetchone()
         cur.execute('SELECT * FROM users WHERE id = %s', (data["receiver"],))
