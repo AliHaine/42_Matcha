@@ -211,7 +211,12 @@ def verify_token():
 def confirm_email():
     user_email = get_jwt_identity()
     db = get_db()
-    token = request.args.get('token', None)
+    try:
+        data = request.json
+    except Exception as e:
+        print("error at json conversion :", e)
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
+    token = data.get('token', None)
     if token is None:
         return jsonify({'success': False, 'error': 'No token provided'})
     with db.cursor() as cur:
