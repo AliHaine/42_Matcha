@@ -73,7 +73,8 @@ def convert_to_public_profile(user, user_requesting=None):
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
         'fame_rate': user['fame_rate'],
-        "matching": matching
+        "matching": matching,
+        "email_verified": user['email_verified']
     }
 
 def convert_to_chat_profile(user, user_getting, all_messages=False):
