@@ -18,7 +18,7 @@ export class CardService {
 
     refreshProfile(numberToGet: number): void {
         this.removeProfilesModel(8);
-        if (this.profiles.length < 13)
+        if (this.profiles().length < 13)
             numberToGet += 10;
         this.fillProfiles(numberToGet);
     }
