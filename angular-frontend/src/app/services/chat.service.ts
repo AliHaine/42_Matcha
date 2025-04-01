@@ -16,6 +16,7 @@ export class ChatService {
 
   updateCurrentChat(chatModel: ChatModel): ChatModel {
     this.activeChat.set(chatModel);
+    console.log(chatModel)
     this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
       console.log("data", data);
       this.setupAllBubbles(data["user"]["allMessages"]);
@@ -37,7 +38,6 @@ export class ChatService {
             )
         )
     ).subscribe(({ user, imageBlob }) => {
-      console.log(user)
         if (user.picturesNumber === 0) {
           this.addNewChatModel(new ChatModel(user));
           return;

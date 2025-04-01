@@ -23,7 +23,7 @@ export class CardComponent {
   cardService = inject(CardService);
 
   likeUser() {
-    this.apiService.postData(`/profiles/${this.profile().userId}`, {action: 'like',}).subscribe(_ => {
+    this.apiService.postData(`/profiles/${this.profile().userId}`, {action: 'like'}).subscribe(_ => {
       this.cardService.switchProfile(this.cardService.getIndexFromProfile(this.profile()));
     })
   }
