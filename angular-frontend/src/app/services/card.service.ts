@@ -29,6 +29,10 @@ export class CardService {
 
     fillProfiles(numberToGet: number) {
         this.apiService.getData("/matcha", {nb_profiles: numberToGet}).subscribe(result => {
+            if (!result['success']) {
+                console.log(result);
+                return;
+            }
             for (const data of result["result"]) {
                 if (this.isAlreadyLoaded(data['id']))
                     continue;
