@@ -54,10 +54,21 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
         "age_min": user['age'] - 3,
         "age_max": user['age'] + 3,
         "hetero": user['hetero'],
-        "gender": user['gender']
+        "gender": user['gender'],
+        "distance": 100,
     }
+    print(cur.mogrify(base_request, params))
     cur.execute(base_request, params)
     users = cur.fetchall()
+    if users is None or len(users) == 0:
+        for _ in range(5):
+            params['distance'] += 100
+            cur.execute(base_request, params)
+            users = cur.fetchall()
+            if users is not None and len(users) > 0:
+                break
+    return users
+        
     return users
 
 def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> dict | None:

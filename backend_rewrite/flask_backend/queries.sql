@@ -1,10 +1,10 @@
 -- matcha default
 SELECT users.*,
     COUNT(DISTINCT common.interest_id) AS common_interests,
-    ST_Distance(
+    (round((ST_Distance(
         user_city.geom::geography,
         my_city.geom::geography
-    ) AS distance
+    )::numeric / 1000), -1)) AS distance
 FROM users
     JOIN cities user_city ON users.city_id = user_city.id
     JOIN cities my_city ON my_city.id = %(city_id)s
@@ -30,7 +30,6 @@ WHERE users.id != %(user_id)s
                 WHERE user_id = %(user_id)s
             )
     ) >= 1
-    AND users.city_id = my_city.id
     AND (
         (
             users.searching = (
