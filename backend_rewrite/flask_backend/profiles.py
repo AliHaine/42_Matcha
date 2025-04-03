@@ -97,7 +97,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
     }
     with db.cursor() as cursor:
         if all_messages == True:
-            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC LIMIT 500", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             allMessages = cursor.fetchall()
             if allMessages:
                 messages = []
@@ -106,6 +106,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
                         'message': message['message'],
                         'created_at': message['created_at'].strftime("%H:%M"),
                         'author_id': message['sender_id'],
+                        'type': message['type'],
                     })
                 base_return.update({
                     'allMessages': messages,
@@ -118,6 +119,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
                     'message': lastMessage[0]['message'],
                     'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),
                     'author_id': lastMessage[0]['sender_id'],
+                    'type': lastMessage[0]['type'],
                 }
                 base_return.update({
                     'lastMessage': message,
@@ -331,7 +333,7 @@ def profile_pictures():
             file = request.files['picture']
             if file.filename == '':
                 return jsonify({'success': False, 'error': 'No selected file'})
-            if file and file.filename.split('.')[-1] in current_app.config['PROFILE_PIC_EXTENSIONS']:
+            if file and file.filename.split('.')[-1] in current_app.config['IMAGE_EXTENSIONS']:
                 db = get_db()
                 current_user = get_jwt_identity()
                 with db.cursor() as cursor:
