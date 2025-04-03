@@ -25,26 +25,23 @@ def upload_file():
             user_id = user['id']
         try:
             print("Request data", request.form, end="\n\n\n\n\n\n")
-            data = request.form.get('data', None)
+            data = request.form.get('receiver_id', None)
             if data is None:
                 return jsonify({"success": False, "error": "No data provided"})
-            data = json.loads(data)
+            receiver_id = int(data)
         except Exception as e:
-            return jsonify({"success": False, "error": "Invalid JSON format"})
-        if not "receiver_id" in data:
-            return jsonify({"success": False, "error": "Missing receiver_id"})
+            return jsonify({"success": False, "error": "Invalid value for receiver_id"})
         # Check if receiver exists
         with db.cursor() as cur:
-            cur.execute('SELECT id FROM users WHERE id = %s', (data["receiver_id"],))
+            cur.execute('SELECT id FROM users WHERE id = %s', (receiver_id,))
             receiver = cur.fetchone()
             if not receiver:
                 return jsonify({"success": False, "error": "Receiver not found"})
         file = request.files.get('file', None)
-
         if file:
             try:
                 with db.cursor() as cur:
-                    cur.execute("SELECT created_at FROM messages WHERE sender_id = %s AND receiver_id = %s AND type = 'image' ORDER BY created_at DESC LIMIT 1", (user_id, data['receiver_id']))
+                    cur.execute("SELECT created_at FROM messages WHERE sender_id = %s AND receiver_id = %s AND type = 'image' ORDER BY created_at DESC LIMIT 1", (user_id, receiver_id))
                     last_image = cur.fetchone()
                     time_required = timedelta(minutes=1)
                     if last_image:
@@ -71,7 +68,7 @@ def upload_file():
                     return jsonify({"success": False, "error": "Image is corrupted"})
                 with db.cursor() as cur:
                     cur.execute("INSERT INTO messages (sender_id, receiver_id, message, type) VALUES (%s, %s, %s, %s)",
-                                (user_id, data["receiver_id"], filename, "image"))
+                                (user_id, receiver_id, filename, "image"))
                     db.commit()
                     from .websocket import send_message
                     arguments = {
@@ -80,7 +77,7 @@ def upload_file():
                         "author_id": user_id,
                         "created_at": datetime.now().strftime('%H:%M'),
                     }
-                    send_message(arguments=arguments, rooms=[f"user_{data['receiver_id']}", f"user_{user_id}"])
+                    send_message(arguments=arguments, rooms=[f"user_{receiver_id}", f"user_{user_id}"])
                 return jsonify({"success": True})
             except Exception as e:
                 print("Failed to save file", e)
