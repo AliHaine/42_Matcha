@@ -24,7 +24,8 @@
 <div id="chat-footer">
     <textarea placeholder="Enter your message here" rows="1" [formControl]=this.messageInput (keydown.enter)="sendMessage($event)"></textarea>
     <div>
-        <a routerLink="/profile/5" class="icon chatarea-img" style="-webkit-mask: url('/icons/fileInput.png') center/contain"></a>
+        <label for="picture" class="icon chatarea-img" style="-webkit-mask: url('/icons/fileInput.png') center/contain"></label>
+        <input id="picture" type="file" accept="image/png, image/jpeg">
         <div class="icon chatarea-img" style="-webkit-mask: url('/icons/sendArrow.png') center/contain" (click)="sendMessage($event)"></div>
     </div>
 </div>

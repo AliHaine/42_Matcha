@@ -3,6 +3,7 @@ import {ChatModel} from "../models/chat.model";
 import {ApiService} from "./api.service";
 import {concatMap, from, map} from "rxjs";
 import {ChatBubbleModel} from "../models/chatbubble.model";
+import { BubbleFactory } from './bubble.factory';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {ChatBubbleModel} from "../models/chatbubble.model";
 export class ChatService {
 
   apiService = inject(ApiService);
+  bubbleFactory = inject(BubbleFactory);
   activeChat = signal<ChatModel | undefined>(undefined);
   availableChats = signal<ChatModel[]>([]);
   currentChatBubbles = signal<ChatBubbleModel[]>([]);
@@ -18,7 +20,6 @@ export class ChatService {
     this.activeChat.set(chatModel);
     console.log(chatModel)
     this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
-      console.log("data", data);
       this.setupAllBubbles(data["user"]["allMessages"]);
     });
     return chatModel;
@@ -66,6 +67,6 @@ export class ChatService {
   }
 
   addNewChatBubbleModel(data: {}) {
-    this.currentChatBubbles.set([new ChatBubbleModel(data), ...this.currentChatBubbles()]);
+    this.currentChatBubbles.set([this.bubbleFactory.getNewBubble(data), ...this.currentChatBubbles()]);
   }
 }

@@ -43,7 +43,7 @@ def upload_file():
                 with db.cursor() as cur:
                     cur.execute("SELECT created_at FROM messages WHERE sender_id = %s AND receiver_id = %s AND type = 'image' ORDER BY created_at DESC LIMIT 1", (user_id, receiver_id))
                     last_image = cur.fetchone()
-                    time_required = timedelta(minutes=1)
+                    time_required = timedelta(seconds=10)
                     if last_image:
                         last_image_time = last_image['created_at']
                         print("Last image time", last_image_time, type(last_image_time))
