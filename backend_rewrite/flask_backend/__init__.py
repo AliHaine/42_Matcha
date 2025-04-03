@@ -98,7 +98,7 @@ def create_app(test_config=None):
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
         BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
         PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads/profile_pictures'),
-        PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
+        IMAGE_EXTENSIONS=['png', 'jpg', 'jpeg'],
         JSON_AS_ASCII=False,
         SOCKETIO_INSTANCE=socketio,
         MAIL_SERVER=os.getenv('MAIL_SERVER', default='smtp.gmail.com'),
@@ -107,6 +107,7 @@ def create_app(test_config=None):
         MAIL_USE_SSL=False,
         MAIL_USERNAME=os.getenv('MAIL_USERNAME', default=''),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', default=''),
+        MAX_CONTENT_LENGTH=25 * 1024 * 1024,
     )
     with app.app_context():
         # initialize the database
@@ -155,11 +156,13 @@ def create_app(test_config=None):
         from . import research
         from . import matcha
         from . import get_informations
+        from . import chat
         app.register_blueprint(auth.bp)
         app.register_blueprint(profiles.bp)
         app.register_blueprint(research.bp)
         app.register_blueprint(matcha.bp)
         app.register_blueprint(get_informations.bp)
+        app.register_blueprint(chat.bp)
 
         @app.route('/test')
         def test():

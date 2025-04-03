@@ -35,7 +35,7 @@ def handle_connect():
                 print("Connexion refusée : Utilisateur non trouvé")
                 disconnect()
                 return
-            if user["registration_complete"] is False or user["email_verified"] is False:
+            if user["registration_complete"] is False:
                 print("Connexion refusée : Inscription non terminée")
                 disconnect()
                 return
@@ -156,7 +156,6 @@ def update_available_chats(sid):
         for row in cur.fetchall():
             available_chats.append(row["matched_user"])
     connected_users[sid]['available_chats'] = available_chats
-    print(f"Utilisateur {user_id} : {available_chats}")
     socketio.emit('available_chats', {'users':available_chats}, room=f"user_{user_id}")
 
 
@@ -166,10 +165,8 @@ def parse_service_message(data):
     emmiter_informations = connected_users[request.sid]
     if data["receiver"] not in emmiter_informations["available_chats"]:
         return
-    print("TEST RECEIVER")
     db = get_db()
     with db.cursor() as cur:
-        print("TEST RECEIVER 2")
         cur.execute('SELECT * FROM users WHERE id = %s', (emmiter_informations["id"],))
         user_emitter = cur.fetchone()
         cur.execute('SELECT * FROM users WHERE id = %s', (data["receiver"],))
@@ -182,28 +179,44 @@ def parse_service_message(data):
             print(f"Erreur d'envoi de message : {message}")
             return
         import re
-        from markupsafe import escape
-
         if re.match(r'^\s*$', data["message"]):
             return
         try:
             sanitized_message = data["message"]
-            cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (%s, %s, %s)', (emmiter_informations["id"], data["receiver"], sanitized_message))
+            cur.execute('INSERT INTO messages (sender_id, receiver_id, message, type) VALUES (%s, %s, %s, %s)', (emmiter_informations["id"], data["receiver"], sanitized_message, "text"))
             db.commit()
+            send_message({"message":data["message"], "type":"text", "author_id":emmiter_informations["id"], "created_at":datetime.now().strftime("%H:%M")}, rooms=[f"user_{data['receiver']}", f"user_{emmiter_informations['id']}"]) 
         except Exception as e:
             print(f"Erreur d'insertion de message : {e}")
             socketio.emit('error', {'message':'Failed to send message'}, room=f"user_{emmiter_informations['id']}")
             return
-        actual_time = datetime.now().strftime("%H:%M")
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{data['receiver']}")
-        socketio.emit('message', {'author_id':emmiter_informations["id"], 'message':sanitized_message, "created_at":actual_time}, room=f"user_{emmiter_informations['id']}")
-        cur.execute("SELECT created_at FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 2", (emmiter_informations["id"], data["receiver"], data["receiver"], emmiter_informations["id"]))
-        messages = cur.fetchall()
-        if len(messages) == 2:
-            time_required = timedelta(seconds=300)
-            if messages[0]["created_at"] - messages[1]["created_at"] > time_required:
-                send_notification(emmiter_informations["id"], data["receiver"], "chat", f"Vous avez un nouveau message de {user_emitter['firstname']} {user_emitter['lastname']}")
     return
+
+def send_message(arguments={}, rooms=[]):
+    db = get_db()
+    cur = db.cursor()
+    print("Enterring send_message")
+    if len(arguments) == 0:
+        return
+    if len(rooms) == 0:
+        return
+    if "message" not in arguments or "type" not in arguments or "author_id" not in arguments or "created_at" not in arguments:
+        return
+    for room in rooms:
+        print("Sending message to room", room)
+        try:
+            socketio.emit('message', arguments, room=room)
+            receiver = int(room.split("_")[-1])
+            if receiver != arguments["author_id"]:
+                cur.execute("SELECT created_at FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 2", (arguments["author_id"], receiver, receiver, arguments["author_id"]))
+                messages = cur.fetchall()
+                if len(messages) == 2:
+                    time_required = timedelta(seconds=300)
+                    if messages[0]["created_at"] - messages[1]["created_at"] > time_required:
+                        send_notification(arguments["author_id"], receiver, "chat", f"Vous avez un nouveau message de {arguments['author_id']}")
+        except Exception as e:
+            print(f"Erreur d'envoi de message : {e}")
+            print("failed on room", room)
 
 
 def check_jwt_validity(token):

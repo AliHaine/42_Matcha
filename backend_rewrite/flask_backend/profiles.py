@@ -73,7 +73,9 @@ def convert_to_public_profile(user, user_requesting=None):
         'picturesNumber': user['pictures_number'],
         'status': user['status'],
         'fame_rate': user['fame_rate'],
-        "matching": matching
+        "matching": matching,
+        "email_verified": user['email_verified'],
+        "premium": user['premium']
     }
 
 def convert_to_chat_profile(user, user_getting, all_messages=False):
@@ -95,7 +97,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
     }
     with db.cursor() as cursor:
         if all_messages == True:
-            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
+            cursor.execute("SELECT * FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at ASC LIMIT 500", (user['id'], user_getting['id'], user_getting['id'], user['id'],))
             allMessages = cursor.fetchall()
             if allMessages:
                 messages = []
@@ -104,6 +106,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
                         'message': message['message'],
                         'created_at': message['created_at'].strftime("%H:%M"),
                         'author_id': message['sender_id'],
+                        'type': message['type'],
                     })
                 base_return.update({
                     'allMessages': messages,
@@ -116,6 +119,7 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
                     'message': lastMessage[0]['message'],
                     'created_at': lastMessage[0]['created_at'].strftime("%H:%M"),
                     'author_id': lastMessage[0]['sender_id'],
+                    'type': lastMessage[0]['type'],
                 }
                 base_return.update({
                     'lastMessage': message,
@@ -175,7 +179,6 @@ def me():
                         fields["step2"].append(field)
                     elif field in STEP3_FIELDS:
                         fields["step3"].append(field)
-                print("fields : ", fields, end="\n\n\n\n")
                 if len(fields["step1"]) > 0:
                     result = check_fields_step1(user_informations, email_exists_check=check_change_mail, fields=fields["step1"])
                     if result["success"] is False:
@@ -189,9 +192,7 @@ def me():
                     if result["success"] is False:
                         return jsonify({'success': False, 'error': ", ".join(result['errors'])})
                 if 'password' in user_informations:
-                    print("changing password : ", user_informations['password'], end="\n\n\n\n")
                     user_informations['password'] = generate_password_hash(user_informations['password'])
-                print("user informations : ", user_informations, end="\n\n\n\n")
                 update_user_fields(user_informations, user['email'])
                 db.commit()
                 from .auth import invalidate_token
@@ -274,7 +275,6 @@ def get_profile(id):
             action = data.get('action', None)
             if action is None:
                 return jsonify({'success': False, 'error': 'No action provided'})
-            print("data received : ", data)
             cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
             user_view = cursor.fetchone()
             if user_view is None:
@@ -282,7 +282,6 @@ def get_profile(id):
                 db.commit()
                 cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_getting["id"], user["id"],))
                 user_view = cursor.fetchone()
-            print("user view", user_view)
             if action == 'like':
                 if user_view["blocked"]:
                     return jsonify({'success': False, 'error': 'User is blocked'})
@@ -296,9 +295,7 @@ def get_profile(id):
                     liked = True
                 cursor.execute('SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE', (user["id"], user_getting["id"],))
                 user_viewed = cursor.fetchone()
-                print("user viewed", user_viewed)
                 if user_viewed is not None:
-                    print("user viewed", user_viewed)
                     if user_viewed["liked"] == True:
                         if liked == True:
                             send_notification(user["id"], user_getting["id"], "match", "User matched with you")
@@ -336,7 +333,7 @@ def profile_pictures():
             file = request.files['picture']
             if file.filename == '':
                 return jsonify({'success': False, 'error': 'No selected file'})
-            if file and file.filename.split('.')[-1] in current_app.config['PROFILE_PIC_EXTENSIONS']:
+            if file and file.filename.split('.')[-1] in current_app.config['IMAGE_EXTENSIONS']:
                 db = get_db()
                 current_user = get_jwt_identity()
                 with db.cursor() as cursor:

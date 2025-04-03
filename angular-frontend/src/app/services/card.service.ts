@@ -18,7 +18,7 @@ export class CardService {
 
     refreshProfile(numberToGet: number): void {
         this.removeProfilesModel(8);
-        if (this.profiles.length < 13)
+        if (this.profiles().length < 13)
             numberToGet += 10;
         this.fillProfiles(numberToGet);
     }
@@ -29,6 +29,10 @@ export class CardService {
 
     fillProfiles(numberToGet: number) {
         this.apiService.getData("/matcha", {nb_profiles: numberToGet}).subscribe(result => {
+            if (!result['success']) {
+                console.log(result);
+                return;
+            }
             for (const data of result["result"]) {
                 if (this.isAlreadyLoaded(data['id']))
                     continue;

@@ -35,8 +35,10 @@ def matcha():
         if list_of_users is None or len(list_of_users) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
         users_send = second_layer_algo(user, list_of_users, nb_profiles)
+        return jsonify({'success': False, 'error': list_of_users})
         if users_send is None or len(users_send) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
+        users_send = [convert_to_public_profile(user) for user in users_send]
     return jsonify({'success': True, 'result': users_send}), 200
 
 
@@ -53,12 +55,24 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
         "age_min": user['age'] - 3,
         "age_max": user['age'] + 3,
         "hetero": user['hetero'],
-        "gender": user['gender']
+        "gender": user['gender'],
+        "distance": 100,
     }
     print(cur.mogrify(base_request, params))
     cur.execute(base_request, params)
     users = cur.fetchall()
+    if users is None or len(users) == 0:
+        for _ in range(5):
+            params['distance'] += 100
+            cur.execute(base_request, params)
+            users = cur.fetchall()
+            if users is not None and len(users) > 0:
+                break
+    return users
+        
     return users
 
 def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> dict | None:
-    pass
+    for user in user_to_sort:
+        print(f"{user} \n\n")
+    return None
