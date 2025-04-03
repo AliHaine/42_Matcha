@@ -18,8 +18,8 @@ export class ChatService {
 
   updateCurrentChat(chatModel: ChatModel): ChatModel {
     this.activeChat.set(chatModel);
-    console.log(chatModel)
     this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
+        console.log(data)
       this.setupAllBubbles(data["user"]["allMessages"]);
     });
     return chatModel;
@@ -47,7 +47,6 @@ export class ChatService {
         reader.readAsDataURL(imageBlob);
         reader.onloadend = () => {
             user.picturePath = reader.result as string;
-            console.log(user)
             this.addNewChatModel(new ChatModel(user));
         };
     });

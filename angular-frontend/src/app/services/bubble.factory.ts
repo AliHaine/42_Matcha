@@ -12,11 +12,11 @@ export class BubbleFactory {
         const bubbleModel = new ChatBubbleModel(data);
         if (bubbleModel.type !== "image")
             return bubbleModel;
-        this.apiService.getDataImg("/chat/recover_image", {"image_name": bubbleModel.message}).subscribe(result => {
+        this.apiService.getDataImg("/chat/recover_image", {"image_name": bubbleModel.src}).subscribe(result => {
             const reader = new FileReader();
             reader.readAsDataURL(result);
             reader.onloadend = () => {
-                bubbleModel.message = reader.result as string;
+                bubbleModel.content = reader.result as string;
             }
         });
         return bubbleModel;
