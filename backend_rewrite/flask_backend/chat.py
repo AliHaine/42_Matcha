@@ -1,6 +1,6 @@
 import json
 import uuid
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, send_file
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from datetime import datetime, timedelta
 import os
@@ -85,3 +85,30 @@ def upload_file():
         else:
             return jsonify({"success": False, "error": "No file provided"})
  
+
+@bp.route('/recover_image', methods=['GET'])
+@jwt_required()
+def recover_image():
+    user_mail = get_jwt_identity()
+    from .db import get_db
+    db = get_db()
+    with db.cursor() as cur:
+        # Check if user exists
+        cur.execute('SELECT id, status FROM users WHERE email = %s', (user_mail,))
+        user = cur.fetchone()
+        if not user:
+            return jsonify({"success": False, "error": "User not found"})
+        if user["status"] == False:
+            return jsonify({"success": False, "error": "User is not active"})
+        user_id = user['id']
+    try:
+        image_name = request.args.get('image_name', None)
+        if image_name is None:
+            return jsonify({"success": False, "error": "No data provided"})
+    except Exception as e:
+        return jsonify({"success": False, "error": "Invalid value for image_name"})
+    file_path = f"{current_app.config['BASE_DIR']}/uploads/chat"
+    if os.path.exists(os.path.join(file_path, image_name)):
+        return send_file(os.path.join(file_path, image_name))
+    else:
+        return jsonify({"success": False, "error": "File not found"})
