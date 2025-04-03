@@ -17,6 +17,8 @@ export class ProfileModel {
     profilePicturePath: string[] = [];
     status: string;
     userId: number;
+    fameRate: number;
+    hetero: boolean;
 
     constructor(data: {[key: string]: any}) {
         this.email = data["email"];
@@ -40,9 +42,11 @@ export class ProfileModel {
         this.profilePicturePath.push("defaultpp.jpg");
         this.status = data["status"];
         this.userId = data["id"];
+        this.fameRate = data["fame_rate"];
+        this.hetero = data["hetero"];
     }
 
-    dumpAsDict() {
+    dumpAsDict(): {[key: string]: any} {
         return Object.fromEntries(Object.entries(this));
     }
 }

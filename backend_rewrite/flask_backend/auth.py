@@ -167,8 +167,6 @@ def login_user(email, password, registering=False):
     if registering == False:
         if len(missing_steps) > 0:
             return {'success': False, 'error': 'Registration not completed', 'missing_steps': missing_steps, 'access_token': access_token}
-        if user['email_verified'] == False:
-            return {'success': False, 'error': 'Email not verified', 'access_token': access_token}
     return {'success': True, 'access_token': access_token}
 
 @bp.route('/login', methods=['POST'])
@@ -182,6 +180,8 @@ def login():
             return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
         return jsonify({'success': False, 'error': 'Failed to login'})
     else:
+        if 'need_confirmation' in response:
+            return jsonify({'success': True, 'error': 'Email not verified', 'access_token': response['access_token'], 'need_confirmation': True})
         return jsonify({'success': True, 'access_token': response['access_token']})
 
 @bp.route('/logout', methods=['POST'])
@@ -209,7 +209,12 @@ def verify_token():
 def confirm_email():
     user_email = get_jwt_identity()
     db = get_db()
-    token = request.args.get('token', None)
+    try:
+        data = request.json
+    except Exception as e:
+        print("error at json conversion :", e)
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
+    token = data.get('token', None)
     if token is None:
         return jsonify({'success': False, 'error': 'No token provided'})
     with db.cursor() as cur:
@@ -218,9 +223,26 @@ def confirm_email():
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
         if user['email_verified'] == True:
-            return jsonify({'success': False, 'error': 'Email already verified'})
+            return jsonify({'success': True, 'error': 'Email already verified'})
         if user['email_token'] != token:
             return jsonify({'success': False, 'error': 'Invalid token'})
         cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user_email,))
         db.commit()
-    return jsonify({'success': True}), 200
+    return jsonify({'success': True})
+
+@bp.route('/resend_confirmation', methods=['POST'])
+@jwt_required()
+def resend_confirmation():
+    user_email = get_jwt_identity()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        if user['email_verified'] == True:
+            return jsonify({'success': True, 'error': 'Email already verified'})
+        from .user import send_confirmation_email
+        if send_confirmation_email(user['email']) == False:
+            return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
+    return jsonify({'success': True})

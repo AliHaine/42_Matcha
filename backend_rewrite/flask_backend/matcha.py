@@ -15,40 +15,64 @@ bp = Blueprint('matcha', __name__, url_prefix='/api/matcha')
 @jwt_required()
 @registration_completed
 def matcha():
-    # try:
-    #     data = request.json
-    # except Exception as e:
-    #     return jsonify({'success': False, 'error': 'Invalid parameters'})
-    # if data is None:
-    #     return jsonify({'success': False, 'error': 'Invalid parameters'})
-    # if 'nb_profiles' not in data:
-    #     return jsonify({'success': False, 'error': 'Missing parameters'})
-    db = get_db()
     nb_profiles = request.args.get('nb_profiles', 1)
     if isinstance(nb_profiles, str):
         try:
             nb_profiles = int(nb_profiles)
         except Exception as e:
             return jsonify({'success': False, 'error': 'Invalid parameters'})
+    if nb_profiles <= 0:
+        return jsonify({'success': False, 'error': 'Invalid parameters'})
     user = None
+    users_send = []
+    db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email = %s', (get_jwt_identity(),))
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
-    if user is None:
-        return jsonify({'success': False, 'error': 'User not found'})
-    with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE id != %s AND registration_complete = TRUE ORDER BY id ASC', (user["id"],))
-        users = cur.fetchall()
-        users = [convert_to_public_profile(u, user_requesting=user) for u in users]
-    users_send = []
-    for i in range(0, nb_profiles):
-        if len(users) == 0:
-            break
-        rand = os.urandom(1)[0]
-        if rand >= len(users) and rand > 0 and len(users) > 0:
-            rand = rand % len(users)
-        users_send.append(users[rand])
-        users.pop(rand)
+        list_of_users = first_layer_algo(user, cur)
+        if list_of_users is None or len(list_of_users) == 0:
+            return jsonify({'success': False, 'error': 'No users found'})
+        users_send = second_layer_algo(user, list_of_users, nb_profiles)
+        return jsonify({'success': False, 'error': list_of_users})
+        if users_send is None or len(users_send) == 0:
+            return jsonify({'success': False, 'error': 'No users found'})
+        users_send = [convert_to_public_profile(user) for user in users_send]
     return jsonify({'success': True, 'result': users_send}), 200
+
+
+def first_layer_algo(user=None, cur=None) -> dict | None:
+    # base request get all users where the user is not the same as requesting user, get the distance between the two users, and get the common interests
+    db = get_db()
+    cur = db.cursor()
+    base_request = current_app.config['QUERIES'].get("-- matcha default", None)
+    if base_request is None:
+        return None
+    params = {
+        "user_id": user['id'],
+        "city_id": user['city_id'],
+        "age_min": user['age'] - 3,
+        "age_max": user['age'] + 3,
+        "hetero": user['hetero'],
+        "gender": user['gender'],
+        "distance": 100,
+    }
+    print(cur.mogrify(base_request, params))
+    cur.execute(base_request, params)
+    users = cur.fetchall()
+    if users is None or len(users) == 0:
+        for _ in range(5):
+            params['distance'] += 100
+            cur.execute(base_request, params)
+            users = cur.fetchall()
+            if users is not None and len(users) > 0:
+                break
+    return users
+        
+    return users
+
+def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> dict | None:
+    for user in user_to_sort:
+        print(f"{user} \n\n")
+    return None

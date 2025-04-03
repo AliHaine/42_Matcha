@@ -59,7 +59,10 @@ def export_constraints(app, cur):
 
     app.config['CONSTRAINTS'] = constraints
 
-
+def load_queries(query_file):
+    with open(query_file, "r", encoding="utf-8") as f:
+        queries = f.read().split(";")  # Séparer les requêtes s'il y en a plusieurs
+        return {q.split("\n")[0]: q for q in queries if q.strip()}
 
 def init_cities():
     from .db import get_db
@@ -74,8 +77,8 @@ def init_cities():
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     CORS(app, resources={r"/api/*": {
-        "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "*"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],
+        "methods": ["GET", "POST", "PUT", "DELETE"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     }})
@@ -94,7 +97,7 @@ def create_app(test_config=None):
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30),
         BASE_DIR=os.path.dirname(os.path.abspath(__file__)),
         PROFILE_PICTURES_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads/profile_pictures'),
-        PROFILE_PIC_EXTENSIONS=['png', 'jpg', 'jpeg'],
+        IMAGE_EXTENSIONS=['png', 'jpg', 'jpeg'],
         JSON_AS_ASCII=False,
         SOCKETIO_INSTANCE=socketio,
         MAIL_SERVER=os.getenv('MAIL_SERVER', default='smtp.gmail.com'),
@@ -103,6 +106,7 @@ def create_app(test_config=None):
         MAIL_USE_SSL=False,
         MAIL_USERNAME=os.getenv('MAIL_USERNAME', default=''),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', default=''),
+        MAX_CONTENT_LENGTH=25 * 1024 * 1024,
     )
     with app.app_context():
         # initialize the database
@@ -121,6 +125,7 @@ def create_app(test_config=None):
                 cur.execute('UPDATE users SET active_connections = 0, status = FALSE WHERE status = TRUE')
                 database.commit()
                 init_cities()
+                app.config["QUERIES"] = load_queries(os.path.join(app.config['BASE_DIR'], 'queries.sql'))
         except Exception as e:
             print("INIT ERROR : Failed to get interests list from database", e)
             app.config['AVAILABLE_INTERESTS'] = []
@@ -151,19 +156,20 @@ def create_app(test_config=None):
         from . import research
         from . import matcha
         from . import get_informations
+        from . import chat
         app.register_blueprint(auth.bp)
         app.register_blueprint(profiles.bp)
         app.register_blueprint(research.bp)
         app.register_blueprint(matcha.bp)
         app.register_blueprint(get_informations.bp)
+        app.register_blueprint(chat.bp)
 
         @app.route('/test')
         def test():
             msg = Message("Hello",sender=app.config["MAIL_USERNAME"],recipients=[""])
             msg.body = "testing"
             mail.send(msg)
-            return "Hello, World!"
-
+            return "Hello, World !"
         # registering jwt and its callbacks
         jwt = JWTManager(app)
         @jwt.token_in_blocklist_loader

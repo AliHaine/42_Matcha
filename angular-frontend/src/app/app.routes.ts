@@ -9,6 +9,7 @@ import {authGuard} from "./others/auth.guard";
 import {ChatComponent} from "./components/chat/chat.component";
 import {loginGuard} from "./others/login.guard";
 import {AccountComponent} from "./components/account/account.component";
+import {EmailconfirmComponent} from "./components/emailconfirm/emailconfirm.component";
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [authGuard] },
@@ -17,6 +18,7 @@ export const routes: Routes = [
     { path: 'search', component: SearchComponent, canActivate: [authGuard] },
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
+    { path: 'emailconfirm/:token', component: EmailconfirmComponent, canActivate: [authGuard] },
     { path: 'auth', canActivate: [loginGuard], children: [{ path: 'register', component: RegisterComponent }, { path: 'login', component: LoginComponent }]},
     { path: '**', redirectTo: ''},
 ];

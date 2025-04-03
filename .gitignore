@@ -5,3 +5,4 @@ matcha.session.sql
 /angular-frontend/.angular/
 .idea
 /angular-frontend/package-lock.json
+test.json

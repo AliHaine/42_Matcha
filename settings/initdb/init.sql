@@ -1,3 +1,4 @@
+ALTER DATABASE matcha SET timezone TO 'Europe/Paris';
 CREATE EXTENSION IF NOT EXISTS postgis;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS cities CASCADE;
@@ -6,7 +7,6 @@ DROP TABLE IF EXISTS users_interests CASCADE;
 DROP TABLE IF EXISTS user_views CASCADE;
 DROP TABLE IF EXISTS waiting_notifications CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
-DROP TRIGGER IF EXISTS trigger_update_fame_rate ON user_views;
 DROP FUNCTION IF EXISTS update_fame_rate;
 
 CREATE TABLE cities (
@@ -81,7 +81,7 @@ CREATE TABLE users (
     CONSTRAINT email_unique UNIQUE (email),
     CONSTRAINT email_invalid CHECK (email ~ '^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9.-]+$'),
     CONSTRAINT password_not_empty CHECK (password <> ''),
-    CONSTRAINT age_positive CHECK (age > 15 AND age < 80),
+    CONSTRAINT age_positive CHECK (age > 14 AND age < 81),
     CONSTRAINT gender_check CHECK (gender IN ('M', 'F')),
     CONSTRAINT fk_city_id FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE SET NULL,  -- Clé étrangère activée
     CONSTRAINT searching_invalid CHECK (searching IN ('Friends', 'Love', 'Talking')),
@@ -141,34 +141,63 @@ CREATE TABLE messages(
     id SERIAL PRIMARY KEY,
     sender_id INT,
     receiver_id INT,
+    type VARCHAR(10) NOT NULL,
     message VARCHAR(1500),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT type_invalid CHECK (type IN ('text', 'image'))
     -- CONSTRAINT message_invalid CHECK (message ~ '^[a-zA-ZÀ-ÖØ-öø-ÿ0-9 .,!?;:()\[\]-]+$')
 
 );
 
-CREATE OR REPLACE FUNCTION update_fame_rate() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION update_fame_rate()
+RETURNS TRIGGER AS $$
 BEGIN
-    -- Met à jour uniquement l'utilisateur "viewed" affecté par cette interaction
-    UPDATE users
-    SET fame_rate = (
-        SELECT 
-            (COUNT(CASE WHEN liked THEN 1 END) * 2) + 
-            (COUNT(*) / 10) + 
-            (COUNT(CASE WHEN last_chat > now() - INTERVAL '7 days' THEN 1 END) * 3) - 
-            (COUNT(CASE WHEN report THEN 1 END) * 5)
-        FROM user_views
-        WHERE viewed_id = NEW.viewed_id
-    )
-    WHERE id = NEW.viewed_id;
+    -- Cas où la fonction est appelée par user_views
+    IF TG_TABLE_NAME = 'user_views' THEN
+        UPDATE users
+        SET fame_rate = (
+            SELECT 
+                (((COUNT(CASE WHEN liked THEN 1 END) * 2) + 
+                    (COUNT(*) / 10) *
+                    CASE WHEN (SELECT premium FROM users WHERE id = NEW.viewed_id) THEN 2 ELSE 1 END) + 
+                (COUNT(CASE WHEN last_chat > now() - INTERVAL '7 days' THEN 1 END) * 3) - 
+                (COUNT(CASE WHEN report THEN 1 END) * 5)) +
+                CASE WHEN (SELECT premium FROM users WHERE id = NEW.viewed_id) THEN 20 ELSE 0 END
+            FROM user_views
+            WHERE viewed_id = NEW.viewed_id
+        )
+        WHERE id = NEW.viewed_id;
+    
+    -- Cas où la fonction est appelée par users (changement de premium)
+    ELSIF TG_TABLE_NAME = 'users' THEN
+        UPDATE users
+        SET fame_rate = (
+            SELECT 
+                (((COUNT(CASE WHEN liked THEN 1 END) * 2) + 
+                    (COUNT(*) / 10) *
+                    CASE WHEN (SELECT premium FROM users WHERE id = OLD.id) THEN 2 ELSE 1 END) + 
+                (COUNT(CASE WHEN last_chat > now() - INTERVAL '7 days' THEN 1 END) * 3) - 
+                (COUNT(CASE WHEN report THEN 1 END) * 5)) +
+                CASE WHEN (SELECT premium FROM users WHERE id = OLD.id) THEN 20 ELSE 0 END
+            FROM user_views
+            WHERE viewed_id = OLD.id
+        )
+        WHERE id = OLD.id;
+    END IF;
     
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_fame_rate
+CREATE OR REPLACE TRIGGER trigger_update_fame_rate
 AFTER INSERT OR UPDATE ON user_views
 FOR EACH ROW
+EXECUTE FUNCTION update_fame_rate();
+
+CREATE TRIGGER trigger_update_fame_on_premium_change
+AFTER UPDATE OF premium ON users
+FOR EACH ROW
+WHEN (OLD.premium IS DISTINCT FROM NEW.premium)
 EXECUTE FUNCTION update_fame_rate();
