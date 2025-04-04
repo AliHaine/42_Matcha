@@ -35,7 +35,6 @@ def matcha():
         if list_of_users is None or len(list_of_users) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
         users_send = second_layer_algo(user, list_of_users, nb_profiles)
-        return jsonify({'success': False, 'error': list_of_users})
         if users_send is None or len(users_send) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
         users_send = [convert_to_public_profile(user) for user in users_send]
@@ -71,7 +70,13 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
         
     return users
 
-def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> dict | None:
-    for user in user_to_sort:
-        print(f"{user} \n\n")
-    return None
+def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> list | None:
+    scored_user_list = []
+    for user_target in user_to_sort:
+        user_target['score'] = calcul_score(user, user_target)
+        scored_user_list.append(user_target)
+    return scored_user_list
+
+
+def calcul_score(user, user_target):
+    return 48
