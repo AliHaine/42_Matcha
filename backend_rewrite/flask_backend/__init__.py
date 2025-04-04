@@ -24,10 +24,13 @@ import re
 
 def export_constraints(app, cur):
     table_name = "users"
-    columns_names = {"searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "firstname", "lastname", "description"}
+    columns_names = {
+        "searching", "commitment", "frequency", "weight", "size", "shape",
+        "smoking", "alcohol", "diet", "firstname", "lastname", "description"
+    }
     constraints = {}
 
-    query = f"""
+    query = """
     SELECT pg_get_constraintdef(oid) as constraint_def 
     FROM pg_constraint 
     WHERE contype = 'c' 
@@ -46,14 +49,23 @@ def export_constraints(app, cur):
     for row in results:
         constraint_def = row["constraint_def"]
         
-        # Identifier la colonne concernée
         for column in columns_names:
             if column in constraint_def:
                 match = regex_pattern.search(constraint_def)
                 if match:
+                    print(f"Constraint found for column {column}: {constraint_def}")
+                    print(f"Match: {match.group(0)}")
+
                     if match.group("values"):
-                        values = [re.sub(r"::.*", "", v.replace("'", "").strip()) for v in match.group("values").split(", ")]
+                        raw_values = match.group("values").split(", ")
+                        values = []
+                        for v in raw_values:
+                            # Nettoyage de chaque valeur : on enlève les ::, les parenthèses et les apostrophes
+                            clean = re.sub(r"::.*", "", v)  # supprime tout ce qui suit "::"
+                            clean = clean.strip(" '()")     # supprime les ' ( ) et espaces autour
+                            values.append(clean)
                         constraints[column] = values
+
                     elif match.group("regex"):
                         constraints[column] = match.group("regex").replace("\\\\", "\\")
 
