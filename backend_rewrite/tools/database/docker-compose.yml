@@ -1,0 +1,31 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgis/postgis:16-3.5-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sauvegarde.dump:/docker-entrypoint-initdb.d/sauvegarde.dump
+      - ./restore.sh:/docker-entrypoint-initdb.d/01_restore.sh
+    env_file:
+      - ../../../settings/.database.env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    env_file:
+      - ../../../settings/.database.env
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json
+
+networks:
+  postgres_network:
+    driver: bridge
+volumes:
+  postgres_data:
+  pgadmin_data:

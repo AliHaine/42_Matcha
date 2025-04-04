@@ -1,11 +1,18 @@
 export class ChatBubbleModel {
     author_id: number;
-    message: string;
+    content: string = "";
+    src: string = "";
+    type: string;
     created_at: string;
 
     constructor(data: {[key: string]: any}) {
         this.author_id = data["author_id"];
-        this.message = data["message"];
+        this.type = data["type"];
+        //if the type is image, the content will be load in the BubbleFactory (to load the image with a http request)
+        if (this.type === "image")
+            this.src = data["message"];
+        else
+            this.content = data["message"];
         this.created_at = data["created_at"];
     }
 }

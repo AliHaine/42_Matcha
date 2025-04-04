@@ -1,5 +1,11 @@
 <div class="chatbubble-content" [ngClass]="isSelfBubble() ? 'left-bubble' : 'right-bubble'">
     <img [src]="isSelfBubble() ? this.chatModel().picturePath : this.authService.currentUserProfileModel().profilePicturePath.at(0)">
-    <div class="message">{{chatBubble().message}}</div>
-    <div>{{chatBubble().created_at}}</div>
+    @if (chatBubble().type !== "image") {
+        <div class="message">{{ chatBubble().content }}</div>
+    } @else {
+        <div class="message" style="width: auto; max-width: 100%;">
+            <img style="width: auto; max-width: 100%; border-radius: 0;" [src]=chatBubble().content />
+        </div>
+    }
+    <div>{{ chatBubble().created_at }}</div>
 </div>

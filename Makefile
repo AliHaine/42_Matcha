@@ -11,6 +11,9 @@ up:
 down:
 	docker-compose -f backend_rewrite/tools/database/docker-compose.yml down
 
+rmv:
+	docker-compose -f backend_rewrite/tools/database/docker-compose.yml down --volumes
+
 backend:
 	$(MAKE) database
 	$(MAKE) flask
@@ -28,4 +31,4 @@ flask:
 
 database:
 	docker-compose -f backend_rewrite/tools/database/docker-compose.yml --env-file ./settings/.database.env up -d
-	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"
+#	@bash -c "cd backend_rewrite && pwd && ./tools/resetDatabase.sh"

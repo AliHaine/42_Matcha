@@ -71,10 +71,6 @@ fieldset {
     gap: 15%;
 }
 
-#picture {
-    display: none;
-}
-
 .input-radio {
     align-items: center;
 }

@@ -1,0 +1,113 @@
+algo:
+
+Score 0-1 (convert from 0-100 range)
+
+Default value 0.2
+
+----------------------------------------
+Interest + 0.03
+Triple interest + 0.03 bonus
+
+So for each interest that are same for both, the score will increase by 0.03, and 0.03 bonus if there is 3 or more interests. maximum 1.2 can be give by interests
+----------------------------------------
+
+----------------------------------------
+Location + 0.0-0.2 (distance)
+
+Depending on the distance the score will increase in a range of 0.0-0.2
+----------------------------------------
+
+----------------------------------------
+Health major (smoke) + 0.1 or -0.2
+
+Smoke is considere as major interest, so it will give +0.1 if both have the same smoke value, and -0.2 if not.
+----------------------------------------
+
+----------------------------------------
+Looking for + 0.1 or -0.05
+
+Looking for is considered as important, so the score will increase by 0.1 for each same looking value, and decrease by 0.05 if not.
+----------------------------------------
+
+----------------------------------------
+shape +0.02
+
+Shape value will only increase the score by 0.02 for values that are same for both.
+----------------------------------------
+
+
+
+
+Profile example 1 (mid)
+
+0.2
+
+Users have 2 interests in commons
+
+0.2 -> 0.26
+
+Users are close to each one but not very close (so +0.1 and not +0.2)
+
+0.26 -> 0.36
+
+Health smoke value are not the same 
+
+0.36 -> 0.16
+
+2 Looking for values are the same
+
+0.16 -> 0.31
+
+
+So the final score is 0.31, converted is 31%, because the users are not very close to each one, there is only 2 looking for values in common and health major value don't correspond (one smoke and one not)
+
+
+
+Profile example 2 (good)
+
+0.2
+
+Users have 2 interests in commons
+
+0.2 -> 0.26
+
+Users are close 
+
+0.26 -> 0.46
+
+Health smoke value are the sames
+
+0.46 -> 0.56
+
+3 Looking for values are the sames
+
+0.56 -> (0.86)
+
+
+So the final score is 0.86, converted is 86%, health major value are the same, and there is 3 same looking for, but there is only 2 interests, which decrease the final score, with 3 common interests,
+the final score will be more than 90%
+
+
+
+Profile example 3 (bad)
+
+0.2
+
+Users have 2 interests in commons
+
+0.2 -> 0.26
+
+Users are close 
+
+0.26 -> 0.46
+
+Health smoke value are not the sames
+
+0.46 -> 0.26
+
+0 Looking for values are the sames
+
+0.26 -> 0.11
+
+
+Final score is 0.11 converted is 11%, health smoke value are not the sames, 0 looking for values, so is a very bad profile for this user, but there are still close to each one, which explain 11%
