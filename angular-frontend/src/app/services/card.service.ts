@@ -40,6 +40,7 @@ export class CardService {
                     continue;
                 this.addNewProfileModel(this.profileFactory.getNewProfile(data));
             }
+            console.log(this.profiles());
         });
     }
 
