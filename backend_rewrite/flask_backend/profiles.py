@@ -223,6 +223,23 @@ def get_views():
         users = cur.fetchall()
         users = [convert_to_public_profile(u, user) for u in users]
         return jsonify({'success': True, 'views': users})
+
+@bp.route('/me/premium', methods=['POST'])
+@jwt_required()
+@registration_completed
+def premium():
+    current_user = get_jwt_identity()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM users WHERE email = %s", (current_user,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        if user['premium'] == True:
+            return jsonify({'success': False, 'error': 'User already premium'})
+        cur.execute("UPDATE users SET premium = TRUE WHERE email = %s", (current_user,))
+        db.commit()
+        return jsonify({'success': True})
         
 
 @bp.route('/<int:id>', methods=['GET', 'POST'])
