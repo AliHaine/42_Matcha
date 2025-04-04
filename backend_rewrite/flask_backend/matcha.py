@@ -73,10 +73,36 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
 def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> list | None:
     scored_user_list = []
     for user_target in user_to_sort:
+        score = 0.2
+        print(user_target)
         user_target['score'] = calcul_score(user, user_target)
         scored_user_list.append(user_target)
     return scored_user_list
 
 
 def calcul_score(user, user_target):
-    return 48
+    score = 0.2
+    score += 0.1 if user['smoking'] == user_target['smoking'] else -0.2
+    score += 0.1 if user['searching'] == user_target['searching'] else -0.05
+    score += 0.1 if user['commitment'] == user_target['commitment'] else -0.05
+    score += 0.1 if user['frequency'] == user_target['frequency'] else -0.05
+
+    #The user can have max 1.2 scores from interests, and also earn 0.3 BONUS if there is at least 3 interests in common
+    #That mean if the user have 2 interests, score will increase by 0.3, if he have 3 or more, the score will increase by 1.2
+    interest_score = 0.0
+    if user_target['common_interests'] > 0:
+        interest_score = user_target['common_interests'] * 0.3
+    if interest_score > 1.2 or interest_score == 0.9:
+        interest_score = 1.2
+    score += interest_score
+
+    if user['shape'] == user_target['shape']: score += 0.02
+    if user['size'] == user_target['size']: score += 0.02
+    if user['weight'] == user_target['weight']: score += 0.02
+
+    if score < 0:
+        score = 0
+    return score
+
+    def convert_score_to_100(score_to_convert):
+        pass
