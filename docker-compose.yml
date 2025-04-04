@@ -4,7 +4,8 @@ services:
     image: postgis/postgis:16-3.5-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./settings/initdb:/docker-entrypoint-initdb.d/
+      - ./settings/initdb/sauvegarde.dump:/docker-entrypoint-initdb.d/sauvegarde.dump
+      - ./settings/initdb/restore.sh:/docker-entrypoint-initdb.d/01_restore.sh
     env_file:
       - ./settings/.env
     expose:
