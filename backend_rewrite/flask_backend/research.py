@@ -42,9 +42,17 @@ def research():
             else:
                 arguments['age_max'] = int(request.args['ageMax'])
         if 'location' in request.args:
-            arguments['location'] = request.args['location']
+            location = request.args['location']
+            if not location or location == '':
+                pass
+            else:
+                arguments['location'] = location
         if 'interest' in request.args:
-            arguments['interest'] = request.args['interest']
+            interest = request.args['interest']
+            if not interest or interest == '':
+                pass
+            else:
+                arguments['interest'] = interest
         if 'showBlocks' in request.args:
             show_blocks = request.args['showBlocks']
             if show_blocks == 'true':
@@ -142,19 +150,20 @@ def research():
             baseRequest += f' ORDER BY distance {sort_order}'
         elif sort_by == 'id':
             baseRequest += f' ORDER BY users.id {sort_order}'
+        users = cur.fetchall()
+        # start = (page - 1) * profile_per_page
+        # end = start + profile_per_page
+        offset = (page - 1) * profile_per_page
+        limit = profile_per_page
+        baseRequest += f' OFFSET {offset} LIMIT {limit}'
         cur.execute(baseRequest, tuple(params))
         users = cur.fetchall()
-        start = (page - 1) * profile_per_page
-        end = start + profile_per_page
-        for user in users[start:end]:
-            test = {
-                "distance": int(user["distance"] // 1000),
-                "common_interests": user['common_interests'],
-            }
-            research_results.append({**convert_to_public_profile(user), **test})
-    max_page = len(users) // profile_per_page
-    if len(users) % profile_per_page != 0:
-        max_page += 1
-
+        for user in users:
+            research_results.append(convert_to_public_profile(user))
+        cur.execute('SELECT COUNT(*) FROM users WHERE id != %s AND registration_complete = TRUE', (user_id,))
+        count = cur.fetchone()
+        max_page = count['count'] // profile_per_page
+        if count['count'] % profile_per_page != 0:
+            max_page += 1
     return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page, 'profile_per_page': profile_per_page, 'errors': errors})
 

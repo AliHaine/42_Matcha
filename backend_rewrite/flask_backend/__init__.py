@@ -53,9 +53,6 @@ def export_constraints(app, cur):
             if column in constraint_def:
                 match = regex_pattern.search(constraint_def)
                 if match:
-                    print(f"Constraint found for column {column}: {constraint_def}")
-                    print(f"Match: {match.group(0)}")
-
                     if match.group("values"):
                         raw_values = match.group("values").split(", ")
                         values = []

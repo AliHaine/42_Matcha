@@ -58,7 +58,6 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
         "gender": user['gender'],
         "distance": 100,
     }
-    print(cur.mogrify(base_request, params))
     cur.execute(base_request, params)
     users = cur.fetchall()
     if users is None or len(users) == 0:
