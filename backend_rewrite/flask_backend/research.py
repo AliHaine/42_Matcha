@@ -78,7 +78,7 @@ def research():
         return jsonify({'error': 'Invalid parameters'})
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('SELECT id, city_id FROM users WHERE email = %s', (get_jwt_identity(),))
+        cur.execute('SELECT * FROM users WHERE email = %s', (get_jwt_identity(),))
         current_user = cur.fetchone()
         if current_user is None:
             return jsonify({'error': 'User not found'})
@@ -159,7 +159,7 @@ def research():
         cur.execute(baseRequest, tuple(params))
         users = cur.fetchall()
         for user in users:
-            research_results.append(convert_to_public_profile(user))
+            research_results.append(convert_to_public_profile(user, current_user))
         cur.execute('SELECT COUNT(*) FROM users WHERE id != %s AND registration_complete = TRUE', (user_id,))
         count = cur.fetchone()
         max_page = count['count'] // profile_per_page

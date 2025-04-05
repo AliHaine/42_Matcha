@@ -57,7 +57,7 @@ def convert_to_public_profile(user, user_requesting=None):
                             matching = "match"
         else:
             matching = "none"
-    return {
+    base = {
         'id': user['id'],
         'firstname': user['firstname'],
         'lastname': user['lastname'],
@@ -77,6 +77,16 @@ def convert_to_public_profile(user, user_requesting=None):
         "email_verified": user['email_verified'],
         "premium": user['premium']
     }
+    print("before score add")
+    print(user_requesting)
+    if user_requesting is not None:
+        print("passing in score add")
+        if "score" in user:
+            base["score"] = user["score"]
+        else:
+            from .matcha import calcul_score
+            base["score"] = calcul_score(user_requesting, user)
+    return base
 
 def convert_to_chat_profile(user, user_getting, all_messages=False):
     cityID = user['city_id']
@@ -219,7 +229,17 @@ def get_views():
         ids = []
         for view in views:
             ids.append(view['viewer_id'])
-        cur.execute("SELECT * FROM users WHERE id IN %s", (tuple(ids),))
+        query = """
+        SELECT u.*, COUNT(ui2.interest_id) AS common_interests
+        FROM users u
+        LEFT JOIN users_interests ui1 ON ui1.user_id = %s
+        LEFT JOIN users_interests ui2 ON ui2.user_id = u.id AND ui1.interest_id = ui2.interest_id
+        WHERE u.id IN %s
+        GROUP BY u.id
+        """
+        if len(ids) == 0:
+            return jsonify({'success': True, 'views': []})
+        cur.execute(query, (user["id"], tuple(ids),))
         users = cur.fetchall()
         users = [convert_to_public_profile(u, user) for u in users]
         return jsonify({'success': True, 'views': users})
@@ -249,11 +269,19 @@ def get_profile(id):
     from .websocket import send_notification
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE id = %s", (id,))
-    user = cursor.fetchone()
     user_getting = get_jwt_identity()
     cursor.execute("SELECT * FROM users WHERE email = %s", (user_getting,))
     user_getting = cursor.fetchone()
+    query = """
+        SELECT u.*, COUNT(ui2.interest_id) AS common_interests
+        FROM users u
+        LEFT JOIN users_interests ui1 ON ui1.user_id = %s
+        LEFT JOIN users_interests ui2 ON ui2.user_id = u.id AND ui1.interest_id = ui2.interest_id
+        WHERE u.id = %s
+        GROUP BY u.id
+    """
+    cursor.execute(query, (user_getting["id"], id,))
+    user = cursor.fetchone()
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'})
     if user_getting == None:

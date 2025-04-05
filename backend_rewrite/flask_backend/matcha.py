@@ -37,7 +37,7 @@ def matcha():
         users_send = second_layer_algo(user, list_of_users, nb_profiles)
         if users_send is None or len(users_send) == 0:
             return jsonify({'success': False, 'error': 'No users found'})
-        users_send = [convert_to_public_profile(user) for user in users_send]
+        users_send = [convert_to_public_profile(u, user) for u in users_send]
     return jsonify({'success': True, 'result': users_send}), 200
 
 
