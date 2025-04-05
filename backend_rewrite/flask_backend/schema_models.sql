@@ -12,11 +12,11 @@ DROP FUNCTION IF EXISTS update_fame_rate;
 CREATE TABLE cities (
     id SERIAL PRIMARY KEY,
     cityname VARCHAR(250) NOT NULL,
-    citycode INT NOT NULL,
+    citycode VARCHAR(20) NOT NULL,
     departementname VARCHAR(250) NOT NULL,
-    departementcode INT NOT NULL,
+    departementcode VARCHAR(20) NOT NULL,
     regionname VARCHAR(250) NOT NULL,
-    regioncode INT NOT NULL,
+    regioncode VARCHAR(20) NOT NULL,
     centerlon FLOAT NOT NULL,
     centerlat FLOAT NOT NULL,
      geom GEOGRAPHY(POINT, 4326) GENERATED ALWAYS AS 

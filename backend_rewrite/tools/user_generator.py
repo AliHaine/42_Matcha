@@ -16,12 +16,19 @@ cursor = connection.cursor()
 link = "https://randomuser.me/api/?nat=fr&inc=name,dob,gender&results="
 
 def populate_cities():
-    city_link = "https://geo.api.gouv.fr/communes?limit=10&fields=nom,code,departement,region,centre"
-    city_data = requests.get(city_link).json()
-    if not city_data:
-        print("Aucune donnée de ville disponible.")
-        return
+    city_link = "https://geo.api.gouv.fr/communes?limit=100000&fields=nom,code,departement,region,centre,population"
+    response = requests.get(city_link)
 
+    if response.status_code == 200:
+        communes = response.json()
+        communes = [c for c in communes if c.get("population") is not None]
+        communes_sorted = sorted(communes, key=lambda x: x["population"], reverse=True)
+        print(f"Récupération de {len(communes_sorted)} villes : {[c['nom'] for c in communes_sorted]}")
+
+        city_data = communes_sorted[:100]
+    else:
+        print(f"Erreur lors de l'appel API : {response.status_code}")
+    print(f"Récupération de {len(city_data)} villes : {[c['nom'] for c in city_data]}")
     query = """
     INSERT INTO cities (cityname, citycode, departementname, departementcode, regionname, regioncode, centerlon, centerlat) 
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
