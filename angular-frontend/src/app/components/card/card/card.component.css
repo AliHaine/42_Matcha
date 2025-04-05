@@ -23,6 +23,16 @@
     height: 100%;
 }
 
+.score {
+    position: relative;
+    display: flex;
+    height: 10%;
+    top: 6%;
+    left: 71%;
+    color: var(--color-4);
+    align-items: center;
+}
+
 .profilePic {
     width: 90%;
     height: 90%;
@@ -34,7 +44,7 @@
 
 .profilePicIcons {
     position: relative;
-    top: 88%;
+    top: 78%;
     left: 50%;
     display: flex;
     justify-content: center;

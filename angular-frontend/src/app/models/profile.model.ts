@@ -19,6 +19,7 @@ export class ProfileModel {
     userId: number;
     fameRate: number;
     hetero: boolean;
+    score: number;
 
     constructor(data: {[key: string]: any}) {
         this.email = data["email"];
@@ -44,6 +45,7 @@ export class ProfileModel {
         this.userId = data["id"];
         this.fameRate = data["fame_rate"];
         this.hetero = data["hetero"];
+        this.score = data["score"];
     }
 
     dumpAsDict(): {[key: string]: any} {
