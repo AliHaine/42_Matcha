@@ -17,6 +17,12 @@ body {
 	background: var(--color-background-1);
 }
 
+.icon-img {
+    height: 80%;
+    aspect-ratio: 1;
+    display: inline-block;
+}
+
 .icon {
     height: 80%;
     aspect-ratio: 1;
