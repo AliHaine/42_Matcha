@@ -230,16 +230,23 @@ def get_views():
         for view in views:
             ids.append(view['viewer_id'])
         query = """
-        SELECT u.*, COUNT(ui2.interest_id) AS common_interests
+        SELECT u.*,
+            COUNT(ui2.interest_id) AS common_interests,
+            (round((ST_Distance(
+            user_city.geom::geography,
+            my_city.geom::geography
+        )::numeric / 1000), -1)) AS distance
         FROM users u
+        LEFT JOIN cities user_city ON user_city.id = u.city_id
+        LEFT JOIN cities my_city ON my_city.id = %s
         LEFT JOIN users_interests ui1 ON ui1.user_id = %s
         LEFT JOIN users_interests ui2 ON ui2.user_id = u.id AND ui1.interest_id = ui2.interest_id
-        WHERE u.id IN %s
-        GROUP BY u.id
-        """
+        WHERE u.id = %s
+        GROUP BY u.id, user_city.geom, my_city.geom
+    """
         if len(ids) == 0:
             return jsonify({'success': True, 'views': []})
-        cur.execute(query, (user["id"], tuple(ids),))
+        cur.execute(query, (user["city_id"], user["id"], tuple(ids),))
         users = cur.fetchall()
         users = [convert_to_public_profile(u, user) for u in users]
         return jsonify({'success': True, 'views': users})
@@ -273,14 +280,21 @@ def get_profile(id):
     cursor.execute("SELECT * FROM users WHERE email = %s", (user_getting,))
     user_getting = cursor.fetchone()
     query = """
-        SELECT u.*, COUNT(ui2.interest_id) AS common_interests
+        SELECT u.*,
+            COUNT(ui2.interest_id) AS common_interests,
+            (round((ST_Distance(
+            user_city.geom::geography,
+            my_city.geom::geography
+        )::numeric / 1000), -1)) AS distance
         FROM users u
+        LEFT JOIN cities user_city ON user_city.id = u.city_id
+        LEFT JOIN cities my_city ON my_city.id = %s
         LEFT JOIN users_interests ui1 ON ui1.user_id = %s
         LEFT JOIN users_interests ui2 ON ui2.user_id = u.id AND ui1.interest_id = ui2.interest_id
         WHERE u.id = %s
-        GROUP BY u.id
+        GROUP BY u.id, user_city.geom, my_city.geom
     """
-    cursor.execute(query, (user_getting["id"], id,))
+    cursor.execute(query, (user_getting["city_id"], user_getting["id"], id,))
     user = cursor.fetchone()
     if user is None:
         return jsonify({'success': False, 'error': 'User not found'})
