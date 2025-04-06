@@ -77,10 +77,7 @@ def convert_to_public_profile(user, user_requesting=None):
         "email_verified": user['email_verified'],
         "premium": user['premium']
     }
-    print("before score add")
-    print(user_requesting)
     if user_requesting is not None:
-        print("passing in score add")
         if "score" in user:
             base["score"] = user["score"]
         else:

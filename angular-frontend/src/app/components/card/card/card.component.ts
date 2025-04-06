@@ -1,4 +1,4 @@
-import {Component, inject, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, InputSignal} from '@angular/core';
 import {InterestComponent} from "../interest/interest.component";
 import {RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
@@ -14,7 +14,8 @@ import {CardService} from "../../../services/card.service";
     NgForOf,
   ],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.css'
+  styleUrl: './card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CardComponent {
