@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NotificationComponent} from "../notification/notification.component";
 import {NgIf} from "@angular/common";
@@ -9,7 +9,8 @@ import {NotificationService} from "../../services/notification.service";
   selector: 'app-navbar',
   imports: [RouterLink, NotificationComponent, NgIf],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
 
