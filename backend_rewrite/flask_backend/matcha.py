@@ -32,11 +32,10 @@ def matcha():
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
         list_of_users = first_layer_algo(user, cur)
-        if list_of_users is None or len(list_of_users) == 0:
-            return jsonify({'success': False, 'error': 'No users found'})
-        users_send = second_layer_algo(user, list_of_users, nb_profiles)
-        if users_send is None or len(users_send) == 0:
-            return jsonify({'success': False, 'error': 'No users found'})
+        if list_of_users is None or len(list_of_users) < nb_profiles:
+            return jsonify({'success': False, 'error': 'No enough users found..'})
+        users_send = second_layer_algo(user, list_of_users)
+        users_send = third_layer_algo(user['premium'], users_send, nb_profiles)
         users_send = [convert_to_public_profile(u, user) for u in users_send]
     return jsonify({'success': True, 'result': users_send}), 200
 
@@ -67,16 +66,14 @@ def first_layer_algo(user=None, cur=None) -> dict | None:
             if users is not None and len(users) > 0:
                 break
     return users
-        
-    return users
 
-def second_layer_algo(user=None, user_to_sort=[], nb_profiles=8) -> list | None:
-    scored_user_list = []
+
+def second_layer_algo(user=None, user_to_sort=[]) -> list | None:
+    scored_users = []
     for user_target in user_to_sort:
-        score = 0.2
         user_target['score'] = calcul_score(user, user_target)
-        scored_user_list.append(user_target)
-    return scored_user_list
+        scored_users.append(user_target)
+    return scored_users
 
 
 def calcul_score(user, user_target):
@@ -85,6 +82,9 @@ def calcul_score(user, user_target):
     score += 10 if user['searching'] == user_target['searching'] else -5
     score += 10 if user['commitment'] == user_target['commitment'] else -5
     score += 10 if user['frequency'] == user_target['frequency'] else -5
+
+    if user_target['distance'] < 250:
+        score += 20 - int(user_target['distance']) / 12.5
 
     #The user can have max 12 scores from interests, and also earn 3 BONUS if there is at least 3 interests in common
     #That mean if the user have 2 interests, score will increase by 3, if he have 3 or more, the score will increase by 12
@@ -102,3 +102,18 @@ def calcul_score(user, user_target):
     if score < 0:
         score = 0
     return score
+
+
+def third_layer_algo(is_premium, user_scored_list, nb_profiles):
+    users_to_send = []
+    score_target = 65 if is_premium else 50
+    score_range = 5
+    while len(users_to_send) < nb_profiles:
+        for user_target in user_scored_list:
+            if user_target['score'] <= score_target+score_range and user_target['score'] >= score_target-score_range:
+                users_to_send.append(user_target)
+                user_scored_list.remove(user_target)
+                if len(users_to_send) == nb_profiles:
+                    break
+        score_range += 5
+    return users_to_send
