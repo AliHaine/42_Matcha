@@ -101,7 +101,7 @@ def calcul_score(user, user_target):
 
     if score < 0:
         score = 0
-    return score
+    return round(score)
 
 
 def third_layer_algo(is_premium, user_scored_list, nb_profiles):

@@ -74,3 +74,14 @@ fieldset {
 .input-radio {
     align-items: center;
 }
+
+#upload-pic {
+    display: block; 
+    position: absolute; 
+    padding: 1%;
+    box-sizing: border-box;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: red;
+}

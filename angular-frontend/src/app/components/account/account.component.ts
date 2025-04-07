@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -29,6 +29,7 @@ export class AccountComponent {
   authService = inject(AuthService);
   placeHolderMessage: string = "";
   private currentImageIndex: number = 0;
+  formNumber = signal<number>(0);
   formGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
