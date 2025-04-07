@@ -76,12 +76,18 @@ fieldset {
 }
 
 #upload-pic {
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 0px 1500px 4000px;
     display: block; 
-    position: absolute; 
-    padding: 1%;
+    position: absolute;
+    padding: 0.5%;
     box-sizing: border-box;
     top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: red;
+    background-color: var(--color-3);
+}
+
+.upload-text-area {
+    display: flex; 
+    flex-direction: column;
 }

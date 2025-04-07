@@ -67,13 +67,6 @@ export class AccountComponent {
   }
 
   applyTrigger() {
-    const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
-    let file: File | undefined;
-
-    file = pictureAsHtml.files?.[0];
-    if (file)
-      this.addPicture(file);
-
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       if (result['disconnect'])
         this.authService.logout();
@@ -90,12 +83,21 @@ export class AccountComponent {
     this.placeHolderMessage = "";
   }
 
-  addPicture(file: File) {
+  addPicture() {
+    const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
+    let file: File | undefined;
+
+    file = pictureAsHtml.files?.[0];
+    if (!file)
+      return;
+
     const formaData = new FormData();
 
     formaData.append("picture", file);
     this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
       console.log(result);
+      this.formNumber.set(0);
+      this.authService.refreshCurrentProfile()
     });
   }
 
