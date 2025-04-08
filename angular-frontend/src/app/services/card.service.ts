@@ -7,7 +7,6 @@ import {ProfileFactory} from "./profile.factory";
     providedIn: 'root'
 })
 export class CardService {
-
     apiService: ApiService = inject(ApiService);
     profileFactory: ProfileFactory = inject(ProfileFactory);
     profiles: WritableSignal<ProfileModel[]> = signal<ProfileModel[]>([]);

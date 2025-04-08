@@ -23,6 +23,12 @@
     grid-column-gap: 6vmin;
 }
 
+@media (max-width: 1475px) {
+    #cards {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
 #cards div {
     margin-right: 10px;
 }
