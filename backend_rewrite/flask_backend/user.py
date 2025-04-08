@@ -33,8 +33,8 @@ def generate_confirm_email_token(email):
     return token
 
 
-FIELDS_UPDATABLE = ["firstname", "lastname", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
-STEP1_FIELDS = ["firstname", "lastname", "email", "password", "age", "gender", "hetero"]
+FIELDS_UPDATABLE = ["firstname", "lastname", "username", "email", "password", "age", "gender", "city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet", "description", "interests", "hetero"]
+STEP1_FIELDS = ["username", "firstname", "lastname", "email", "password", "age", "gender", "hetero"]
 STEP2_FIELDS = ["city", "searching", "commitment", "frequency", "weight", "size", "shape", "smoking", "alcohol", "diet"]
 STEP3_FIELDS = ["interests", "description"]
 def create_user(user_informations):
@@ -42,8 +42,8 @@ def create_user(user_informations):
         db = get_db()
         with db.cursor() as cur:
             cur.execute(
-                'INSERT INTO users (firstname, lastname, email, password, age, gender) VALUES (%s, %s, %s, %s, %s, %s)',
-                (user_informations['firstname'], user_informations['lastname'], user_informations['email'], user_informations['password'], user_informations['age'], user_informations['gender'])
+                'INSERT INTO users (firstname, lastname, email, password, age, gender, username) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                (user_informations['firstname'], user_informations['lastname'], user_informations['email'], user_informations['password'], user_informations['age'], user_informations['gender'], user_informations['username'])
             )
         db.commit()
         return True
@@ -129,6 +129,17 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
             result['success'] = False
             result['errors'].append(f"Field {field} is missing")
         else:
+            if field == "username":
+                if not isinstance(data[field], str) or len(data[field]) < 3 or len(data[field]) > 20 or not re.match(current_app.config['CONSTRAINTS']['username'], data[field]):
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not valid")
+                if email_exists_check == True:
+                    with get_db().cursor() as cur:
+                        cur.execute('SELECT * FROM users WHERE username = %s', (data[field],))
+                        user = cur.fetchone()
+                        if user is not None:
+                            result['success'] = False
+                            result['errors'].append(f"Field {field} is already used")
             if field == "firstname" or field == "lastname":
                 if field == "firstname":
                     regex_name = current_app.config['CONSTRAINTS']['firstname']
@@ -137,9 +148,12 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
                 if not isinstance(data[field], str) or not re.match(regex_name, data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
-                if len(data[field]) < 2 or len(data[field]) > 20:
+                if len(data[field]) < 2:
                     result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
+                    result['errors'].append(f"Field {field} is too short")
+                if len(data[field]) > 20:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is too long")
             if field == "age":
                 if not isinstance(data[field], int) or data[field] < 15 or data[field] > 80:
                     result['success'] = False
@@ -185,11 +199,24 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
                 if lower == 0 or upper == 0 or digit == 0 or special == 0:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
+                # if check_common_password(data[field]):
+                #     result['success'] = False
+                #     result['errors'].append(f"Field {field} is too common")
             if field == "gender":
                 if not isinstance(data[field], str) or data[field] not in ["M", "F"]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
+
+def check_common_password(password=""):
+    password = password.lower()
+    common_passwords = current_app.config['COMMON_PASSWORDS']
+    for common_password in common_passwords:
+
+        if common_password in password:
+            print("Common password found", common_password, password)
+            return True
+    return False
 
 def check_fields_step2(data, fields=STEP2_FIELDS):
     result = {

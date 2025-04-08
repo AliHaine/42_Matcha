@@ -61,6 +61,7 @@ def convert_to_public_profile(user, user_requesting=None):
         'id': user['id'],
         'firstname': user['firstname'],
         'lastname': user['lastname'],
+        'username': user['username'],
         'age': user['age'],
         'city': city,
         'gender': user['gender'],

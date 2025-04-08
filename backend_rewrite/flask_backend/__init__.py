@@ -26,7 +26,7 @@ def export_constraints(app, cur):
     table_name = "users"
     columns_names = {
         "searching", "commitment", "frequency", "weight", "size", "shape",
-        "smoking", "alcohol", "diet", "firstname", "lastname", "description"
+        "smoking", "alcohol", "diet", "firstname", "lastname", "description", "username"
     }
     constraints = {}
 
@@ -51,6 +51,7 @@ def export_constraints(app, cur):
         
         for column in columns_names:
             if column in constraint_def:
+                print(f"Constraint found for column {column}: {constraint_def}")
                 match = regex_pattern.search(constraint_def)
                 if match:
                     if match.group("values"):
@@ -67,6 +68,8 @@ def export_constraints(app, cur):
                         constraints[column] = match.group("regex").replace("\\\\", "\\")
 
     app.config['CONSTRAINTS'] = constraints
+    # for constraint in constraints:
+    #     print(f"Constraint for {constraint}: {constraints[constraint]}")
 
 def load_queries(query_file):
     with open(query_file, "r", encoding="utf-8") as f:
@@ -82,6 +85,14 @@ def init_cities():
         if len(result) == 0:
             from .cities import get_city_id
             get_city_id({'lat': 47.75, 'lon': 7.3})
+
+def load_common_passwords(app, file_path):
+    print("Loading common passwords from file:", file_path)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.read().splitlines()
+    # Remove duplicates and empty lines
+    common_passwords = set(filter(None, (line.strip().lower() for line in lines if line.strip())))    # Store the list in the app config
+    app.config['COMMON_PASSWORDS'] = common_passwords
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -135,6 +146,11 @@ def create_app(test_config=None):
                 database.commit()
                 init_cities()
                 app.config["QUERIES"] = load_queries(os.path.join(app.config['BASE_DIR'], 'queries.sql'))
+                try:
+                    load_common_passwords(app, os.path.join(app.config['BASE_DIR'], 'common_passwords.txt'))
+                except Exception as e:
+                    print("Failed to load common passwords file", e)
+                    app.config['COMMON_PASSWORDS'] = []
         except Exception as e:
             print("INIT ERROR : Failed to get interests list from database", e)
             app.config['AVAILABLE_INTERESTS'] = []

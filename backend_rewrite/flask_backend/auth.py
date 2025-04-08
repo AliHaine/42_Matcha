@@ -48,6 +48,7 @@ def register_step1(data):
         'password': data.get('password', ''),
         'age': data.get('age', 0),
         'gender': data.get('gender', ''),
+        'username': data.get('username', ''),
     }
     check = check_fields_step1(user_informations)
     if check['success'] == False:
@@ -55,7 +56,7 @@ def register_step1(data):
     dup_password = user_informations['password']
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
-        response = login_user(user_informations['email'], dup_password, registering=True)
+        response = login_user(user_informations['username'], dup_password, registering=True)
         if response is None or response['success'] == False:
             return jsonify({'success': False, 'error': 'Failed to login'})
         else:
@@ -134,14 +135,15 @@ def register():
     
     
 
-def login_user(email, password, registering=False):
-    check = check_fields_step1({'email': email, 'password': password}, ['email', 'password'], email_exists_check=False)
+def login_user(username, password, registering=False):
+    check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], email_exists_check=False)
+    print("check", check, flush=True)
     if check['success'] == False:
         return {'success': False, 'error': "".join(check['errors'])}
     db = get_db()
     missing_steps = []
     with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        cur.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cur.fetchone()
         if user is None:
             return {'success': False, 'error':'User not found'}
@@ -171,10 +173,16 @@ def login_user(email, password, registering=False):
 
 @bp.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    email = data.get('email', '')
+    try:
+        data = request.json
+    except Exception as e:
+        print("error at json conversion :", e)
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
+    print(data)
+    username = data.get('username', '')
     password = data.get('password', '')
-    response = login_user(email, password)
+    print(username, password, flush=True)
+    response = login_user(username, password)
     if response is None or response['success'] == False:
         if 'missing_steps' in response:
             return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
