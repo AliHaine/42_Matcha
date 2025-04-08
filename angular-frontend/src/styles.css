@@ -15,7 +15,8 @@ ul {
 
 body {
 	background: var(--color-background-1);
-    width: 100vw; height: 100vh;
+    overflow: auto;
+    scrollbar-color: var(--color-4) var(--color-1);
 }
 
 .icon-img {
