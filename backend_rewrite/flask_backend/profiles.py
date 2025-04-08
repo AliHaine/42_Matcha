@@ -205,7 +205,12 @@ def me():
                 db.commit()
                 from .auth import invalidate_token
                 if check_change_mail == True or 'password' in user_informations:
-                    invalidate_token(user['email'])
+                    jti = get_jwt()["jti"]
+                    invalidate_token(jti)
+                    if check_change_mail == True:
+                        from .user import send_confirmation_email
+                        if send_confirmation_email(user['email']) == False:
+                            print("Failed to send confirmation email")
                     return jsonify({'success': True, 'disconnect': True})
                 return jsonify({'success': True})
             except Exception as e:
