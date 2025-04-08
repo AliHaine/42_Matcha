@@ -122,6 +122,8 @@
         <p class="error">{{ this.placeHolderMessage }}</p>
     }
     <div id="buttons-area">
+        <button class="button-style-1" (click)="this.viewProfileTrigger()">test</button>
+        <button class="button-style-1" (click)="this.premiumTrigger()">Premium</button>
         <button class="button-style-1" (click)="this.applyTrigger()">Submit</button>
         <button class="button-style-1" (click)="authService.logout()">logout</button>
     </div>
