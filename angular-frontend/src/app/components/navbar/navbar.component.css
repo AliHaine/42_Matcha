@@ -9,6 +9,15 @@ nav {
     justify-content: space-between;
 }
 
+#normalDevice {
+    display: flex;
+}
+
+#mobileDevice {
+    display: none;
+    height: 100%;
+}
+
 #leftElements {
     list-style-type: none;
     display: flex;
@@ -49,8 +58,8 @@ nav {
 }
 
 .img {
-    margin-right: 0.7vw;
-    width: 1.9vw;
+    margin-right: 15px;
+    width: 48px;
     aspect-ratio: 1;
     display: inline-block;
     background: var(--color-1);
@@ -71,10 +80,18 @@ nav {
         font-size: 1.2em;
         padding: 5px;
     }
+
+    .img {
+        width: 32px;
+    }
 }
 
-@media (max-width: 800px) {
-    #leftElements {
+@media (max-width: 1000px) {
+    #normalDevice {
         display: none;
+    }
+
+    #mobileDevice {
+        display: block;
     }
 }

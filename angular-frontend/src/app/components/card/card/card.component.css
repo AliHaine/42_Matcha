@@ -11,7 +11,7 @@
     box-shadow: 0 0 1.5vmin #000000a3;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     #main {
         background: red;
         flex-direction: column;

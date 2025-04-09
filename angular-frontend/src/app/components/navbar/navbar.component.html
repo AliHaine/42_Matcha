@@ -1,8 +1,21 @@
 <nav>
     <ul id="leftElements">
-        <li><a routerLink="/">HOME</a></li>
-        <li><a routerLink="/chat">CHATROOM</a></li>
-        <li><a routerLink="/search">SEARCH</a></li>
+        <div id="mobileDevice">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+                <div class="img" style="-webkit-mask: url('/icons/navbarDropdown.png') center/contain"></div>
+              </button>
+              <mat-menu #menu="matMenu">
+                <a mat-menu-item routerLink="/">HOME</a>
+                <a mat-menu-item routerLink="/chat">CHATROOM</a>
+                <a mat-menu-item routerLink="/search">SEARCH</a>
+              </mat-menu>
+        </div>
+
+        <div id="normalDevice">
+            <li><a routerLink="/">HOME</a></li>
+            <li><a routerLink="/chat">CHATROOM</a></li>
+            <li><a routerLink="/search">SEARCH</a></li>
+        </div>
     </ul>
     <div id="middleLogo"><a routerLink="/">MATCHA</a></div>
     <div id="rightElements">
@@ -10,4 +23,6 @@
         <a routerLink="/account" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
 </nav>
-<app-notification *ngIf="showNotif()"></app-notification>
+@if (showNotif()){
+    <app-notification></app-notification>
+}
