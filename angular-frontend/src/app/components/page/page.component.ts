@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {PageService} from "../../services/page.service";
 import {ActivatedRoute} from "@angular/router";
 import {PageModel} from "../../models/page.model";
@@ -9,7 +9,8 @@ import {switchMap} from 'rxjs'
   selector: 'app-page',
   imports: [],
   templateUrl: './page.component.html',
-  styleUrl: './page.component.css'
+  styleUrl: './page.component.css',
+changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageComponent implements OnInit {
 

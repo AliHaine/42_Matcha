@@ -11,6 +11,16 @@
     box-shadow: 0 0 1.5vmin #000000a3;
 }
 
+@media (max-width: 800px) {
+    #main {
+        background: red;
+        flex-direction: column;
+        height: auto;
+        width: auto;
+
+    }
+}
+
 #main:hover {
     background: var(--color-3);
 }

@@ -113,4 +113,16 @@ export class AccountComponent {
   sliderTrigger(index: number) {
     this.currentImageIndex = index;
   }
+
+  premiumTrigger() {
+    this.apiService.postData("/profiles/me/premium", {}).subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  viewProfileTrigger() {
+    this.apiService.getData("/profiles/me/views", {}).subscribe(result => {
+      console.log(result);
+    })
+  }
 }

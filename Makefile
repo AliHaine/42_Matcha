@@ -26,7 +26,6 @@ flask-bash:
 
 flask:
 	pip install -r backend_rewrite/requirements.txt
-	python3 -m flask --app backend_rewrite/flask_backend init-db
 	python3 backend_rewrite/run.py
 
 database:
