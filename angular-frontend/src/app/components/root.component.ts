@@ -13,7 +13,7 @@ import {AuthService} from "../services/auth.service";
   ],
   template: `<div id="root-content">
               <app-navbar></app-navbar>
-              <div style="flex: 1; display: flex; align-items: center; justify-content: center; flex: 1;">
+              <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
                 <router-outlet></router-outlet>
               </div>
               <app-footer></app-footer>

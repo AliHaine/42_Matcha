@@ -34,9 +34,8 @@ export class CardService {
             return;
         this.isFillRunning = true;
         this.apiService.getData("/matcha", {nb_profiles: numberToGet}).subscribe(result => {
-            if (!result['success']) {
+            if (!result['success'])
                 return;
-            }
             for (const data of result["result"]) {
                 if (this.isAlreadyLoaded(data['id']))
                     continue;
