@@ -254,3 +254,56 @@ def resend_confirmation():
         if send_confirmation_email(user['email']) == False:
             return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
     return jsonify({'success': True})
+
+@bp.route('/get_reset_password', methods=['POST'])
+def get_reset_password():
+    try:
+        data = request.json
+    except Exception as e:
+        print("error at json conversion :", e)
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
+    email = data.get('email', '')
+    if email == '':
+        return jsonify({'success': False, 'error': 'Email not provided'})
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        from .user import send_reset_password_email
+        if send_reset_password_email(user['email']) == False:
+            return jsonify({'success': False, 'error': 'Failed to send reset password email'})
+    return jsonify({'success': True})
+
+@bp.route('/reset_password', methods=['POST'])
+def reset_password():
+    try:
+        data = request.json
+    except Exception as e:
+        print("error at json conversion :", e)
+        return jsonify({'success': False, 'error': 'Invalid JSON'})
+    email = data.get('email', '')
+    token = data.get('token', '')
+    password = data.get('password', '')
+    if email == '' or token == '' or password == '':
+        return jsonify({'success': False, 'error': 'Email, token or password not provided'})
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        user = cur.fetchone()
+        if user is None:
+            return jsonify({'success': False, 'error': 'User not found'})
+        if user['reset_token'] != token:
+            return jsonify({'success': False, 'error': 'Invalid token'})
+        import datetime
+        if user["expiration"] < datetime.datetime.now():
+            return jsonify({'success': False, 'error': 'Token expired'})
+        from .user import check_fields_step1
+        ret = check_fields_step1({'password': password}, ['password'])
+        if ret['success'] == False:
+            return jsonify({'success': False, 'error': ", ".join(ret['errors'])})
+        hashed_password = generate_password_hash(password)
+        cur.execute('UPDATE users SET password = %s, reset_token = NULL WHERE email = %s', (hashed_password, email))
+        db.commit()
+    return jsonify({'success': True})

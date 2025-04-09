@@ -22,13 +22,22 @@ def dynamic_regex(digits=False, special=False, accents=False, spaces=False):
     regex += "]+$"
     return regex
 
-def generate_confirm_email_token(email):
+def generate_confirm_email_token(email, system=""):
     import random
     import string
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
     db = get_db()
+    if system not in ["reset", "confirm"]:
+        return None
     with db.cursor() as cur:
-        cur.execute('UPDATE users SET email_token = %s WHERE email = %s', (token, email))
+        if system == "reset":
+            from datetime import datetime, timedelta
+            expiration_duration = timedelta(minutes=15)
+            # Date et heure d'expiration
+            expires_at = datetime.now() + expiration_duration
+            cur.execute('UPDATE users SET reset_token = %s, expiration = %s WHERE email = %s', (token, expires_at, email,))
+        elif system == "confirm":
+            cur.execute('UPDATE users SET email_token = %s WHERE email = %s', (token, email))
     db.commit()
     return token
 
@@ -130,7 +139,7 @@ def check_fields_step1(data, fields=STEP1_FIELDS, email_exists_check=True):
             result['errors'].append(f"Field {field} is missing")
         else:
             if field == "username":
-                if not isinstance(data[field], str) or len(data[field]) < 3 or len(data[field]) > 20 or not re.match(current_app.config['CONSTRAINTS']['username'], data[field]):
+                if not isinstance(data[field], str) or len(data[field]) < 3 or len(data[field]) > 255 or not re.match(current_app.config['CONSTRAINTS']['username'], data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
                 if email_exists_check == True:
@@ -349,7 +358,7 @@ def check_registration_status(other_email=None):
     
 
 def send_confirmation_email(email):
-    mail_token = generate_confirm_email_token(email)
+    mail_token = generate_confirm_email_token(email, "confirm")
     try:
         mail = current_app.config.get('MAIL', None)
         if mail:
@@ -363,4 +372,21 @@ def send_confirmation_email(email):
             return True
     except Exception as e:
         print("Failed to send email to confirm email (func : send_confirmation_email, file : user.py). Error : ", e)
+        return False
+
+def send_reset_password_email(email):
+    mail_token = generate_confirm_email_token(email, system="reset")
+    try:
+        mail = current_app.config.get('MAIL', None)
+        if mail:
+            from flask_mail import Message
+            msg = Message("Matcha - reset password", sender=current_app.config["MAIL_USERNAME"], recipients=[email])
+            msg.body = "Click on the following link to reset your password : http://localhost:4200/resetpassword/" + mail_token
+            mail.send(msg)
+            return True
+        else:
+            print("Mail not configured")
+            return True
+    except Exception as e:
+        print("Failed to send email to reset password (func : send_reset_password_email, file : user.py). Error : ", e)
         return False
