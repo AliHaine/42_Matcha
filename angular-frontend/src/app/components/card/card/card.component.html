@@ -20,7 +20,7 @@
         <div id="description">
             {{profile().description}} <a [routerLink]="'/profile/'+ profile().userId">SEE MORE</a>
         </div>
-        <div id="details">
+        <div class="details">
             <app-interest *ngFor="let interest of this.profile().interestsModels" [interest]="interest"/>
         </div>
     </div>

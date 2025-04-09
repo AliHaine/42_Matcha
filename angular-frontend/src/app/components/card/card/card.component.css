@@ -80,7 +80,7 @@
     font-size: 20px;
 }
 
-#details {
+.details {
     display: flex;
     justify-content: space-around;
     font-size: 13px;
@@ -91,12 +91,38 @@
     font-weight: 1000;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
     #main {
-        background: red;
         flex-direction: column;
         height: auto;
-        width: auto;
+        width: 330px;
+        align-items: center;
+        border: none;
+        box-shadow: none;    
+        border-radius: 0;
+    }
 
+    #description {
+        display: none;
+    }
+
+    .details {
+        display: none;
+    }
+
+    #pictureAndIcons {
+        width: 100%;
+    }
+
+    #nameAndAge {
+        font-size: 1em;
+    }
+
+    .profileContainer {
+        width: 100%;
+    }
+
+    #profile {
+        width: auto;
     }
 }
