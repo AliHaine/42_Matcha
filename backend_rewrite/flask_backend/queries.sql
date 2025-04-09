@@ -52,24 +52,12 @@ WHERE users.id != %(user_id)s
         )::int
     ) >= 2
     AND (
-        (
-            %(hetero)s = TRUE
-            AND users.gender != %(gender)s
-        )
-        OR (
-            %(hetero)s = FALSE
-            AND users.gender = %(gender)s
-        )
+        (%(hetero)s = TRUE AND users.gender != %(gender)s)
+        OR (%(hetero)s = FALSE)
     )
     AND (
-        (
-            users.hetero = TRUE
-            AND %(gender)s != users.gender
-        )
-        OR (
-            users.hetero = FALSE
-            AND %(gender)s = users.gender
-        )
+        (users.hetero = TRUE AND %(gender)s != users.gender)
+        OR (users.hetero = FALSE)
     )
 GROUP BY users.id,
     user_city.geom,
