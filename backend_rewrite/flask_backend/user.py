@@ -25,11 +25,18 @@ def dynamic_regex(digits=False, special=False, accents=False, spaces=False):
 def generate_confirm_email_token(email, system=""):
     import random
     import string
-    token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
     db = get_db()
     if system not in ["reset", "confirm"]:
         return None
     with db.cursor() as cur:
+        token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
+        while True:
+            cur.execute('SELECT * FROM users WHERE email_token = %s OR reset_token = %s', (token, token,))
+            if cur.fetchone() is None:
+                break
+            else:
+                token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
+            token = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
         if system == "reset":
             from datetime import datetime, timedelta
             expiration_duration = timedelta(minutes=15)

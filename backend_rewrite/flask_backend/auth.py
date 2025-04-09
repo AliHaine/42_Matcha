@@ -283,19 +283,16 @@ def reset_password():
     except Exception as e:
         print("error at json conversion :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
-    email = data.get('email', '')
     token = data.get('token', '')
     password = data.get('password', '')
-    if email == '' or token == '' or password == '':
+    if token == '' or password == '':
         return jsonify({'success': False, 'error': 'Email, token or password not provided'})
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        cur.execute('SELECT * FROM users WHERE reset_token = %s', (token,))
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
-        if user['reset_token'] != token:
-            return jsonify({'success': False, 'error': 'Invalid token'})
         import datetime
         if user["expiration"] < datetime.datetime.now():
             return jsonify({'success': False, 'error': 'Token expired'})
@@ -304,6 +301,6 @@ def reset_password():
         if ret['success'] == False:
             return jsonify({'success': False, 'error': ", ".join(ret['errors'])})
         hashed_password = generate_password_hash(password)
-        cur.execute('UPDATE users SET password = %s, reset_token = NULL WHERE email = %s', (hashed_password, email))
+        cur.execute('UPDATE users SET password = %s, reset_token = NULL, expiration = NULL WHERE id = %s', (hashed_password, user['id']))
         db.commit()
     return jsonify({'success': True})
