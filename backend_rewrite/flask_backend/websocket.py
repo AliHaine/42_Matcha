@@ -108,7 +108,7 @@ def send_notification(emitter, receiver, action, message):
             user_receiver = cur.fetchone()
             if user_receiver is None or user_emitter is None:
                 return
-            blocked = check_id_blocked(emitter, receiver)
+            blocked, message = check_id_blocked(emitter, receiver)
             if blocked:
                 return
             cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))

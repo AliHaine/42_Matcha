@@ -27,7 +27,7 @@ def get_db():
                 print(f'Error connecting to database (try number : {loop}) : {e}')
                 if loop > 5:
                     print('Failed to connect to database after 5 tries, exiting')
-                    break
+                    raise Exception('Failed to connect to database')
                 time.sleep(5)
     return g.db
 
