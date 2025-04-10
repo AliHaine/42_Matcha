@@ -21,42 +21,42 @@ def convert_to_public_profile(user, user_requesting=None):
             cursor.execute("SELECT cityname FROM cities WHERE id = %s", (cityID,))
             cityElement = cursor.fetchone()
             city = cityElement['cityname']
-    lookingFor = []
-    lookingFor.append(user['searching'])
-    lookingFor.append(user['commitment'])
-    lookingFor.append(user['frequency'])
-    shape = []
-    shape.append(user['weight'])
-    shape.append(user['size'])
-    shape.append(user['shape'])
-    health = []
-    health.append(user['smoking'])
-    health.append(user['alcohol'])
-    health.append(user['diet'])
+    lookingFor = [user['searching'], user['commitment'], user['frequency']]
+    shape = [user['weight'], user['size'], user['shape']]
+    health = [user['smoking'], user['alcohol'], user['diet']]
     interests = []
     matching = "none"
     with db.cursor() as cursor:
-        cursor.execute("SELECT interest_id FROM users_interests WHERE user_id = %s", (user['id'],))
-        interestsList = cursor.fetchall()
-        for interest in interestsList:
-            cursor.execute("SELECT name FROM interests WHERE id = %s", (interest['interest_id'],))
-            interestElement = cursor.fetchone()
-            interests.append(interestElement['name'])
-        if user_requesting is not None:
-            cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s", (user_requesting['id'], user['id'],))
+        # getting all interests
+        cursor.execute("SELECT interests.* FROM interests INNER JOIN users_interests ui ON interests.id = ui.interest_id WHERE ui.user_id = %s", (user['id'],))
+        interests.extend(interest['name'] for interest in cursor.fetchall() or [])
+        matching = "none"  # Valeur par défaut
+        if user_requesting:
+            if "score" in user:
+                score = user["score"]
+            else:
+                from .matcha import calcul_score
+                score = calcul_score(user_requesting, user)
+            # Vérifie si l'utilisateur demandeur a déjà vu l'autre
+            cursor.execute("""
+                SELECT * FROM user_views 
+                WHERE viewer_id = %s AND viewed_id = %s
+            """, (user_requesting['id'], user['id']))
             user_view = cursor.fetchone()
-            if user_view is not None:
-                if user_view["blocked"] == True:
+
+            if user_view:
+                if user_view["blocked"]:
                     matching = "block"
-                elif user_view["liked"] == True:
+                elif user_view["liked"]:
                     matching = "like"
-                    cursor.execute("SELECT * FROM user_views WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE", (user['id'], user_requesting['id'],))
+                    # Vérifie la réciprocité du like
+                    cursor.execute("""
+                        SELECT liked FROM user_views 
+                        WHERE viewer_id = %s AND viewed_id = %s AND liked = TRUE
+                    """, (user['id'], user_requesting['id']))
                     user_viewed = cursor.fetchone()
-                    if user_viewed is not None:
-                        if user_viewed["liked"] == True:
-                            matching = "match"
-        else:
-            matching = "none"
+                    if user_viewed:
+                        matching = "match"
     base = {
         'id': user['id'],
         'firstname': user['firstname'],
@@ -76,14 +76,9 @@ def convert_to_public_profile(user, user_requesting=None):
         'fame_rate': user['fame_rate'],
         "matching": matching,
         "email_verified": user['email_verified'],
-        "premium": user['premium']
+        "premium": user['premium'],
+        "score": score if user_requesting else None,
     }
-    if user_requesting is not None:
-        if "score" in user:
-            base["score"] = user["score"]
-        else:
-            from .matcha import calcul_score
-            base["score"] = calcul_score(user_requesting, user)
     return base
 
 def convert_to_chat_profile(user, user_getting, all_messages=False):
@@ -133,8 +128,6 @@ def convert_to_chat_profile(user, user_getting, all_messages=False):
                     'lastMessage': message,
                 })
         return base_return
-    
-
 
 @bp.route('/me', methods=['GET', 'POST'])
 @jwt_required()
