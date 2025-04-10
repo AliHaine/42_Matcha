@@ -188,7 +188,7 @@ def me():
                     elif field in STEP3_FIELDS:
                         fields["step3"].append(field)
                 if len(fields["step1"]) > 0:
-                    result = check_fields_step1(user_informations, email_exists_check=check_change_mail, fields=fields["step1"])
+                    result = check_fields_step1(user_informations, profile_exists_check=check_change_mail, fields=fields["step1"])
                     if result["success"] is False:
                         return jsonify({'success': False, 'error': ", ".join(result['errors'])})
                 if len(fields["step2"]) > 0:

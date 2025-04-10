@@ -4,7 +4,7 @@ import json
 
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt, verify_jwt_in_request
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from .db import get_db
 
 from .user import create_user, check_fields_step1, check_fields_step2, check_fields_step3, update_user_fields, check_registration_status
@@ -58,7 +58,7 @@ def register_step1(data):
     if create_user(user_informations):
         response = login_user(user_informations['username'], dup_password, registering=True)
         if response is None or response['success'] == False:
-            return jsonify({'success': False, 'error': 'Failed to login'})
+            return jsonify({'success': False, 'error': response['error']})
         else:
             return jsonify({'success': True, 'access_token': response['access_token']})
     else:
@@ -136,8 +136,7 @@ def register():
     
 
 def login_user(username, password, registering=False):
-    check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], email_exists_check=False)
-    print("check", check, flush=True)
+    check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], profile_exists_check=False)
     if check['success'] == False:
         return {'success': False, 'error': "".join(check['errors'])}
     db = get_db()

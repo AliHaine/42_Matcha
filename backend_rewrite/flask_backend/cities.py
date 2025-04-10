@@ -1,6 +1,5 @@
 from .db import get_db
 import requests
-import unicodedata
 
 def get_city_id(cityname):
     city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&fields=code,nom,departement,region,centre").json()
@@ -14,9 +13,6 @@ def get_city_id(cityname):
             break
     if not city_found:
         return None
-    # city_informations["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["nom"]) if unicodedata.category(c) != 'Mn'))
-    # city_informations["departement"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["departement"]["nom"]) if unicodedata.category(c) != 'Mn'))
-    # city_informations["region"]["nom"] = ''.join((c for c in unicodedata.normalize('NFD', city_informations["region"]["nom"]) if unicodedata.category(c) != 'Mn'))
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM cities WHERE cityname = %s', (city_informations["nom"],))
@@ -28,14 +24,3 @@ def get_city_id(cityname):
             result = cur.fetchone()
         return result['id']
     return None
-
-def get_city_around(cityid, kms):
-    db = get_db()
-    with db.cursor() as cur:
-        # la recherche actuelle est set sur les coordonnéés de Paris avec un rayon de 50km
-        cur.execute('SELECT * FROM cities WHERE ST_DWithin(geom,ST_MakePoint(2.3522, 48.8566)::GEOGRAPHY,50000)')
-        city = cur.fetchone()
-        if city is None:
-            return None
-        cities = cur.fetchall()
-        return cities
