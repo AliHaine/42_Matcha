@@ -38,6 +38,7 @@ export class AccountComponent {
     gender: new FormControl(''),
     hetero: new FormControl(''),
     interests: new FormControl(''),
+    username: new FormControl(''),
     email: new FormControl(''),
     password: new FormControl(''),
     description: new FormControl(''),

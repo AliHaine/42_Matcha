@@ -91,3 +91,32 @@ fieldset {
     display: flex; 
     flex-direction: column;
 }
+
+
+
+/* -------- */
+
+#accountContent {
+    display: flex;
+    gap: 30px;
+}
+
+#leftElements {
+    display: flex; 
+    flex-direction: column;
+    gap: 10px;
+}
+
+#profilePictures {
+    width: 300px;
+    height: 300px;
+    position: relative;
+}
+
+.button {
+    width: 100%;
+    text-align: center;
+}
+
+#rightElements {
+}
