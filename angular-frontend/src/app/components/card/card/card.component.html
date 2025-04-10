@@ -18,7 +18,7 @@
             {{profile().firstname}} {{profile().age}} years old, {{profile().city}}
         </div>
         <div id="description">
-            {{profile().description}} <a [routerLink]="'/profile/'+ profile().userId">SEE MORE</a>
+            {{profile().description}}
         </div>
         <div class="details">
             <app-interest *ngFor="let interest of this.profile().interestsModels" [interest]="interest"/>

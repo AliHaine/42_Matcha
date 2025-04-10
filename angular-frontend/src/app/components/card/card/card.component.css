@@ -86,11 +86,6 @@
     font-size: 13px;
 }
 
-#description a {
-    color: var(--color-2);
-    font-weight: 1000;
-}
-
 @media (max-width: 1100px) {
     #main {
         flex-direction: column;
