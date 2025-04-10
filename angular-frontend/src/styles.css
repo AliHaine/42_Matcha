@@ -76,6 +76,22 @@ body {
     background-color: var(--color-1);
 }
 
+.button-style-2 {
+    font-size: 1em;
+    line-height: 2em;
+    background-color: var(--color-3);
+    border: solid var(--color-4);
+    color: var(--color-1);
+}
+
+.button-style-2:disabled {
+    background-color: gray;
+}
+
+.button-style-2:hover:enabled {
+    background-color: var(--color-4);
+}
+
 .input-style-1 {
     background-color: var(--color-1);
     line-height: 2.8em;

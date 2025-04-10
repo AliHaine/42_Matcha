@@ -157,12 +157,12 @@
                     (click)="deletePicture()"></div>
             }
         </div>
-        <button class="button" (click)="formNumber.set(0)">Profile</button>
-        <button class="button" (click)="formNumber.set(1)">Account</button>
-        <button class="button" (click)="this.premiumTrigger()">Become premium</button>
-        <button class="button" (click)="formNumber.set(3)">Add picture</button>
-        <button class="button" (click)="formNumber.set(4); this.viewProfileTrigger()">Profile views</button>
-        <button class="button" (click)="authService.logout()">Logout</button>
+        <button class="button button-style-2" (click)="formNumber.set(0)">Profile</button>
+        <button class="button button-style-2" (click)="formNumber.set(1)">Account</button>
+        <button id="premiumButton" class="button button-style-2" (click)="this.premiumTrigger()">Become premium</button>
+        <button class="button button-style-2" (click)="formNumber.set(3)">Add picture</button>
+        <button class="button button-style-2" (click)="formNumber.set(4); this.viewProfileTrigger()">Profile views</button>
+        <button class="button button-style-2" (click)="authService.logout()">Logout</button>
     </div>
     <div id="rightElements">
         @if (formNumber() === 0) {
@@ -281,16 +281,14 @@
             </form>
         }
         @else if (formNumber() === 3) {
-            <form id="upload-pic">
-                <h3 style="text-align: center;">Upload a profile picture</h3>
-                <div class="upload-text-area">
-                    <label>Select picture from your device</label>
+            <form>
+                <h1 style="text-align: center;">Upload a profile picture</h1>
                     <input id="picture" type="file" accept="image/png, image/jpeg">
-                </div>
-                <div id="buttons-area">
-                    <button class="button-style-1" (click)="this.addPicture(); $event.preventDefault();">Submit</button>
-                    <button class="button-style-1" (click)="formNumber.set(0); $event.preventDefault();">Close</button>
-                </div>
+            </form>
+        }
+        @else if (formNumber() === 4) {
+            <form>
+                <h1 style="text-align: center;">Profiles who viewed you</h1>
             </form>
         }
     </div>

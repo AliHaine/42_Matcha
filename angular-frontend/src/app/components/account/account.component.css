@@ -75,25 +75,6 @@ fieldset {
     align-items: center;
 }
 
-#upload-pic {
-    box-shadow: rgba(0, 0, 0, 0.56) 0px 0px 1500px 4000px;
-    display: block; 
-    position: absolute;
-    padding: 0.5%;
-    box-sizing: border-box;
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--color-3);
-}
-
-.upload-text-area {
-    display: flex; 
-    flex-direction: column;
-}
-
-
-
 /* -------- */
 
 #accountContent {
@@ -118,5 +99,24 @@ fieldset {
     text-align: center;
 }
 
+#premiumButton {
+    background: linear-gradient(-45deg, #F8ED8C, #F16767, #EFBF04, #FFF085);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 #rightElements {
+    color: var(--color-4);
 }
