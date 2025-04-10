@@ -111,13 +111,12 @@ def register_step3(data):
     else:
         return jsonify({'success': False, 'error': 'Failed to update user fields'})
     
-
 @bp.route('/register', methods=['POST'])
 def register():
     try:
         data = request.json
     except Exception as e:
-        print("error at json conversion :", e)
+        print("REGISTER ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     step = data.get("step", 0)
     if step == 2 or step == 3:
@@ -145,25 +144,25 @@ def login_user(username, password, registering=False):
         cur.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cur.fetchone()
         if user is None:
-            return {'success': False, 'error':'User not found'}
-        step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
-        for field in step1_fields:
-            if user[field] is None:
-                missing_steps.append(1)
-                break
-        step2_fields = ['searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
-        for field in step2_fields:
-            if user[field] is None:
-                missing_steps.append(2)
-                break
-        step3_fields = ['description']
-        for field in step3_fields:
-            if user[field] is None:
-                missing_steps.append(3)
-                break
-        
-    if user is None or not check_password_hash(user['password'], password):
-        return {'success': False, 'error': 'Invalid email or password'}
+            return {'success': False, 'error':'Invalid username'}
+        if not check_password_hash(user['password'], password):
+            return {'success': False, 'error': 'Invalid password'}
+        if user["registration_complete"] == False:
+            step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
+            for field in step1_fields:
+                if user[field] is None:
+                    missing_steps.append(1)
+                    break
+            step2_fields = ['searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
+            for field in step2_fields:
+                if user[field] is None:
+                    missing_steps.append(2)
+                    break
+            step3_fields = ['description']
+            for field in step3_fields:
+                if user[field] is None:
+                    missing_steps.append(3)
+                    break
     access_token = create_access_token(identity=user['email'])
     if registering == False:
         if len(missing_steps) > 0:
@@ -175,9 +174,8 @@ def login():
     try:
         data = request.json
     except Exception as e:
-        print("error at json conversion :", e)
+        print("LOGIN ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
-    print(data)
     username = data.get('username', '')
     password = data.get('password', '')
     print(username, password, flush=True)
@@ -209,7 +207,7 @@ def verify_token():
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
-    return jsonify({'success': True}), 200
+    return jsonify({'success': True})
 
 @bp.route('/confirm_email', methods=['POST'])
 @jwt_required()
@@ -219,7 +217,7 @@ def confirm_email():
     try:
         data = request.json
     except Exception as e:
-        print("error at json conversion :", e)
+        print("CONFIRM EMAIL ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     token = data.get('token', None)
     if token is None:
@@ -259,7 +257,7 @@ def get_reset_password():
     try:
         data = request.json
     except Exception as e:
-        print("error at json conversion :", e)
+        print("GET RESET PASS ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     email = data.get('email', '')
     if email == '':
@@ -280,7 +278,7 @@ def reset_password():
     try:
         data = request.json
     except Exception as e:
-        print("error at json conversion :", e)
+        print("RESET PASS ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     token = data.get('token', '')
     password = data.get('password', '')
