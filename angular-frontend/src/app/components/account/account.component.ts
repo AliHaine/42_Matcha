@@ -68,6 +68,11 @@ export class AccountComponent {
   }
 
   applyTrigger() {
+    if (this.formNumber() == 3) {
+      this.addPicture();
+      return;
+    }
+
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       if (result['disconnect'])
         this.authService.logout();

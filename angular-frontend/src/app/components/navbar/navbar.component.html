@@ -5,16 +5,16 @@
                 <div class="img" style="-webkit-mask: url('/icons/navbarDropdown.png') center/contain"></div>
               </button>
               <mat-menu #menu="matMenu">
-                <a mat-menu-item routerLink="/">HOME</a>
-                <a mat-menu-item routerLink="/chat">CHATROOM</a>
-                <a mat-menu-item routerLink="/search">SEARCH</a>
+                @for (item of menuItems; track item.label) {
+                    <a mat-menu-item routerLink={{item.link}}>{{item.label}}</a>
+                }
               </mat-menu>
         </div>
-
         <div id="normalDevice">
-            <li><a routerLink="/">HOME</a></li>
-            <li><a routerLink="/chat">CHATROOM</a></li>
-            <li><a routerLink="/search">SEARCH</a></li>
+            @for (item of menuItems; track item.label) {
+                <li><a routerLink={{item.link}}>{{item.label}}</a></li>
+
+            }
         </div>
     </ul>
     <div id="middleLogo"><a routerLink="/">MATCHA</a></div>

@@ -18,6 +18,11 @@ export class NavbarComponent {
   showNotif = signal<boolean>(false);
   websocketService = inject(WebsocketService);
   notificationService = inject(NotificationService);
+  menuItems = [
+    { label: 'HOME', link: '/' },
+    { label: 'CHATROOM', link: '/chat' },
+    { label: 'SEARCH', link: '/search' }
+  ]
 
   notificationHover() {
     this.showNotif.set(true);

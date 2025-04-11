@@ -1,159 +1,9 @@
-<!--  <div id="account-content">
-    <h1>Edit your profile</h1>
-    <form [formGroup]="this.formGroup" (keydown)="keyPressed()">
-
-        <div id="pictures-description">
-            <div id="profile-pictures">
-                <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
-                <div class="caption">
-                    @if (authService.currentUserProfileModel().picturesNumber > 0) {
-                        <div class="icon" style="-webkit-mask: url('/icons/x.png') center/contain"
-                            (click)="deletePicture()"></div>
-                    }
-                    <div class="icon" style="-webkit-mask: url('/icons/upload.png') center/contain" (click)="formNumber.set(1)"></div>
-                </div>
-            </div>
-
-            <div id="description-container" class="input-area">
-                <mat-label>Description</mat-label>
-                <mat-form-field>
-                    <textarea id="description"
-                            matInput
-                            cdkTextareaAutosize
-                            cdkAutosizeMinRows="8"
-                            cdkAutosizeMaxRows="6"
-                            formControlName="description">
-                    </textarea>
-                </mat-form-field>
-            </div>
-        </div>
-
-        <div id="inputs">
-            <div class="input-area">
-                <label>Email</label>
-                <input type="email" class="input-style-1" formControlName="email">
-            </div>
-
-            <div class="input-area">
-                <label>Password</label>
-                <input type="password" class="input-style-1" formControlName="password">
-            </div>
-
-            <div class="input-area">
-                <label>Age</label>
-                <input type="number" class="input-style-1" formControlName="age">
-            </div>
-
-            <div class="input-area">
-                <label>Firstname</label>
-                <input class="input-style-1" formControlName="firstname">
-            </div>
-
-            <div class="input-area">
-                <label>Lastname</label>
-                <input class="input-style-1" formControlName="lastname">
-            </div>
-
-            <div class="input-area">
-                <label>City</label>
-                <input class="input-style-1" formControlName="city">
-                <app-location [cityFormControl]="this.formGroup.controls['city']"></app-location>
-            </div>
-
-            <div class="input-area">
-                <label>Interests</label>
-                <input class="input-style-1" formControlName="interests">
-            </div>
-
-            <div class="input-area">
-                <label>Diet</label>
-                <input class="input-style-1" formControlName="diet">
-            </div>
-
-            <div class="input-area">
-                <label>Alcohol consumption</label>
-                <input class="input-style-1" formControlName="alcohol">
-            </div>
-
-            <div class="input-area input-radio">
-                <label class="fieldset-label">Gender</label>
-                <fieldset>
-                    <div>
-                        <input id="Male" type="radio" value="M" formControlName="gender" />
-                        <label for="Male">Male</label>
-                    </div>
-                    <div>
-                        <input id="Female" type="radio" value="F" formControlName="gender" />
-                        <label for="Female">Female</label>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="input-area input-radio">
-                <label class="fieldset-label">Smoking</label>
-                <fieldset>
-                    <div>
-                        <input id="yes" type="radio" [value]=true formControlName="smoking" />
-                        <label for="yes">Yes</label>
-                    </div>
-                    <div>
-                        <input id="no" type="radio" [value]=false formControlName="smoking" />
-                        <label for="no">No</label>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="input-area input-radio">
-                <label>Orientation</label>
-                <fieldset>
-                    <div>
-                        <input id="Hetero" type="radio" [value]=true formControlName="hetero" />
-                        <label for="Hetero">Hetero</label>
-                    </div>
-                    <div>
-                        <input id="Other" type="radio" [value]=false formControlName="hetero" />
-                        <label for="Other">Other</label>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-    </form>
-    @if (this.placeHolderMessage.length > 0) {
-        <p class="error">{{ this.placeHolderMessage }}</p>
-    }
-    <div id="buttons-area">
-        <button class="button-style-1" (click)="this.viewProfileTrigger()">test</button>
-        <button class="button-style-1" (click)="this.premiumTrigger()">Premium</button>
-        <button class="button-style-1" (click)="this.applyTrigger()">Submit</button>
-        <button class="button-style-1" (click)="authService.logout()">logout</button>
-    </div>
-    
-    @if (formNumber() === 1) {
-        <form id="upload-pic">
-            <h3 style="text-align: center;">Upload a profile picture</h3>
-            <div class="upload-text-area">
-                <label>Select picture from your device</label>
-                <input id="picture" type="file" accept="image/png, image/jpeg">
-            </div>
-            <div class="upload-text-area">
-                <label>Import from social media</label>
-                <input class="input-style-1">
-            </div>
-            <div id="buttons-area">
-                <button class="button-style-1" (click)="this.addPicture(); $event.preventDefault();">Submit</button>
-                <button class="button-style-1" (click)="formNumber.set(0); $event.preventDefault();">Close</button>
-            </div>
-        </form>
-    }
-</div> 
--->
-
 <div id="accountContent">
     <div id="leftElements">
         <div id="profilePictures">
             <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
             @if (authService.currentUserProfileModel().picturesNumber > 0) {
-                <div class="icon" style="-webkit-mask: url('/icons/x.png') center/contain"
+                <div id="deleteImageButton" class="icon"
                     (click)="deletePicture()"></div>
             }
         </div>
@@ -162,7 +12,7 @@
         <button id="premiumButton" class="button button-style-2" (click)="this.premiumTrigger()">Become premium</button>
         <button class="button button-style-2" (click)="formNumber.set(3)">Add picture</button>
         <button class="button button-style-2" (click)="formNumber.set(4); this.viewProfileTrigger()">Profile views</button>
-        <button class="button button-style-2" (click)="authService.logout()">Logout</button>
+        <button id="logoutButton" class="button button-style-2" (click)="authService.logout()">Logout</button>
     </div>
     <div id="rightElements">
         @if (formNumber() === 0) {
@@ -183,16 +33,6 @@
                         <label>City</label>
                         <input class="input-style-1" formControlName="city">
                         <app-location [cityFormControl]="this.formGroup.controls['city']"></app-location>
-                    </div>
-
-                    <div class="input-area">
-                        <label>Email</label>
-                        <input type="email" class="input-style-1" formControlName="email">
-                    </div>
-        
-                    <div class="input-area">
-                        <label>Password</label>
-                        <input type="password" class="input-style-1" formControlName="password">
                     </div>
         
                     <div class="input-area">
@@ -274,8 +114,12 @@
                     </div>
         
                     <div class="input-area">
-                        <label>Password</label>
+                        <label>New password</label>
                         <input type="password" class="input-style-1" formControlName="password">
+                    </div>
+                    <div class="input-area">
+                        <label>New password confirmation</label>
+                        <input type="password" class="input-style-1">
                     </div>
                 </div>
             </form>
@@ -290,6 +134,10 @@
             <form>
                 <h1 style="text-align: center;">Profiles who viewed you</h1>
             </form>
+        }
+        <button class="button-style-2" (click)="applyTrigger()">Submit</button>
+        @if (this.placeHolderMessage.length > 0) {
+            <p class="error">{{ this.placeHolderMessage }}</p>
         }
     </div>
 </div>
