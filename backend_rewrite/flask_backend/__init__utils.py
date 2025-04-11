@@ -60,7 +60,18 @@ def load_queries(app, query_file):
     try:
         with open(query_file, "r", encoding="utf-8") as f:
             queries = f.read().split(";")  # Séparer les requêtes s'il y en a plusieurs
-            queries_dict = {q.split("\n")[0]: q for q in queries if q.strip()}
+            # queries_dict = {q.split("\n")[0]: q for q in queries if q.strip()}
+            for q in queries:
+                if not q.strip():
+                    continue
+                stripped_query = q.strip().split("\n")
+                if stripped_query:
+                    # On prend le premier commentaire comme nom de la requête
+                    name = stripped_query[0].strip()
+                    # On enlève le commentaire du début
+                    query = "\n".join(stripped_query[1:]).strip()
+                    queries_dict[name] = query
+
         print("INIT : Queries loaded successfully")
     except Exception as e:
         print(f"INIT FAIL : Failed to load queries from {query_file}: {e}")

@@ -13,7 +13,7 @@ def create_app(test_config=None):
     from datetime import timedelta
     from dotenv import load_dotenv
     from . import db
-    from .init_functions import (
+    from .__init__utils import (
         load_queries,
         load_common_passwords,
         set_interests_list,
@@ -56,6 +56,7 @@ def create_app(test_config=None):
         # file configuration
         IMAGE_EXTENSIONS=['png', 'jpg', 'jpeg'],
         MAX_CONTENT_LENGTH=25 * 1024 * 1024,
+        MAX_PICTURES=5,
         # mail configuration
         MAIL_SERVER=os.getenv('MAIL_SERVER', default='smtp.gmail.com'),
         MAIL_PORT=os.getenv('MAIL_PORT', default=587),

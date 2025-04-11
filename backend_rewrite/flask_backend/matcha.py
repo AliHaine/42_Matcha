@@ -5,7 +5,7 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from .db import get_db
-from .profiles import convert_to_public_profile
+from .profiles_utils import convert_to_public_profile
 
 from .decorators import registration_completed
 

@@ -4,7 +4,7 @@ from .db import get_db
 from PIL import Image
 import os
 
-from .profiles import convert_to_public_profile
+from .profiles_utils import convert_to_public_profile
 
 from .decorators import registration_completed
 
