@@ -8,6 +8,9 @@ import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
 import {LocationComponent} from "../location/location.component";
+import { PaypalComponent } from "../paypal/paypal.component";
+import {MatMenuModule} from '@angular/material/menu';
+
 
 @Component({
   selector: 'app-account',
@@ -19,7 +22,9 @@ import {LocationComponent} from "../location/location.component";
     TextFieldModule,
     SliderComponent,
     LocationComponent,
-  ],
+    PaypalComponent,
+    MatMenuModule
+],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })

@@ -16,12 +16,6 @@ h1 {
     gap: 10px;
 }
 
-@media (max-width: 1100px) {
-    #inputs {
-        display: grid;
-    }
-}
-
 #pictures-description {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -84,10 +78,18 @@ fieldset {
     gap: 30px;
 }
 
-#leftElements {
+#normalDeviceArea {
     display: flex; 
     flex-direction: column;
     gap: 10px;
+}
+
+#mobileDeviceArea {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+
+
 }
 
 #profilePictures {
@@ -138,4 +140,20 @@ fieldset {
     display: flex;
     flex-direction: column;
     color: var(--color-4);
+}
+
+@media (max-width: 1100px) {
+    #inputs {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+
+    }
+
+    #mobileDeviceArea {
+        display: flex;
+    }
+
+    #normalDeviceArea {
+        display: none
+    }
 }
