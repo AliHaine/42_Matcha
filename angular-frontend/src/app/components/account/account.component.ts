@@ -10,6 +10,7 @@ import {SliderComponent} from "../utils/slider/slider.component";
 import {LocationComponent} from "../location/location.component";
 import { PaypalComponent } from "../paypal/paypal.component";
 import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @Component({
@@ -23,7 +24,8 @@ import {MatMenuModule} from '@angular/material/menu';
     SliderComponent,
     LocationComponent,
     PaypalComponent,
-    MatMenuModule
+    MatMenuModule,
+    MatButtonModule
 ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
