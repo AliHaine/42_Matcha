@@ -1,15 +1,4 @@
-.area-single {
-    display: flex;
-    flex-direction: column;
-}
-
-.area-multiple {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.area-multiple div {
+.label-input-flex {
     display: flex;
     flex-direction: column;
 }
@@ -21,18 +10,6 @@ fieldset {
 }
 
 a, h1, h2 {
-    text-align: center;
-}
-
-#age {
-    width: 30%;
-}
-
-#age-gender {
-    justify-content: space-around;
-}
-
-#age-gender div {
     text-align: center;
 }
 
@@ -60,4 +37,23 @@ a, h1, h2 {
 
 #description {
     color: var(--color-4);
+}
+
+@media (min-width: 1080px) {
+    #main-form-1 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    #main-form-2 {
+        text-align: center;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+    }
+
+    .title-form-2 {
+        grid-column: span 3;
+    }
 }
