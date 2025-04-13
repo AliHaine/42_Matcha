@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxPayPalModule, IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -13,6 +15,9 @@ import { NgxPayPalModule, IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal'
 export class PaypalComponent implements OnInit  {
 
   public payPalConfig?: IPayPalConfig;
+  private apiService = inject(ApiService);
+  private authService = inject(AuthService);
+
 
   ngOnInit(): void {
     this.initConfig();
@@ -41,6 +46,7 @@ export class PaypalComponent implements OnInit  {
         console.log('Transaction approved', data);
         actions.order.capture().then((details: any) => {
           console.log('Transaction completed!', details);
+          this.premium();
         });
       },
       onClientAuthorization: (data) => {
@@ -53,6 +59,13 @@ export class PaypalComponent implements OnInit  {
         console.log('PayPal Error', err);
       }
     };
+  }
+
+  premium() {
+    this.apiService.postData("/profiles/me/premium", {}).subscribe(result => {
+      console.log(result);
+      this.authService.refreshCurrentProfile();
+    });
   }
 
 }

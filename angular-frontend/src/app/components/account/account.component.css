@@ -76,8 +76,6 @@ fieldset {
     display: none;
     flex-direction: column;
     gap: 10px;
-
-
 }
 
 #profilePictures {
@@ -85,6 +83,10 @@ fieldset {
     height: 300px;
     position: relative;
 }
+
+.premium-border {
+    border: 3px solid gold;
+  }
 
 .button {
     width: 100%;

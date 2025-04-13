@@ -21,8 +21,10 @@ export class ProfileModel {
     hetero: boolean;
     score: number;
     username: string;
+    premium: boolean;
 
     constructor(data: {[key: string]: any}) {
+        console.log(data);
         this.email = data["email"];
         this.firstname = data["firstname"];
         this.lastname = data["lastname"];
@@ -48,6 +50,7 @@ export class ProfileModel {
         this.hetero = data["hetero"];
         this.score = data["score"];
         this.username = data["username"];
+        this.premium = data["premium"];
     }
 
     dumpAsDict(): {[key: string]: any} {

@@ -1,6 +1,6 @@
 <div id="accountContent">
     <div id="normalDeviceArea">
-        <div id="profilePictures">
+        <div id="profilePictures" [class.premium-border]="authService.currentUserProfileModel().premium">
             <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
             @if (authService.currentUserProfileModel().picturesNumber > 0) {
                 <div id="deleteImageButton" class="icon"
@@ -9,7 +9,9 @@
         </div>
         <button class="button button-style-2" (click)="formNumber.set(0)">Profile</button>
         <button class="button button-style-2" (click)="formNumber.set(1)">Account</button>
-        <button id="premiumButton" class="button button-style-2" (click)="formNumber.set(2)">Become premium</button>
+        @if (!authService.currentUserProfileModel().premium) {
+            <button id="premiumButton" class="button button-style-2" (click)="formNumber.set(2)">Become premium</button>
+        }
         <button class="button button-style-2" (click)="formNumber.set(3)">Add picture</button>
         <button class="button button-style-2" (click)="formNumber.set(4); this.viewProfileTrigger()">Profile views</button>
         <button id="logoutButton" class="button button-style-2" (click)="authService.logout()">Logout</button>
