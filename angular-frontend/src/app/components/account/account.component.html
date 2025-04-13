@@ -164,14 +164,16 @@
                 @if (profilesView().length == 0) {
                     <p>No one viewed you :(..</p>
                 } @else {
-                    @for (user of profilesView(); track user.userId) {
-                        <div class="viewsMainDiv" [routerLink]="['/profile/', user.userId]">
-                            <img class="viewsPicture" [src]=user.profilePicturePath.at(0)>
-                                {{user.firstname}}
-                                {{user.age}} years old, from
-                                {{user.city}}
-                        </div>
-                    }
+                    <div id="viewForm">
+                        @for (user of profilesView(); track user.userId) {
+                            <div class="viewsMainDiv" [routerLink]="['/profile/', user.userId]">
+                                <img class="viewsPicture" [src]=user.profilePicturePath.at(0)>
+                                    {{user.firstname}}
+                                    {{user.age}} years old, from
+                                    {{user.city}}
+                            </div>
+                        }
+                    </div>
                 }
             </form>
         }

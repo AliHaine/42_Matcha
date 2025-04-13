@@ -132,6 +132,14 @@ fieldset {
     color: var(--color-4);
 }
 
+#viewForm {
+    max-height: 500px;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
 .viewsMainDiv {
     display: flex;
     align-items: center;
@@ -139,6 +147,7 @@ fieldset {
     border-radius: 3px;
     padding: 3px;
 }
+
 
 .viewsMainDiv:hover {
     border: solid var(--color-4) 3px;
