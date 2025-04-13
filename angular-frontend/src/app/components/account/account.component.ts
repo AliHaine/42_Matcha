@@ -11,7 +11,9 @@ import {LocationComponent} from "../location/location.component";
 import { PaypalComponent } from "../paypal/paypal.component";
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
-
+import { ProfileModel } from '../../models/profile.model';
+import { ProfileFactory } from '../../services/profile.factory';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-account',
@@ -25,7 +27,8 @@ import {MatButtonModule} from '@angular/material/button';
     LocationComponent,
     PaypalComponent,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule, 
+    RouterLink
 ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -37,6 +40,8 @@ export class AccountComponent {
   placeHolderMessage: string = "";
   private currentImageIndex: number = 0;
   formNumber = signal<number>(0);
+  profilesView = signal<ProfileModel[]>([]);
+  profileFactory = inject(ProfileFactory);
   formGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -135,7 +140,11 @@ export class AccountComponent {
 
   viewProfileTrigger() {
     this.apiService.getData("/profiles/me/views", {}).subscribe(result => {
-      console.log(result);
+      const profileModels: ProfileModel[] = [];
+      for (const user of result['views']) {
+        profileModels.push(this.profileFactory.getNewProfile(user));
+      }
+      this.profilesView.set(profileModels);
     })
   }
 }
