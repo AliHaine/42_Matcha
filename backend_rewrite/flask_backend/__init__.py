@@ -67,8 +67,7 @@ def create_app(test_config=None):
         # other configuration
         JSON_AS_ASCII=False,
         SOCKETIO_INSTANCE=socketio,
-        USE_RELOADER=os.getenv('USE_RELOADER', default='False') == 'True',
-        
+        USE_RELOADER=os.getenv('USE_RELOADER', default='False') == 'True',   
     )
     try:
         with app.app_context():

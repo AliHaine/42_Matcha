@@ -49,38 +49,19 @@ def me():
                 return jsonify({'success': False, 'error': 'No field to update'})
             try:
                 check_change_mail = False
+                check_change_username = False
                 if 'email' in user_informations:
                     if user_informations['email'] != user['email']:
                         check_change_mail = True
-                if 'username' in user_informations and check_change_mail == False:
+                elif 'username' in user_informations:
                     if user_informations['username'] != user['username']:
-                        check_change_mail = True
-                fields = {
-                    "step1": [],
-                    "step2": [],
-                    "step3": []
-                }
-                for field in user_informations:
-                    if field in STEP1_FIELDS:
-                        fields["step1"].append(field)
-                    elif field in STEP2_FIELDS:
-                        fields["step2"].append(field)
-                    elif field in STEP3_FIELDS:
-                        fields["step3"].append(field)
-                if len(fields["step1"]) > 0:
-                    result = check_fields_step1(user_informations, profile_exists_check=check_change_mail, fields=fields["step1"])
-                    if result["success"] is False:
-                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
-                if len(fields["step2"]) > 0:
-                    result = check_fields_step2(user_informations, fields=fields["step2"])
-                    if result["success"] is False:
-                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
-                if len(fields["step3"]) > 0:
-                    result = check_fields_step3(user_informations, fields=fields["step3"])
-                    if result["success"] is False:
-                        return jsonify({'success': False, 'error': ", ".join(result['errors'])})
+                        check_change_username = True
+                result, error  = check_fields_validity(user_informations)
+                if result == False:
+                    return error
                 if 'password' in user_informations:
                     user_informations['password'] = generate_password_hash(user_informations['password'])
+                print("USER INFORAMTION :", user_informations)
                 update_user_fields(user_informations, user['email'])
                 from .auth import invalidate_token
                 if check_change_mail == True or 'password' in user_informations:
@@ -94,6 +75,41 @@ def me():
                 return jsonify({'success': True})
             except Exception as e:
                 return jsonify({'success': False, 'error': str(e)})
+
+def check_fields_validity(user_informations):
+    """
+    Check if the fields are valid.
+    """
+    from flask import jsonify
+    from .user import STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS, check_fields_step1, check_fields_step2, check_fields_step3
+    fields = {
+        "step1": [],
+        "step2": [],
+        "step3": []
+    }
+    for field in user_informations:
+        if field in STEP1_FIELDS:
+            fields["step1"].append(field)
+        elif field in STEP2_FIELDS:
+            fields["step2"].append(field)
+        elif field in STEP3_FIELDS:
+            fields["step3"].append(field)
+    if len(fields["step1"]) > 0:
+        for field in fields["step1"]:
+            if field not in STEP1_FIELDS:
+                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+    if len(fields["step2"]) > 0:
+        for field in fields["step2"]:
+            if field not in STEP2_FIELDS:
+                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+    if len(fields["step3"]) > 0:
+        for field in fields["step3"]:
+            if field not in STEP3_FIELDS:
+                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+    return True, None
+            
+    
+
 
 @bp.route('/me/views', methods=['GET'])
 @jwt_required()
