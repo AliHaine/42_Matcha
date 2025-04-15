@@ -25,6 +25,8 @@ def registration_completed(f):
                 step3_fields = STEP3_FIELDS
                 if 'interests' in step3_fields:
                     step3_fields.remove('interests')
+                if 'city' in step2_fields:
+                    step2_fields.remove('city')
                 for field in step1_fields:
                     if user[field] is None:
                         return jsonify({'success': False, 'error': 'Registration not completed', 'step':1})
@@ -34,6 +36,8 @@ def registration_completed(f):
                 for field in step3_fields:
                     if user[field] is None:
                         return jsonify({'success': False, 'error': 'Registration not completed', 'step':3})
+                if user['city_id'] is None:
+                    return jsonify({'success': False, 'error': 'Registration not completed', 'step':2})
                 cur.execute('SELECT * FROM users_interests WHERE user_id = %s', (user['id'],))
                 interests = cur.fetchall()
                 if len(interests) == 0:
