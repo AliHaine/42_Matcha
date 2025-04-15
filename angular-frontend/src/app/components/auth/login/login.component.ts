@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -19,11 +19,13 @@ export class LoginComponent {
     registerService = inject(RegisterService);
     router = inject(Router)
     errorMessage: string = "";
+    formNumber = signal<number>(0);
     formControlGroup = new FormGroup({
         username: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required),
         checkbox: new FormControl(false)
     });
+    resetmail = new FormControl('', Validators.required);
 
     submit(event: Event) {
         event.preventDefault();
@@ -42,6 +44,17 @@ export class LoginComponent {
                     this.errorMessage = res['error'];
                 }
             }
+      });
+    }
+
+    submitForgot(event: Event) {
+        event.preventDefault();
+        this.apiService.postData("/auth/get_reset_password", {email: this.resetmail.value}).subscribe(res => {
+            console.log(res);
+            if (res['success'])
+                this.errorMessage = "Email send check out your email box";
+            else 
+                this.errorMessage = "No account found with this email";
       });
     }
 }

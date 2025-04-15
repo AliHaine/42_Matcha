@@ -1,17 +1,28 @@
 <form class="form-style-1" [formGroup]="formControlGroup" (submit)="submit($event)">
-	<h1>Login</h1>
-	<div id="login-area">
-		<input class="input-style-1" type="text" placeholder="Enter your username" formControlName='username'>
-		<input class="input-style-1" type="password" placeholder="Enter your password" formControlName="password">
-	</div>
-	<div id="checkbox-forgot-area">
-		<div id="checkbox-area">
-			<input type="checkbox" placeholder="Enter your password" formControlName="checkbox">
-			<label>Remember</label>
+	@if (formNumber() === 0) {
+		<h1>Login</h1>
+		<div id="login-area">
+			<input class="input-style-1" type="text" placeholder="Enter your username" formControlName='username'>
+			<input class="input-style-1" type="password" placeholder="Enter your password" formControlName="password">
 		</div>
-		<a class="text-hover-style-1" routerLink="/">Forgot password</a>
-	</div>
-    <p id="error" *ngIf="this.errorMessage.length > 0 && this.formControlGroup.invalid">{{this.errorMessage}}</p>
-	<button class="button-style-1" [disabled]="formControlGroup.invalid">Login</button>
-	<a class="text-hover-style-1" routerLink="/auth/register">Create account</a>
+		<div id="checkbox-forgot-area">
+			<div id="checkbox-area">
+				<input type="checkbox" placeholder="Enter your password" formControlName="checkbox">
+				<label>Remember</label>
+			</div>
+			<a class="text-hover-style-1" (click)="formNumber.set(1)">Forgot password</a>
+		</div>
+		<p id="error" *ngIf="this.errorMessage.length > 0 && this.formControlGroup.invalid">{{this.errorMessage}}</p>
+		<button class="button-style-1" [disabled]="formControlGroup.invalid">Login</button>
+		<a class="text-hover-style-1" routerLink="/auth/register">Create account</a>
+	} @else {
+		<h1>Forgot password</h1>
+
+		<input class="input-style-1" type="text" placeholder="Enter your email" [formControl]=resetmail>
+		<button class="button-style-1" [disabled]="resetmail.invalid" (click)="submitForgot($event)">Send reset mail</button>
+
+		<a class="text-hover-style-1" (click)="formNumber.set(0)">Return to login</a>
+
+		<p id="error" *ngIf="this.errorMessage.length > 0 && this.formControlGroup.invalid">{{this.errorMessage}}</p>
+	}
 </form>
