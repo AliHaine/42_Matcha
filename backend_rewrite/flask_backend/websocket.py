@@ -79,12 +79,9 @@ def handle_chat_message(data):
         print(f"Deconnexion forcee de {connected_users[request.sid]['id']} : {error}")
         disconnect()
         return
-    print("Message reçu :", data, type(data))
     try:
         if type(data) == str:
-            print("Message reçu (str) :", data, type(data))
             data = json.loads(data)
-        print("Message reçu (décodé) :", data, type(data))
         if "service" in data:
             if data["service"] == "notification":
                 parse_service_notification(data)
@@ -102,7 +99,6 @@ def send_notification(emitter, receiver, action, message):
             update_available_chats(sid)
     try:
         db = get_db()
-        print(f"Notification de {emitter} à {receiver} : {action} - {message}")
         user_emitter = None
         user_receiver = None
         with db.cursor() as cur:
@@ -112,7 +108,7 @@ def send_notification(emitter, receiver, action, message):
             user_receiver = cur.fetchone()
             if user_receiver is None or user_emitter is None:
                 return
-            blocked = check_id_blocked(emitter, receiver)
+            blocked, message = check_id_blocked(emitter, receiver)
             if blocked:
                 return
             cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))
@@ -195,7 +191,6 @@ def parse_service_message(data):
 def send_message(arguments={}, rooms=[]):
     db = get_db()
     cur = db.cursor()
-    print("Enterring send_message")
     if len(arguments) == 0:
         return
     if len(rooms) == 0:
@@ -203,7 +198,6 @@ def send_message(arguments={}, rooms=[]):
     if "message" not in arguments or "type" not in arguments or "author_id" not in arguments or "created_at" not in arguments:
         return
     for room in rooms:
-        print("Sending message to room", room)
         try:
             socketio.emit('message', arguments, room=room)
             receiver = int(room.split("_")[-1])

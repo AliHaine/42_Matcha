@@ -38,6 +38,7 @@ export class RegisterComponent {
         lastname: new FormControl('tes', Validators.required),
         firstname: new FormControl('test', Validators.required),
         email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
+        username: new FormControl('mysuperusername', Validators.required),
         password: new FormControl('Test123-', Validators.required),
         passwordConfirm: new FormControl('Test123-', Validators.required),
         age: new FormControl(19, [Validators.required, Validators.min(15), Validators.max(80)]),

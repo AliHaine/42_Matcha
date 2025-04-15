@@ -7,20 +7,22 @@ import {ProfileFactory} from "./profile.factory";
     providedIn: 'root'
 })
 export class CardService {
-
     apiService: ApiService = inject(ApiService);
     profileFactory: ProfileFactory = inject(ProfileFactory);
     profiles: WritableSignal<ProfileModel[]> = signal<ProfileModel[]>([]);
+    private cache_value: number = 200;
+    private trigger_cache: number = 130;
+    private isFillRunning: boolean = false;
 
     constructor() {
-        this.fillProfiles(24);
+        this.fillProfiles(this.cache_value);
     }
 
-    refreshProfile(numberToGet: number): void {
+    refreshProfile(): void {
+        console.log(this.profiles())
         this.removeProfilesModel(8);
-        if (this.profiles().length < 13)
-            numberToGet += 10;
-        this.fillProfiles(numberToGet);
+        if (this.profiles().length < this.trigger_cache)
+            this.fillProfiles(this.cache_value - this.profiles().length);
     }
 
     addNewProfileModel(newProfileModel: ProfileModel): void {
@@ -28,16 +30,18 @@ export class CardService {
     }
 
     fillProfiles(numberToGet: number) {
+        if (this.isFillRunning)
+            return;
+        this.isFillRunning = true;
         this.apiService.getData("/matcha", {nb_profiles: numberToGet}).subscribe(result => {
-            if (!result['success']) {
-                console.log(result);
+            if (!result['success'])
                 return;
-            }
             for (const data of result["result"]) {
                 if (this.isAlreadyLoaded(data['id']))
                     continue;
                 this.addNewProfileModel(this.profileFactory.getNewProfile(data));
             }
+            this.isFillRunning = false;
         });
     }
 
@@ -56,8 +60,8 @@ export class CardService {
             return newProfiles;
         });
         this.removeProfileAtIndex(9);
-        if (this.profiles().length < 13)
-            this.fillProfiles(20);
+        if (this.profiles().length < this.trigger_cache)
+            this.fillProfiles(this.cache_value - this.profiles().length);
     }
 
     getIndexFromProfile(profile: ProfileModel): number {

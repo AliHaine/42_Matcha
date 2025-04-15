@@ -1,21 +1,27 @@
-import {Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NotificationComponent} from "../notification/notification.component";
-import {NgIf} from "@angular/common";
 import {WebsocketService} from "../../services/websocket.service";
 import {NotificationService} from "../../services/notification.service";
-
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, NotificationComponent, NgIf],
+  imports: [RouterLink, NotificationComponent, MatButtonModule, MatMenuModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
 
   showNotif = signal<boolean>(false);
   websocketService = inject(WebsocketService);
   notificationService = inject(NotificationService);
+  menuItems = [
+    { label: 'HOME', link: '/' },
+    { label: 'CHATROOM', link: '/chat' },
+    { label: 'SEARCH', link: '/search' }
+  ]
 
   notificationHover() {
     this.showNotif.set(true);

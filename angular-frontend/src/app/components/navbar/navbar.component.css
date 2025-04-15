@@ -1,13 +1,21 @@
 nav {
     background-color: var(--color-4);
-    margin: 0;
-    padding: 0.5vw;
-    font-size: 1.5vw;
+    padding: 10px;
+    font-size: 1.7em;
     color: var(--color-1);
     display: flex;
     align-items: center;
     box-sizing: border-box;
     justify-content: space-between;
+}
+
+#normalDevice {
+    display: flex;
+}
+
+#mobileDevice {
+    display: none;
+    height: 100%;
 }
 
 #leftElements {
@@ -38,7 +46,7 @@ nav {
     margin-inline: auto;
     width: fit-content;
     font-family: 'Jua';
-    font-size: 2.8vw;
+    font-size: 2em;
 }
 
 #middleLogo a {
@@ -50,8 +58,8 @@ nav {
 }
 
 .img {
-    margin-right: 0.7vw;
-    width: 1.9vw;
+    margin-right: 15px;
+    width: 48px;
     aspect-ratio: 1;
     display: inline-block;
     background: var(--color-1);
@@ -61,4 +69,29 @@ nav {
 .img:hover {
     background: var(--color-2);
     transform: scale(1.1) translateY(-0.1vmin);
+}
+
+@media (max-width: 1475px) {
+    #middleLogo {
+        font-size: 1.7em;
+    }
+
+    nav {
+        font-size: 1.2em;
+        padding: 5px;
+    }
+
+    .img {
+        width: 32px;
+    }
+}
+
+@media (max-width: 1100px) {
+    #normalDevice {
+        display: none;
+    }
+
+    #mobileDevice {
+        display: block;
+    }
 }

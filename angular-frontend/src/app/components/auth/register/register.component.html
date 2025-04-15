@@ -1,36 +1,37 @@
 <script src="../../../services/register.service.ts"></script>
 <form *ngIf="this.registerService.currentStep() == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
 	<h1>Register</h1>
-	<div class="area-multiple">
-		<div>
-			<label>Lastname</label>
-			<input class="input-style-1" type="text" placeholder="Enter your lastname" formControlName='lastname'>
-		</div>
-		<div>
-			<label>Firstname</label>
-			<input class="input-style-1" type="text" placeholder="Enter your  firstname" formControlName='firstname'>
-		</div>
-	</div>
-	<div class="area-single">
-		<label>Email</label>
-		<input class="input-style-1" type="email" placeholder="Enter your email adress" formControlName='email'>
-	</div>
+        <div id="main-form-1">
+        <div class="label-input-flex">
+            <label>Lastname</label>
+            <input class="input-style-1" type="text" placeholder="Enter your lastname" formControlName='lastname'>
+        </div>
+        <div class="label-input-flex">
+            <label>Firstname</label>
+            <input class="input-style-1" type="text" placeholder="Enter your  firstname" formControlName='firstname'>
+        </div>
+        <div class="label-input-flex">
+            <label>Username</label>
+            <input class="input-style-1" type="text" placeholder="Enter your username" formControlName='username'>
+        </div>
+        <div class="label-input-flex">
+            <label>Email</label>
+            <input class="input-style-1" type="email" placeholder="Enter your email adress" formControlName='email'>
+        </div>
 
-	<div class="area-multiple">
-		<div>
-			<label>Password</label>
-			<input class="input-style-1" type="password" placeholder="Enter your password" formControlName='password'>
-		</div>
-		<div>
-			<label>Password confirmation</label>
-			<input class="input-style-1" type="password" placeholder="Confirm your password" formControlName='passwordConfirm'>
-		</div>
-	</div>
-	<div id="age-gender" class="area-multiple">
-		<div id="age">
-			<label>Age</label>
-			<input class="input-style-1" type="number" placeholder="" formControlName='age'>
-		</div>
+        <div class="label-input-flex">
+            <label>Password</label>
+            <input class="input-style-1" type="password" placeholder="Enter your password" formControlName='password'>
+        </div>
+        <div class="label-input-flex">
+            <label>Password confirmation</label>
+            <input class="input-style-1" type="password" placeholder="Confirm your password" formControlName='passwordConfirm'>
+        </div>
+
+        <div class="label-input-flex">
+            <label>Age</label>
+            <input class="input-style-1" type="number" placeholder="" formControlName='age'>
+        </div>
         <div>
             <label>Sexual orientation</label>
             <fieldset>
@@ -44,20 +45,21 @@
                 </div>
             </fieldset>
         </div>
-		<div>
-			<label>Gender</label>
-			<fieldset>
-			 	 <div>
-					<input type="radio" value="M" formControlName="gender" />
-					<label>Male</label>
-			  	</div>
-				<div>
-					<input type="radio" value="F" formControlName="gender" />
-					<label>Female</label>
-				</div>
-			</fieldset>
-		</div>
-	</div>
+        <div>
+            <label>Gender</label>
+            <fieldset>
+                <div>
+                    <input type="radio" value="M" formControlName="gender" />
+                    <label>Male</label>
+                </div>
+                <div>
+                    <input type="radio" value="F" formControlName="gender" />
+                    <label>Female</label>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
     <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
@@ -72,16 +74,15 @@
 
 <form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet()" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
 	<h1>Complete your profile</h1>
-	<div>
-		<div style="display: flex; flex-direction: column;">
-			<label>City</label>
-			<input class="input-style-1" type="text" placeholder="Enter your city" formControlName='city'>
+    <div id="main-form-2">
+        <div style="display: flex; flex-direction: column; grid-column: span 3;">
+            <label>City</label>
+            <input class="input-style-1" type="text" placeholder="Enter your city" formControlName='city'>
             <app-location [cityFormControl]="this.formControlGroupStep2.controls.city"></app-location>
-		</div>
-	</div>
-    <h2>What are you looking for ?</h2>
-    <div class="area-multiple">
-        <div>
+        </div>
+
+        <h2 class="title-form-2">What are you looking for ?</h2>
+        <div class="label-input-flex">
             <label>Searching</label>
             <select id="searching" formControlName='searching'>
                 <option value='' disabled selected>-- Select an option --</option>
@@ -89,26 +90,24 @@
             </select>
         </div>
 
-        <div>
-          <label>Commitment </label>
-          <select id="commitment" formControlName='commitment'>
-              <option value='' disabled selected>-- Select an option --</option>
-              <option *ngFor="let val of this.registerService.registerInfo()['commitment']" [value]="val">{{val}}</option>
-          </select>
+        <div class="label-input-flex">
+            <label>Commitment</label>
+            <select id="commitment" formControlName='commitment'>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['commitment']" [value]="val">{{val}}</option>
+            </select>
         </div>
 
-        <div>
-          <label>Contact frequency</label>
-          <select id="frequency" formControlName='frequency'>
-              <option value='' disabled selected>-- Select an option --</option>
-               <option *ngFor="let val of this.registerService.registerInfo()['frequency']" [value]="val">{{val}}</option>
-          </select>
+        <div class="label-input-flex">
+            <label>Contact frequency</label>
+            <select id="frequency" formControlName='frequency'>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['frequency']" [value]="val">{{val}}</option>
+            </select>
         </div>
-    </div>
 
-    <h2>Your shape</h2>
-    <div class="area-multiple">
-        <div>
+        <h2 class="title-form-2">Your shape</h2>
+        <div class="label-input-flex">
             <label>Weight (KG)</label>
             <select id="weight" formControlName='weight'>
                 <option value='' disabled selected>-- Select an option --</option>
@@ -116,53 +115,51 @@
             </select>
         </div>
 
-        <div>
-          <label>Size (CM)</label>
-          <select id="size" formControlName='size'>
-              <option value='' disabled selected>-- Select an option --</option>
-              <option *ngFor="let val of this.registerService.registerInfo()['size']" [value]="val">{{val}}</option>
-          </select>
+        <div class="label-input-flex">
+            <label>Size (CM)</label>
+            <select id="size" formControlName='size'>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['size']" [value]="val">{{val}}</option>
+            </select>
         </div>
 
-        <div>
-          <label>shape</label>
-          <select id="shape" formControlName='shape'>
-              <option value='' disabled selected>-- Select an option --</option>
-              <option *ngFor="let val of this.registerService.registerInfo()['shape']" [value]="val">{{val}}</option>
-          </select>
-        </div>
-    </div>
-
-    <h2>Your health</h2>
-    <div class="area-multiple">
-        <div>
-			<label>Smoking ?</label>
-			<fieldset>
-			 	 <div>
-					<input type="radio" [value]=true formControlName="smoking" />
-					<label>Yes</label>
-			  	</div>
-				<div>
-					<input type="radio" [value]=false formControlName="smoking" />
-					<label>No</label>
-				</div>
-			</fieldset>
-		</div>
-
-        <div>
-          <label>Alcohol consumption</label>
-          <select id="alcohol" formControlName="alcohol">
-              <option value='' disabled selected>-- Select an option --</option>
-              <option *ngFor="let val of this.registerService.registerInfo()['alcohol']" [value]="val">{{val}}</option>
-          </select>
+        <div class="label-input-flex">
+            <label>shape</label>
+            <select id="shape" formControlName='shape'>
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['shape']" [value]="val">{{val}}</option>
+            </select>
         </div>
 
-        <div>
-          <label>diet</label>
-          <select id="diet" formControlName="diet">
-              <option value='' disabled selected>-- Select an option --</option>
-              <option *ngFor="let val of this.registerService.registerInfo()['diet']" [value]="val">{{val}}</option>
-          </select>
+        <h2 class="title-form-2">Your health</h2>
+        <div class="label-input-flex">
+            <label>Smoking ?</label>
+            <fieldset style="justify-content: center;">
+                <div>
+                    <input type="radio" [value]=true formControlName="smoking" />
+                    <label>Yes</label>
+                </div>
+                <div>
+                    <input type="radio" [value]=false formControlName="smoking" />
+                    <label>No</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="label-input-flex">
+            <label>Alcohol consumption</label>
+            <select id="alcohol" formControlName="alcohol">
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['alcohol']" [value]="val">{{val}}</option>
+            </select>
+        </div>
+
+        <div class="label-input-flex">
+            <label>diet</label>
+            <select id="diet" formControlName="diet">
+                <option value='' disabled selected>-- Select an option --</option>
+                <option *ngFor="let val of this.registerService.registerInfo()['diet']" [value]="val">{{val}}</option>
+            </select>
         </div>
     </div>
     <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
@@ -183,7 +180,7 @@
               </div>
         </fieldset>
     </div>
-    <div class="area-single">
+    <div class="label-input-flex">
         <label>Description</label>
         <mat-form-field>
         <textarea id="description"

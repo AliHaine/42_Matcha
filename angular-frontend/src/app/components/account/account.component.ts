@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -8,6 +8,12 @@ import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
 import {LocationComponent} from "../location/location.component";
+import { PaypalComponent } from "../paypal/paypal.component";
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import { ProfileModel } from '../../models/profile.model';
+import { ProfileFactory } from '../../services/profile.factory';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-account',
@@ -19,7 +25,11 @@ import {LocationComponent} from "../location/location.component";
     TextFieldModule,
     SliderComponent,
     LocationComponent,
-  ],
+    PaypalComponent,
+    MatMenuModule,
+    MatButtonModule, 
+    RouterLink
+],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
@@ -29,6 +39,9 @@ export class AccountComponent {
   authService = inject(AuthService);
   placeHolderMessage: string = "";
   private currentImageIndex: number = 0;
+  formNumber = signal<number>(0);
+  profilesView = signal<ProfileModel[]>([]);
+  profileFactory = inject(ProfileFactory);
   formGroup = new FormGroup({
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -37,6 +50,7 @@ export class AccountComponent {
     gender: new FormControl(''),
     hetero: new FormControl(''),
     interests: new FormControl(''),
+    username: new FormControl(''),
     email: new FormControl(''),
     password: new FormControl(''),
     description: new FormControl(''),
@@ -66,12 +80,10 @@ export class AccountComponent {
   }
 
   applyTrigger() {
-    const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
-    let file: File | undefined;
-
-    file = pictureAsHtml.files?.[0];
-    if (file)
-      this.addPicture(file);
+    if (this.formNumber() == 3) {
+      this.addPicture();
+      return;
+    }
 
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       if (result['disconnect'])
@@ -89,12 +101,21 @@ export class AccountComponent {
     this.placeHolderMessage = "";
   }
 
-  addPicture(file: File) {
+  addPicture() {
+    const pictureAsHtml = document.getElementById('picture') as HTMLInputElement;
+    let file: File | undefined;
+
+    file = pictureAsHtml.files?.[0];
+    if (!file)
+      return;
+
     const formaData = new FormData();
 
     formaData.append("picture", file);
     this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
       console.log(result);
+      this.formNumber.set(0);
+      this.authService.refreshCurrentProfile()
     });
   }
 
@@ -109,5 +130,21 @@ export class AccountComponent {
 
   sliderTrigger(index: number) {
     this.currentImageIndex = index;
+  }
+
+  premiumTrigger() {
+    this.apiService.postData("/profiles/me/premium", {}).subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  viewProfileTrigger() {
+    this.apiService.getData("/profiles/me/views", {}).subscribe(result => {
+      const profileModels: ProfileModel[] = [];
+      for (const user of result['views']) {
+        profileModels.push(this.profileFactory.getNewProfile(user));
+      }
+      this.profilesView.set(profileModels);
+    })
   }
 }

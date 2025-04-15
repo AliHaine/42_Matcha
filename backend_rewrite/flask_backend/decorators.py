@@ -19,9 +19,12 @@ def registration_completed(f):
             if user['registration_complete'] == True:
                 return f(*args, **kwargs)
             else:
-                step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
-                step2_fields = ['searching', 'commitment', 'frequency', 'weight', 'size', 'shape', 'smoking', 'alcohol', 'diet']
-                step3_fields = ['description']
+                from .user import STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS
+                step1_fields = STEP1_FIELDS
+                step2_fields = STEP2_FIELDS
+                step3_fields = STEP3_FIELDS
+                if 'interests' in step3_fields:
+                    step3_fields.remove('interests')
                 for field in step1_fields:
                     if user[field] is None:
                         return jsonify({'success': False, 'error': 'Registration not completed', 'step':1})
@@ -39,5 +42,4 @@ def registration_completed(f):
                 db.commit()
 
         return f(*args, **kwargs)
-
     return decorated_function

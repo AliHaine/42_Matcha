@@ -20,7 +20,7 @@ export class LoginComponent {
     router = inject(Router)
     errorMessage: string = "";
     formControlGroup = new FormGroup({
-        email: new FormControl('', [Validators.required, Validators.email]),
+        username: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required),
         checkbox: new FormControl(false)
     });

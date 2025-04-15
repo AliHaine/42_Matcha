@@ -24,7 +24,6 @@ def upload_file():
                 return jsonify({"success": False, "error": "User is not active"})
             user_id = user['id']
         try:
-            print("Request data", request.form, end="\n\n\n\n\n\n")
             data = request.form.get('receiver_id', None)
             if data is None:
                 return jsonify({"success": False, "error": "No data provided"})
@@ -46,9 +45,6 @@ def upload_file():
                     time_required = timedelta(seconds=10)
                     if last_image:
                         last_image_time = last_image['created_at']
-                        print("Last image time", last_image_time, type(last_image_time))
-                        print("Current time", datetime.now(), type(datetime.now()))
-                        print("Time required", time_required, type(time_required), flush=True)
                         if datetime.now() - last_image_time < time_required:
                             return jsonify({"success": False, "error": "You can only send one image every minute"})
                 if file.filename == '':
