@@ -56,6 +56,9 @@ def register_step1(data):
     dup_password = user_informations['password']
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
+        from .user import send_confirmation_email
+        if send_confirmation_email(user_informations['email']) == False:
+            return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
         response = login_user(user_informations['username'], dup_password, registering=True)
         if response is None or response['success'] == False:
             return jsonify({'success': False, 'error': response['error']})
