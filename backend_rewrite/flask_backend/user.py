@@ -397,7 +397,15 @@ def send_confirmation_email(email):
         if mail:
             from flask_mail import Message
             msg = Message("Matcha - confirm email", sender=current_app.config["MAIL_USERNAME"], recipients=[email])
-            msg.body = "Click on the following link to confirm your email : http://localhost:4200/emailconfirm/" + mail_token
+            from dotenv import load_dotenv
+            load_dotenv()
+            import os
+            hostname = os.getenv('NGINX_HOST', None)
+            if hostname is None:
+                hostname = "localhost:4200"
+            else:
+                hostname = hostname + ":8000"
+            msg.body = f"Click on the following link to confirm your email : http://{hostname}/emailconfirm/" + mail_token
             mail.send(msg)
             return True
         else:
@@ -414,7 +422,15 @@ def send_reset_password_email(email):
         if mail:
             from flask_mail import Message
             msg = Message("Matcha - reset password", sender=current_app.config["MAIL_USERNAME"], recipients=[email])
-            msg.body = "Click on the following link to reset your password : http://localhost:4200/resetpassword/" + mail_token
+            from dotenv import load_dotenv
+            load_dotenv()
+            import os
+            hostname = os.getenv('NGINX_HOST', None)
+            if hostname is None:
+                hostname = "localhost:4200"
+            else:
+                hostname = hostname + ":8000"
+            msg.body = f"Click on the following link to reset your password : http://{hostname}/resetpassword/" + mail_token
             mail.send(msg)
             return True
         else:

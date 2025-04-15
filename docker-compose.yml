@@ -1,0 +1,66 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgis/postgis:16-3.5-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend_rewrite/tools/database/200k_fix.dump:/docker-entrypoint-initdb.d/sauvegarde.dump
+      - ./backend_rewrite/tools/database/restore.sh:/docker-entrypoint-initdb.d/01_restore.sh
+    env_file:
+      - ./settings/.database.env
+    expose:
+      - "5432"
+    networks:
+      - matcha-network
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    env_file:
+      - ./settings/.database.env
+    expose:
+      - "80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./backend_rewrite/tools/database/servers.json:/pgadmin4/servers.json
+    networks:
+      - matcha-network
+  flask-backend:
+    container_name: flask-backend
+    build:
+      context: ./backend_rewrite
+      dockerfile: Dockerfile
+    env_file:
+      - ./settings/.flask.env
+      - ./settings/.database.env
+    expose:
+      - "5000"
+    depends_on:
+      - postgres
+    volumes:
+      - flask-backend_data:/app
+    networks:
+      - matcha-network
+  angular-frontend:
+    container_name: angular-frontend
+    mem_limit: 1.5g
+    build:
+      context: ./angular-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    depends_on:
+      - flask-backend
+    networks:
+      - matcha-network
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+networks:
+  matcha-network:
+    driver: bridge
+volumes:
+  postgres_data:
+  pgadmin_data:
+  flask-backend_data:

@@ -33,6 +33,7 @@ def create_app(test_config=None):
     }})
     # environment setup
     base_dir = os.path.abspath(os.path.dirname(__file__))
+    load_dotenv()
     load_dotenv(dotenv_path=os.path.join(base_dir, '../../settings/.flask.env'))
     load_dotenv(dotenv_path=os.path.join(base_dir, '../../settings/.database.env'))
     # load configuration
@@ -87,6 +88,14 @@ def create_app(test_config=None):
             register_blueprints(app)
             jwt_setup(app)
             socketio_setup(app)
+            @app.route('/test', methods=['GET'])
+            def test():
+                mail = app.config['MAIL']
+                from flask_mail import Message
+                msg = Message("Matcha - confirm email", sender=app.config["MAIL_USERNAME"], recipients=["axel.kastler6847@gmail.com"])
+                msg.body = "Click on the following link to confirm your email : http://localhost:4200/emailconfirm/"
+                mail.send(msg)
+                return 'Test route'
         return app
     except Exception as e:
         print("Init server failed, stopping", e)

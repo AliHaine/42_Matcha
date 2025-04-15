@@ -8,7 +8,7 @@ import {backendIP} from "../app.config";
 })
 
 export class ApiService {
-  private baseUrl = `http://${backendIP}:5000/api`;
+  private baseUrl = `http://${backendIP}:8000/api`;
 
   constructor(private http: HttpClient) { }
 
