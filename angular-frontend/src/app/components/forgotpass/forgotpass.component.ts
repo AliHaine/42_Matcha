@@ -9,6 +9,7 @@ import {
   ValidatorFn,
   Validators
 } from "@angular/forms";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgotpass',
@@ -18,6 +19,7 @@ import {
 })
 export class ForgotpassComponent {
   apiService = inject(ApiService);
+  router = inject(Router);
 
   formGroupForgot = new FormGroup({
     password: new FormControl('', Validators.required),
@@ -26,9 +28,12 @@ export class ForgotpassComponent {
 
   submit(event: Event) {
     event.preventDefault();
-
-    this.apiService.postData("", {password: this.formGroupForgot.value.password}).subscribe(result => {
-
+    this.apiService.postData("/auth/reset_password", {password: this.formGroupForgot.value.password}).subscribe(result => {
+      this.router.navigate(['/login'])
+      if (result["success"]) {
+        this.router.navigate(['/login'])
+      }
+      console.log(result)
     })
   }
 }

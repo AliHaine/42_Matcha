@@ -50,7 +50,6 @@ export class LoginComponent {
     submitForgot(event: Event) {
         event.preventDefault();
         this.apiService.postData("/auth/get_reset_password", {email: this.resetmail.value}).subscribe(res => {
-            console.log(res);
             if (res['success'])
                 this.errorMessage = "Email send check out your email box";
             else 
