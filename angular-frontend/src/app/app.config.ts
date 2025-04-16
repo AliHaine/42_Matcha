@@ -10,4 +10,4 @@ export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideHttpClient(withInterceptors([authInterceptor])), provideAnimations()]
 };
 
-export const backendIP = window.location.pathname + ':' + window.location.port;
+export const backendIP = window.location.hostname + ':' + window.location.port;

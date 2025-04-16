@@ -39,7 +39,7 @@ switch-prod:
 	@sed -i "/NGINX_HOST=/c\NGINX_HOST=$(HOSTNAME)" ./settings/.flask.env
 	@sed -i "/SECRET_KEY=dev/c\SECRET_KEY=$(PROD_KEY)" ./settings/.flask.env
 	@sed -i "/DEBUG=/c\DEBUG=False" ./settings/.flask.env
-	@sed -i "/export const backendIP =/c\export const backendIP = window.location.pathname + ':' + window.location.port;" ./angular-frontend/src/app/app.config.ts
+	@sed -i "/export const backendIP =/c\export const backendIP = window.location.hostname + ':' + window.location.port;" ./angular-frontend/src/app/app.config.ts
 	@sed -i "/POSTGRES_HOST=/c\POSTGRES_HOST=postgres" ./settings/.database.env
 
 switch-dev:
@@ -49,7 +49,7 @@ switch-dev:
 	@sed -i "/NGINX_HOST=/c\NGINX_HOST=localhost" ./settings/.flask.env
 	@sed -i "/SECRET_KEY=/c\SECRET_KEY=dev" ./settings/.flask.env
 	@sed -i "/DEBUG=/c\DEBUG=True" ./settings/.flask.env
-	@sed -i "/export const backendIP =/c\export const backendIP = window.location.pathname + ':5000';" ./angular-frontend/src/app/app.config.ts
+	@sed -i "/export const backendIP =/c\export const backendIP = window.location.hostname + ':5000';" ./angular-frontend/src/app/app.config.ts
 	@sed -i "/POSTGRES_HOST=/c\POSTGRES_HOST=localhost" ./settings/.database.env
 
 prod: dev-rmv switch-prod
