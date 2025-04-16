@@ -10,6 +10,7 @@ import {ChatComponent} from "./components/chat/chat.component";
 import {loginGuard} from "./others/login.guard";
 import {AccountComponent} from "./components/account/account.component";
 import {EmailconfirmComponent} from "./components/emailconfirm/emailconfirm.component";
+import { ForgotpassComponent } from './components/forgotpass/forgotpass.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [authGuard] },
@@ -19,6 +20,7 @@ export const routes: Routes = [
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
     { path: 'emailconfirm/:token', component: EmailconfirmComponent, canActivate: [authGuard] },
+    { path: 'forgotpass/:token', component: ForgotpassComponent, canActivate: [loginGuard] },
     { path: 'auth', canActivate: [loginGuard], children: [{ path: 'register', component: RegisterComponent }, { path: 'login', component: LoginComponent }]},
     { path: '**', redirectTo: ''},
 ];

@@ -1,4 +1,6 @@
-<div>
-    <input>
-    <button>Send reset pass request</button>
-</div>
+<form id="main-form" (submit)="submit($event)" [formGroup]="formGroupForgot">
+    <h1>Reset password</h1>
+    <input class="input-style-1" type="password" placeholder="Enter your new password" formControlName="password">
+    <input class="input-style-1" type="password" placeholder="Confirm your new password" formControlName="passwordConfirm">
+    <button [disabled]="formGroupForgot.invalid" class="button-style-1">Confirm</button>
+</form>
