@@ -133,7 +133,7 @@ def update_user_fields(user_informations, user_email):
                 'UPDATE users SET '+ values_name + ' WHERE email = %s',
                 values_content
             )
-        db.commit()
+            db.commit()
         return True
     except Exception as e:
         print("Failed to update user fields (func : update_user_fields, file : user.py). Error : ", e)
@@ -381,8 +381,6 @@ def check_registration_status(other_email=None):
                     if value is None:
                         return False
                 cur.execute('UPDATE users SET registration_complete = TRUE WHERE email = %s', (user_email,))
-                db.commit()
-                send_confirmation_email(user_email)
                 db.commit()
                 return True
     except Exception as e:

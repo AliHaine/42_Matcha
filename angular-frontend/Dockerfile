@@ -1,7 +1,9 @@
-FROM node:23-slim AS build
+FROM node:22-alpine AS build
 
 COPY . /app
 WORKDIR /app
+
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 
 RUN npm install
 RUN npm run build

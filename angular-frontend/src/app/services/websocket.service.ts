@@ -24,7 +24,7 @@ export class WebsocketService {
     console.log('Socket.IO Service Initialized');
 
     this.ngZone.runOutsideAngular(() => {
-      this.websocket = io(`ws://${backendIP}:8000`, {
+      this.websocket = io(`ws://${backendIP}`, {
         transports: ['websocket'],
         query: { 'access_token': this.apiService.getAccessToken() },
       });

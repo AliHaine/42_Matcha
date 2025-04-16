@@ -45,7 +45,6 @@ def handle_connect():
             connected_users[request.sid]['id'] = user['id']
             connected_users[request.sid]['available_chats'] = []
             connected_users[request.sid]['token'] = token
-        print(f"Utilisateur {user_email} connecté via WebSocket")
         join_room(f"user_{user['id']}")
         update_available_chats(request.sid)
         send_all_notifications(user["id"])
