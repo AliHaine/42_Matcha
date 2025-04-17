@@ -220,9 +220,7 @@ def verify_token():
     return jsonify({'success': True})
 
 @bp.route('/confirm_email', methods=['POST'])
-@jwt_required()
 def confirm_email():
-    user_email = get_jwt_identity()
     db = get_db()
     try:
         data = request.json
@@ -233,7 +231,7 @@ def confirm_email():
     if token is None:
         return jsonify({'success': False, 'error': 'No token provided'})
     with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+        cur.execute('SELECT * FROM users WHERE email_token = %s', (token,))
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'error': 'User not found'})
@@ -241,7 +239,7 @@ def confirm_email():
             return jsonify({'success': True, 'error': 'Email already verified'})
         if user['email_token'] != token:
             return jsonify({'success': False, 'error': 'Invalid token'})
-        cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user_email,))
+        cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user['email'],))
         db.commit()
     return jsonify({'success': True})
 

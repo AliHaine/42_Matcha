@@ -54,7 +54,7 @@ switch-dev:
 
 prod: dev-rmv switch-prod
 	@echo "Building and running production containers..."
-	@docker compose -f ./docker-compose.yml up -d
+	@docker compose --env-file ./settings/.database.env -f ./docker-compose.yml up -d
 
 prod-down:
 	@docker compose -f ./docker-compose.yml down

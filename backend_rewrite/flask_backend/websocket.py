@@ -35,7 +35,8 @@ def handle_connect():
                 print("Connexion refusée : Utilisateur non trouvé")
                 disconnect()
                 return
-            if user["registration_complete"] is False:
+            from .user import check_registration_status
+            if check_registration_status(user["email"]) is False:
                 print("Connexion refusée : Inscription non terminée")
                 disconnect()
                 return
@@ -56,7 +57,7 @@ def handle_connect():
 def handle_disconnect():
     user_elems = connected_users.get(request.sid, None)
     if user_elems is None:
-        print("Déconnexion refusée : Utilisateur non trouvé")
+        print("Déconnexion inconnue")
         return
     db = get_db()
     with db.cursor() as cur:
@@ -219,6 +220,7 @@ def check_jwt_validity(token):
       - True + données du token si valide.
       - False + message d'erreur si invalide.
     """
+    print("Vérification de la validité du token JWT")
     if not token:
         return False, "Token manquant"
 
@@ -235,6 +237,7 @@ def check_jwt_validity(token):
 
         # Vérifier si le token a été révoqué
         jti = decoded_token.get("jti")
+        print(f"Vérification de la révocation du token avec jti : {jti}")
         if is_token_revoked(jti):
             return False, "Token révoqué"
 

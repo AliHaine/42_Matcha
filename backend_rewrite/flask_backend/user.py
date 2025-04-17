@@ -350,12 +350,17 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                     result['errors'].append(f"Field {field} is not valid")
     return result
 
-@jwt_required()
 def check_registration_status(other_email=None):
     if other_email is not None:
         user_email = other_email
     else:
-        user_email = get_jwt_identity()
+        from flask_jwt_extended import verify_jwt_in_request
+        try:
+            verify_jwt_in_request()
+            user_email = get_jwt_identity()
+        except Exception as e:
+            print("Failed to verify JWT in request (func : check_registration_status, file : user.py). Error : ", e)
+            return False
     if user_email is None:
         return False
     try:
@@ -365,11 +370,12 @@ def check_registration_status(other_email=None):
             user = cur.fetchone()
             if user is None:
                 return False
+            print("User found", user)
             if user['registration_complete'] == True:
                 return True
             else:
                 for key, value in user.items():
-                    if key == 'city_id' or key == 'email_token':
+                    if key == 'city_id' or key == 'email_token' or key == 'reset_token' or key == 'expiration':
                         continue
                     if value is None:
                         return False
@@ -400,6 +406,8 @@ def send_confirmation_email(email):
             import os
             hostname = os.getenv('NGINX_HOST', None)
             if hostname is None:
+                hostname = "localhost"
+            if hostname == "localhost":
                 hostname = "localhost:4200"
             else:
                 hostname = hostname + ":8000"
@@ -425,10 +433,12 @@ def send_reset_password_email(email):
             import os
             hostname = os.getenv('NGINX_HOST', None)
             if hostname is None:
+                hostname = "localhost"
+            if hostname == "localhost":
                 hostname = "localhost:4200"
             else:
                 hostname = hostname + ":8000"
-            msg.body = f"Click on the following link to reset your password : http://{hostname}/resetpassword/" + mail_token
+            msg.body = f"Click on the following link to reset your password : http://{hostname}/forgotpass/" + mail_token
             mail.send(msg)
             return True
         else:

@@ -45,6 +45,8 @@ def like_action(user, user_getting, user_view, old_matched):
     with db.cursor() as cursor:
         if user_view["blocked"]:
             return False, "User is blocked"
+        if user_getting["pictures_number"] == 0:
+            return False, "User has no profile picture set"
         cursor.execute("UPDATE user_views SET liked = NOT liked WHERE id = %s", (user_view["id"],))
         db.commit()
         cursor.execute(current_app.config["QUERIES"].get("-- check match"), {"user_id_1": user['id'], "user_id_2": user_getting['id']})
@@ -75,5 +77,6 @@ def block_action(user, user_getting, user_view):
         if user_view["blocked"] == True:
             send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
         else:
+            cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
             send_notification(user_getting["id"], user["id"], "block", "User blocked you")
     return True

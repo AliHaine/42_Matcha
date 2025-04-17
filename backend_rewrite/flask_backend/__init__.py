@@ -8,7 +8,7 @@ def create_app(test_config=None):
     """
     Crée et configure l'application Flask.
     """
-    from flask import Flask
+    from flask import Flask, jsonify
     from flask_cors import CORS
     from datetime import timedelta
     from dotenv import load_dotenv
@@ -88,14 +88,12 @@ def create_app(test_config=None):
             register_blueprints(app)
             jwt_setup(app)
             socketio_setup(app)
-            @app.route('/test', methods=['GET'])
-            def test():
-                mail = app.config['MAIL']
-                from flask_mail import Message
-                msg = Message("Matcha - confirm email", sender=app.config["MAIL_USERNAME"], recipients=["axel.kastler6847@gmail.com"])
-                msg.body = "Click on the following link to confirm your email : http://localhost:4200/emailconfirm/"
-                mail.send(msg)
-                return 'Test route'
+            @app.route('/health', methods=['GET'])
+            def health():
+                """
+                Endpoint de vérification de l'état de l'application.
+                """
+                return jsonify({'status': 'ok'}), 200
         return app
     except Exception as e:
         print("Init server failed, stopping", e)

@@ -16,6 +16,8 @@ def registration_completed(f):
             user = cur.fetchone()
             if user is None:
                 return jsonify({'success': False, 'error': 'User not found'})
+            # if user['email_verified'] == False:
+            #     return jsonify({'success': False, 'error': 'Email not confirmed', 'code': 'email_confirm'})
             if user['registration_complete'] == True:
                 return f(*args, **kwargs)
             else:

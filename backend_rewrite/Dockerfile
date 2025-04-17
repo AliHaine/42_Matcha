@@ -4,6 +4,8 @@ COPY . /app
 
 WORKDIR /app
 
+RUN apk add --no-cache curl
+
 RUN pip install --upgrade pip
 RUN pip install -r /app/requirements.txt
 

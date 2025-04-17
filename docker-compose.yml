@@ -12,6 +12,12 @@ services:
       - "5432"
     networks:
       - matcha-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 15s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -20,7 +26,8 @@ services:
     expose:
       - "80"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./backend_rewrite/tools/database/servers.json:/pgadmin4/servers.json
@@ -37,11 +44,18 @@ services:
     expose:
       - "5000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - flask-backend_data:/app
     networks:
       - matcha-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 5s
   angular-frontend:
     container_name: angular-frontend
     mem_limit: 1.5g
@@ -51,7 +65,8 @@ services:
     ports:
       - "8000:80"
     depends_on:
-      - flask-backend
+      flask-backend:
+        condition: service_healthy
     networks:
       - matcha-network
     volumes:
