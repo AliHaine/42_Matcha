@@ -3,4 +3,7 @@
     <input class="input-style-1" type="password" placeholder="Enter your new password" formControlName="password">
     <input class="input-style-1" type="password" placeholder="Confirm your new password" formControlName="passwordConfirm">
     <button [disabled]="formGroupForgot.invalid" class="button-style-1">Confirm</button>
+    @if (errorMsg.length > 0) {
+        <p>{{ errorMsg }}</p> 
+    }
 </form>

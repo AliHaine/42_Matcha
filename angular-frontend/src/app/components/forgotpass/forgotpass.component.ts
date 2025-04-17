@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import { ApiService } from '../../services/api.service';
 import {
-  AbstractControl, FormArray,
+  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -20,6 +21,8 @@ import { Router } from '@angular/router';
 export class ForgotpassComponent {
   apiService = inject(ApiService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
+  errorMsg: string = "";
 
   formGroupForgot = new FormGroup({
     password: new FormControl('', Validators.required),
@@ -28,12 +31,13 @@ export class ForgotpassComponent {
 
   submit(event: Event) {
     event.preventDefault();
-    this.apiService.postData("/auth/reset_password", {password: this.formGroupForgot.value.password}).subscribe(result => {
-      this.router.navigate(['/login'])
+    const token = this.route.snapshot.paramMap.get("token");
+    this.apiService.postData("/auth/reset_password", {token: token, password: this.formGroupForgot.value.password}).subscribe(result => {
       if (result["success"]) {
         this.router.navigate(['/login'])
+      } else {
+        this.errorMsg = result['error'];
       }
-      console.log(result)
     })
   }
 }
