@@ -65,21 +65,23 @@
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
 
-<div class="form-style-1" *ngIf="this.registerService.currentStep() == 2 && !this.isCityGet()">
+<div class="form-style-1" *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() === 0">
     <h1>Do you agree to share your location ?</h1>
-    <button (click)="this.isCityGet.set(true)">Yes</button>
-    <button (click)="this.isCityGet.set(true)">No</button>
+    <button (click)="this.isCityGet.set(1)">Yes</button>
+    <button (click)="this.isCityGet.set(2)">No</button>
     <p></p>
 </div>
 
-<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet()" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() > 0" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
 	<h1>Complete your profile</h1>
     <div id="main-form-2">
-        <div style="display: flex; flex-direction: column; grid-column: span 3;">
-            <label>City</label>
-            <input class="input-style-1" type="text" placeholder="Enter your city" formControlName='city'>
-            <app-location [cityFormControl]="this.formControlGroupStep2.controls.city"></app-location>
-        </div>
+        @if (this.isCityGet() === 1) {
+            <div style="display: flex; flex-direction: column; grid-column: span 3;">
+                <label>City</label>
+                <input class="input-style-1" type="text" placeholder="Enter your city" formControlName='city'>
+                <app-location [cityFormControl]="this.formControlGroupStep2.controls.city"></app-location>
+            </div>
+        }
 
         <h2 class="title-form-2">What are you looking for ?</h2>
         <div class="label-input-flex">

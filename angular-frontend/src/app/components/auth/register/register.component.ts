@@ -31,7 +31,7 @@ export class RegisterComponent {
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);
-    isCityGet = signal(false);
+    isCityGet = signal(0);
     errorMessage: string = "";
 
     formControlGroupStep1 = new FormGroup({
