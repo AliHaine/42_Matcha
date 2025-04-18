@@ -25,6 +25,7 @@ export class CardComponent {
 
   likeUser() {
     this.apiService.postData(`/profiles/${this.profile().userId}`, {action: 'like'}).subscribe(_ => {
+      console.log(_)
       this.cardService.switchProfile(this.cardService.getIndexFromProfile(this.profile()));
     })
   }

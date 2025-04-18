@@ -118,6 +118,20 @@
                             </div>
                         </fieldset>
                     </div>
+
+                    <div style="grid-column: span 2;
+" id="description-container" class="input-area">
+                        <mat-label>Description</mat-label>
+                        <mat-form-field>
+                            <textarea id="description"
+                                    matInput
+                                    cdkTextareaAutosize
+                                    cdkAutosizeMinRows="8"
+                                    cdkAutosizeMaxRows="6"
+                                    formControlName="description">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
                 </div>
             </form>
         }

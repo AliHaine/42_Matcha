@@ -30,6 +30,7 @@ export class LoginComponent {
     submit(event: Event) {
         event.preventDefault();
         this.apiService.postData("/auth/login", this.formControlGroup.value).subscribe(res => {
+            console.log(res)
             if (res['success']) {
                 this.apiService.saveAccessToken(res['access_token']);
                 this.authService.login();

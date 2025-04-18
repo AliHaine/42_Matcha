@@ -22,6 +22,7 @@ export class ProfileModel {
     score: number;
     username: string;
     premium: boolean;
+    matching: string;
 
     constructor(data: {[key: string]: any}) {
         this.email = data["email"];
@@ -50,6 +51,7 @@ export class ProfileModel {
         this.score = data["score"];
         this.username = data["username"];
         this.premium = data["premium"];
+        this.matching = data["matching"]
     }
 
     dumpAsDict(): {[key: string]: any} {
