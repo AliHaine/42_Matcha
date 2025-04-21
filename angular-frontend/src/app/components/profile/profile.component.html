@@ -15,9 +15,15 @@
                         </mat-menu>
 
                     </div>
-                    <div class="icon" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
+                    @if (profile().matching === "match") {
+                        <div class="icon" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
+                    }
                     <img class="giftIcon">
-                    <img class="heartIcon">
+                    @if (profile().matching === "like" || profile().matching === "match") {
+                        <img class="unlikeIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/unlike.png">
+                    } @else {
+                        <img class="heartIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/heart.png">
+                    }
                 </div>
             </div>
             <div id="city">
