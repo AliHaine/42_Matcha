@@ -8,10 +8,10 @@
                     <div class="icon" style="-webkit-mask: url('/icons/alarme.png') center/contain">
                         <div [matMenuTriggerFor]="menu">Sort By</div>
                         <mat-menu #menu="matMenu">
-                            <div mat-menu-item>Report for fake Account</div>
-                            <div mat-menu-item>Report for non-premium</div>
-                            <div mat-menu-item>Report for feeding</div>
-                            <div mat-menu-item (click)="profileActionService.blockUser(profile())">Block user</div>
+                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for fake Account</div>
+                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for non-premium</div>
+                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for feeding</div>
+                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'block')">Block user</div>
                         </mat-menu>
 
                     </div>

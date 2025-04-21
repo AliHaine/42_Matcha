@@ -1,0 +1,5 @@
+@if (popupService.message.length > 0) {
+    <div id="popup-main" [class]=popupService.classColor (click)="popupService.resetPopup()">
+        {{ popupService.message }}
+    </div>
+}
