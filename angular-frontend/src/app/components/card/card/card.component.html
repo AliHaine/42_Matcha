@@ -9,9 +9,9 @@
             <div class="profilePicIcons" (click)="$event.stopPropagation()">
                 <img class="giftIcon" src="/icons/gift.png">
                 @if (profile().matching === "like" || profile().matching === "match") {
-                    <img class="unlikeIcon" (click)="likeUser()" src="/icons/unlike.png">
+                    <img class="unlikeIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/unlike.png">
                 } @else {
-                    <img class="heartIcon" (click)="likeUser()" src="/icons/heart.png">
+                    <img class="heartIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/heart.png">
                 }
             </div>
         </div>

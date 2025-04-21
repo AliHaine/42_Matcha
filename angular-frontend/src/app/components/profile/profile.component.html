@@ -1,27 +1,36 @@
 <div id="profile">
-    <h1 id="header">{{this.profile().firstname}} {{this.profile().lastname}}'s profile</h1>
+    <h1 id="header">{{profile().firstname}} {{profile().lastname}}'s profile</h1>
     <div id="profile-infos">
         <div id="infos-left">
-            <div id="profile-picture" [style.--border-color]="this.profile().status ? 'var(--color-green)': 'var(--color-error)'">
-                <app-slider [images]="this.profile().profilePicturePath"></app-slider>
+            <div id="profile-picture" [style.--border-color]="profile().status ? 'var(--color-green)': 'var(--color-error)'">
+                <app-slider [images]="profile().profilePicturePath"></app-slider>
                 <div class="caption">
-                    <div class="icon" style="-webkit-mask: url('/icons/alarme.png') center/contain" (click)="reportTest()"></div>
+                    <div class="icon" style="-webkit-mask: url('/icons/alarme.png') center/contain">
+                        <div [matMenuTriggerFor]="menu">Sort By</div>
+                        <mat-menu #menu="matMenu">
+                            <div mat-menu-item>Report for fake Account</div>
+                            <div mat-menu-item>Report for non-premium</div>
+                            <div mat-menu-item>Report for feeding</div>
+                            <div mat-menu-item (click)="profileActionService.blockUser(profile())">Block user</div>
+                        </mat-menu>
+
+                    </div>
                     <div class="icon" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
                     <img class="giftIcon">
                     <img class="heartIcon">
                 </div>
             </div>
             <div id="city">
-                {{this.profile().age}} years old, from {{this.profile().city}}. Fame: {{this.profile().fameRate}}. Score: {{this.profile().score}}
+                {{profile().age}} years old, from {{profile().city}}. Fame: {{profile().fameRate}}. Score: {{profile().score}}
             </div>
         </div>
         <div id="infos-right">
             <h3>Shape</h3>
             <div class="content">
-                @if (this.profile().shape) {
-                    <div class="c">{{ this.profile().shape.at(2) }}</div>
-                    <div class="c">{{ this.profile().shape.at(0) }}CM</div>
-                    <div class="c">{{ this.profile().shape.at(1) }}KG</div>
+                @if (profile().shape) {
+                    <div class="c">{{ profile().shape.at(2) }}</div>
+                    <div class="c">{{ profile().shape.at(0) }}CM</div>
+                    <div class="c">{{ profile().shape.at(1) }}KG</div>
                 }
             </div>
             <h3>Health</h3>
@@ -38,12 +47,12 @@
             </div>
             <h3>Interests</h3>
             <div class="content">
-                <div *ngFor="let interest of this.profile().interestsModels.at(0)?.interests" class="c">{{interest}}</div>
+                <div *ngFor="let interest of profile().interestsModels.at(0)?.interests" class="c">{{interest}}</div>
             </div>
         </div>
     </div>
     <div id="description">
         <h2>More about me</h2>
-        <p>{{this.profile().description}}</p>
+        <p>{{profile().description}}</p>
     </div>
 </div>
