@@ -40,7 +40,6 @@ def is_token_revoked(jti):
 BLACKLIST = load_blacklist()
 
 def register_step1(data):
-    print("register_step1")
     user_informations = {
         'firstname': data.get('firstname', ''),
         'hetero': data.get('hetero', None),
@@ -60,12 +59,12 @@ def register_step1(data):
         from .user import send_confirmation_email
         if send_confirmation_email(user_informations['email']) == False:
             return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
-        response = login_user(user_informations['username'], dup_password, registering=True)
-        print("register_step1 response")
-        if response is None or response['success'] == False:
-            return jsonify({'success': False, 'error': response['error']})
-        else:
-            return jsonify({'success': True, 'access_token': response['access_token']})
+        # response = login_user(user_informations['username'], dup_password, registering=True)
+        return jsonify({'success': True, 'message': 'User created successfully, please check your email to confirm your account before logging in to continue your registration'})
+        # if response is None or response['success'] == False:
+        #     return jsonify({'success': False, 'error': response['error']})
+        # else:
+        #     return jsonify({'success': True, 'access_token': response['access_token']})
     else:
         return jsonify({'success': False, 'error': 'Failed to create user'})
 
@@ -157,6 +156,8 @@ def login_user(username, password, registering=False):
             return {'success': False, 'error':'Invalid username'}
         if not check_password_hash(user['password'], password):
             return {'success': False, 'error': 'Invalid password'}
+        if user['email_verified'] == False:
+            return {'success': False, 'error': 'Email not verified'}
         if user["registration_complete"] == False:
             step1_fields = ['email', 'password', 'firstname', 'lastname', 'age', 'gender']
             for field in step1_fields:
@@ -193,6 +194,8 @@ def login():
     if response is None or response['success'] == False:
         if 'missing_steps' in response:
             return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
+        if 'error' in response:
+            return jsonify({'success': False, 'error': response['error']})
         return jsonify({'success': False, 'error': 'Failed to login'})
     else:
         if 'need_confirmation' in response:

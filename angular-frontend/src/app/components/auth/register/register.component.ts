@@ -92,14 +92,18 @@ export class RegisterComponent {
               this.errorMessage = response['error'];
               return;
           }
-          if (this.registerService.currentStep() === 1)
-              this.apiService.saveAccessToken(response['access_token'])
+          if (this.registerService.currentStep() === 1) {
+              this.errorMessage = response['message']
+                return;
+          }
+          else
+            this.registerService.increaseStep();
+          //   this.apiService.saveAccessToken(response['access_token'])
           if (this.registerService.currentStep() === 3) {
               this.authService.login();
               this.router.navigate(['']);
               this.registerService.setStep(1);
           }
-          this.registerService.increaseStep();
           this.errorMessage = "";
       });
     }
