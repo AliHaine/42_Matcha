@@ -181,6 +181,7 @@ input[type="checkbox"]:checked::before {
     --color-rgb-5: 13, 23, 45;
     --color-error: #de4768;
     --color-green: #3adf3a;
+    --mat-menu-container-color: var(--color-background-1);
 }
 
 input[type='radio'] {
@@ -196,4 +197,8 @@ input[type='radio'] {
 .mat-mdc-form-field {
     background-color: var(--color-1);
     border-radius: 10px;
+}
+
+.mat-mdc-menu-panel {
+    color: var(--color-4);
 }
