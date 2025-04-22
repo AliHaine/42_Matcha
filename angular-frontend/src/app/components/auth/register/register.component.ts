@@ -88,22 +88,25 @@ export class RegisterComponent {
           this.setupInterests(values);
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
+          if (this.registerService.currentStep() === 2) {
+              console.log(this.formControlGroupStep2.value);
+              console.log(response);
+          }
           if (!response['success']) {
               this.errorMessage = response['error'];
               return;
           }
+          //   this.apiService.saveAccessToken(response['access_token'])
           if (this.registerService.currentStep() === 1) {
               this.errorMessage = response['message']
                 return;
           }
-          else
-            this.registerService.increaseStep();
-          //   this.apiService.saveAccessToken(response['access_token'])
           if (this.registerService.currentStep() === 3) {
               this.authService.login();
               this.router.navigate(['']);
               this.registerService.setStep(1);
           }
+          this.registerService.increaseStep();
           this.errorMessage = "";
       });
     }
