@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
+interface Location {
+  city: string;
+  code: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
-
-  locations: string[] = [];
+  locations: Location[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -24,7 +28,7 @@ export class LocationService {
           for (const name of result) {
             if (value === name['nom'])
               break;
-            this.locations.push(name['nom']);
+            this.locations.push({ city: name['nom'], code: name['codeDepartement'] });
           }
         });
     });

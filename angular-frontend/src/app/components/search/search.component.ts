@@ -6,6 +6,9 @@ import {SearchService} from "../../services/search.service";
 import {MatSlider, MatSliderRangeThumb} from '@angular/material/slider';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {LocationComponent} from "../location/location.component";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {RouterLink} from "@angular/router";
+import {MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-search',
@@ -16,7 +19,10 @@ import {LocationComponent} from "../location/location.component";
     MatSlider,
     MatSliderRangeThumb,
     ReactiveFormsModule,
-    LocationComponent
+    LocationComponent,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
@@ -30,7 +36,8 @@ export class SearchComponent {
     ageMax: new FormControl(80),
     location: new FormControl(''),
     interest: new FormControl(''),
-    fameRate: new FormControl(false),
+    sortOrder: new FormControl('ASC'),
+    sortBy: new FormControl(''),
   })
 
   constructor() {
@@ -40,5 +47,9 @@ export class SearchComponent {
   updateSearch(page: number) {
     this.p = page;
     this.searchService.getSearchProfiles(Object.assign({"page": page}, this.formGroup.value));
+  }
+
+  sortBy(value: string) {
+    this.formGroup.value.sortBy = value;
   }
 }

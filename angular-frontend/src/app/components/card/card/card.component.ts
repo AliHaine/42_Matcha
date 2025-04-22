@@ -5,6 +5,7 @@ import {ApiService} from "../../../services/api.service";
 import {ProfileModel} from "../../../models/profile.model";
 import {NgForOf} from "@angular/common";
 import {CardService} from "../../../services/card.service";
+import {ProfileActionService} from "../../../services/profileaction.service";
 
 @Component({
   selector: 'app-card',
@@ -21,12 +22,5 @@ import {CardService} from "../../../services/card.service";
 export class CardComponent {
   profile: InputSignal<ProfileModel> = input.required();
   apiService = inject(ApiService);
-  cardService = inject(CardService);
-
-  likeUser() {
-    this.apiService.postData(`/profiles/${this.profile().userId}`, {action: 'like'}).subscribe(_ => {
-      console.log(_)
-      this.cardService.switchProfile(this.cardService.getIndexFromProfile(this.profile()));
-    })
-  }
+  profileActionService = inject(ProfileActionService);
 }

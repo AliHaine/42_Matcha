@@ -1,11 +1,8 @@
 import {Component, EventEmitter, input, InputSignal, Output} from '@angular/core';
-import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-slider',
-  imports: [
-    NgIf,
-  ],
+  imports: [],
   templateUrl: './slider.component.html',
   styleUrl: './slider.component.css'
 })

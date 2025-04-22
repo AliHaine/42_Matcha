@@ -18,8 +18,13 @@
             <input class="input-style-1" placeholder="Type an interest" formControlName="interest">
         </div>
         <div id="fame-rate">
-            <label>Fame rate</label>
-            <input id="fame-rate-input" placeholder="Type an interest" formControlName="fameRate" type="checkbox">
+            <div [matMenuTriggerFor]="menu">Sort By</div>
+            <mat-menu #menu="matMenu">
+                <div mat-menu-item (click)="sortBy('fame_rate')">Fame</div>
+                <div mat-menu-item (click)="sortBy('age')">Age</div>
+                <div mat-menu-item (click)="sortBy('distance')">Distance</div>
+                <div mat-menu-item (click)="sortBy('common_interests')">Interest</div>
+            </mat-menu>
         </div>
     </form>
     <div id="cards">

@@ -95,17 +95,18 @@ def check_fields_validity(user_informations):
         elif field in STEP3_FIELDS:
             fields["step3"].append(field)
     if len(fields["step1"]) > 0:
-        for field in fields["step1"]:
-            if field not in STEP1_FIELDS:
-                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+        result = check_fields_step1(user_informations, fields["step1"], False)
+        if result["success"] == False:
+            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
     if len(fields["step2"]) > 0:
-        for field in fields["step2"]:
-            if field not in STEP2_FIELDS:
-                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+        result = check_fields_step2(user_informations, fields["step2"])
+        if result["success"] == False:
+            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
     if len(fields["step3"]) > 0:
-        for field in fields["step3"]:
-            if field not in STEP3_FIELDS:
-                return False, jsonify({'success': False, 'error': f'Field {field} is not valid'})
+        result = check_fields_step3(user_informations, fields["step3"])
+        print("RESULT :", result)
+        if result["success"] == False:
+            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
     return True, None
             
     

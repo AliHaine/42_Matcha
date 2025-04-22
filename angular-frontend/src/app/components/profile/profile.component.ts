@@ -6,12 +6,17 @@ import {take} from "rxjs";
 import {ProfileFactory} from "../../services/profile.factory";
 import {NgForOf} from "@angular/common";
 import {SliderComponent} from "../utils/slider/slider.component";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {ProfileActionService} from "../../services/profileaction.service";
 
 @Component({
   selector: 'app-profile',
   imports: [
     NgForOf,
-    SliderComponent
+    SliderComponent,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -21,6 +26,7 @@ export class ProfileComponent {
   apiService = inject(ApiService);
   route = inject(ActivatedRoute);
   router = inject(Router)
+  profileActionService = inject(ProfileActionService);
   profile = signal<ProfileModel>(new ProfileModel({}));
   profileFactory = inject(ProfileFactory);
 
@@ -36,12 +42,5 @@ export class ProfileComponent {
   sendMessageTrigger() {
     //Need to active the chat with this user
     this.router.navigate(['chat'])
-  }
-
-  reportTest() {
-    console.log("enter")
-    this.apiService.postData(`/profiles/${this.profile().userId}`, {"action": "block"}).subscribe(profile => {
-      console.log(profile);
-    });
   }
 }

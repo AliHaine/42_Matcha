@@ -1,6 +1,8 @@
 <img class="picture" [src]=this.images().at(currentIndex)>
 <div class="arrows">
-    <div *ngIf="images().length > 1" class="arrow arrow-left" (click)="arrowLeftClick()"> </div>
-    <div *ngIf="images().length > 1" class="arrow arrow-right" (click)="arrowRightClick()"> </div>
+    @if (images().length > 1) {
+        <div class="arrow arrow-left" (click)="arrowLeftClick()"></div>
+        <div class="arrow arrow-right" (click)="arrowRightClick()"></div>
+    }
 </div>
 

@@ -1,13 +1,10 @@
 import {Component, inject, input, InputSignal, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
 import {LocationService} from "../../services/location.service";
 import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-location',
-  imports: [
-    NgForOf
-  ],
+  imports: [],
   templateUrl: './location.component.html',
   styleUrl: './location.component.css'
 })

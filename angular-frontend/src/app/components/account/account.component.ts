@@ -14,6 +14,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { ProfileModel } from '../../models/profile.model';
 import { ProfileFactory } from '../../services/profile.factory';
 import {RouterLink} from "@angular/router";
+import {PopupService} from "../../services/popup.service";
 
 @Component({
   selector: 'app-account',
@@ -37,6 +38,7 @@ export class AccountComponent {
 
   apiService = inject(ApiService);
   authService = inject(AuthService);
+  popupService = inject(PopupService);
   placeHolderMessage: string = "";
   private currentImageIndex: number = 0;
   formNumber = signal<number>(0);
@@ -91,9 +93,9 @@ export class AccountComponent {
       if (!result['success'])
         this.placeHolderMessage = result['error'];
       else {
-        this.placeHolderMessage = "Successfully updated";
         this.authService.refreshCurrentProfile()
       }
+      this.popupService.displayPopupBool("Message", result['success'])
     });
   }
 

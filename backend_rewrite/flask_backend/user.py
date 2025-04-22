@@ -345,7 +345,16 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                             result['success'] = False
                             result['errors'].append(f"Field {field}/{interest} is not valid")
             if field == "description":
-                if not isinstance(data[field], str) or len(data[field]) < 10 or len(data[field]) > 1500 or re.match(current_app.config["CONSTRAINTS"]["description"], data[field]) is None:
+                if not isinstance(data[field], str):
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is not a string")
+                if len(data[field]) < 10:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is too short")
+                if len(data[field]) > 1500:
+                    result['success'] = False
+                    result['errors'].append(f"Field {field} is too long")
+                if re.match(current_app.config["CONSTRAINTS"]["description"], data[field]) is None:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
@@ -370,7 +379,6 @@ def check_registration_status(other_email=None):
             user = cur.fetchone()
             if user is None:
                 return False
-            print("User found", user)
             if user['registration_complete'] == True:
                 return True
             else:

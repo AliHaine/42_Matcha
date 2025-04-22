@@ -19,7 +19,6 @@ export class CardService {
     }
 
     refreshProfile(): void {
-        console.log(this.profiles())
         this.removeProfilesModel(8);
         if (this.profiles().length < this.trigger_cache)
             this.fillProfiles(this.cache_value - this.profiles().length);
