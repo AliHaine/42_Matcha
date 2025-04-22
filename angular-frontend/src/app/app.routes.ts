@@ -19,7 +19,7 @@ export const routes: Routes = [
     { path: 'search', component: SearchComponent, canActivate: [authGuard] },
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
-    { path: 'emailconfirm/:token', component: EmailconfirmComponent, canActivate: [authGuard] },
+    { path: 'emailconfirm/:token', component: EmailconfirmComponent },
     { path: 'forgotpass/:token', component: ForgotpassComponent, canActivate: [loginGuard] },
     { path: 'auth', canActivate: [loginGuard], children: [{ path: 'register', component: RegisterComponent }, { path: 'login', component: LoginComponent }]},
     { path: '**', redirectTo: ''},
