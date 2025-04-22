@@ -120,7 +120,6 @@ def is_image_corrupted(image):
         img.verify()
         return False
     except Exception as e:
-        print(e)
         return True
     
 

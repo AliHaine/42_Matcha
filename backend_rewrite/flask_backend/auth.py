@@ -40,7 +40,6 @@ def is_token_revoked(jti):
 BLACKLIST = load_blacklist()
 
 def register_step1(data):
-    print("register_step1")
     user_informations = {
         'firstname': data.get('firstname', ''),
         'hetero': data.get('hetero', None),
@@ -61,7 +60,6 @@ def register_step1(data):
         if send_confirmation_email(user_informations['email']) == False:
             return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
         response = login_user(user_informations['username'], dup_password, registering=True)
-        print("register_step1 response")
         if response is None or response['success'] == False:
             return jsonify({'success': False, 'error': response['error']})
         else:
@@ -71,7 +69,6 @@ def register_step1(data):
 
 @jwt_required()
 def register_step2(data):
-    print("register_step2")
     user_informations = {
         'city': data.get('city', ""),
         'searching': data.get('searching', ''),
@@ -90,7 +87,6 @@ def register_step2(data):
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
-    print("register_step2 result")
     if result == True:
         return jsonify({'success': True})
     else:
@@ -98,7 +94,6 @@ def register_step2(data):
 
 @jwt_required()
 def register_step3(data):
-    print("register_step3")
     interests = data.get('Culture', [])
     if 'Sport' in data:
         interests.extend(data.get('Sport', []))
@@ -114,7 +109,6 @@ def register_step3(data):
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
-    print("register_step3 result")
     if result == True:
         return jsonify({'success': True})
     else:
@@ -127,7 +121,6 @@ def register():
     except Exception as e:
         print("REGISTER ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'error': 'Invalid JSON'})
-    print("REGISTER DATA :", data)
     step = data.get("step", 0)
     if step == 2 or step == 3:
         result = check_registration_status()
@@ -188,7 +181,6 @@ def login():
         return jsonify({'success': False, 'error': 'Invalid JSON'})
     username = data.get('username', '')
     password = data.get('password', '')
-    print(username, password, flush=True)
     response = login_user(username, password)
     if response is None or response['success'] == False:
         if 'missing_steps' in response:

@@ -18,11 +18,9 @@ def handle_connect():
     token = request.args.get('access_token', None)
     verify, decoded_token = check_jwt_validity(token)
     if verify is False:
-        print(f"Connexion refusée : {decoded_token}")
         disconnect()
         return
     if not token:
-        print("Connexion refusée : Pas de token JWT")
         disconnect()
         return
     try:
@@ -32,12 +30,10 @@ def handle_connect():
             cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
             user = cur.fetchone()
             if user is None:
-                print("Connexion refusée : Utilisateur non trouvé")
                 disconnect()
                 return
             from .user import check_registration_status
             if check_registration_status(user["email"]) is False:
-                print("Connexion refusée : Inscription non terminée")
                 disconnect()
                 return
             cur.execute('UPDATE users SET status = TRUE, active_connections = active_connections + 1 WHERE email = %s', (user_email,))
@@ -50,14 +46,12 @@ def handle_connect():
         update_available_chats(request.sid)
         send_all_notifications(user["id"])
     except Exception as e:
-        print(f"Erreur lors de la connexion WebSocket : {e}")
         disconnect()
 
 @socketio.on('disconnect')
 def handle_disconnect():
     user_elems = connected_users.get(request.sid, None)
     if user_elems is None:
-        print("Déconnexion inconnue")
         return
     db = get_db()
     with db.cursor() as cur:
@@ -70,13 +64,11 @@ def handle_disconnect():
         db.commit()
         leave_room(f"user_{user_elems['id']}")
         del connected_users[request.sid]
-    print(f"Utilisateur {user_elems['id']} déconnecté via WebSocket")
 
 @socketio.on('message')
 def handle_chat_message(data):
     verify, error = check_jwt_validity(connected_users[request.sid]["token"])
     if verify is False:
-        print(f"Deconnexion forcee de {connected_users[request.sid]['id']} : {error}")
         disconnect()
         return
     try:
@@ -183,7 +175,6 @@ def parse_service_message(data):
             db.commit()
             send_message({"message":data["message"], "type":"text", "author_id":emmiter_informations["id"], "created_at":datetime.now().strftime("%H:%M")}, rooms=[f"user_{data['receiver']}", f"user_{emmiter_informations['id']}"]) 
         except Exception as e:
-            print(f"Erreur d'insertion de message : {e}")
             socketio.emit('error', {'message':'Failed to send message'}, room=f"user_{emmiter_informations['id']}")
             return
     return
@@ -210,7 +201,6 @@ def send_message(arguments={}, rooms=[]):
                         send_notification(arguments["author_id"], receiver, "chat", f"Vous avez un nouveau message de {arguments['author_id']}")
         except Exception as e:
             print(f"Erreur d'envoi de message : {e}")
-            print("failed on room", room)
 
 
 def check_jwt_validity(token):
@@ -220,7 +210,6 @@ def check_jwt_validity(token):
       - True + données du token si valide.
       - False + message d'erreur si invalide.
     """
-    print("Vérification de la validité du token JWT")
     if not token:
         return False, "Token manquant"
 
@@ -237,7 +226,6 @@ def check_jwt_validity(token):
 
         # Vérifier si le token a été révoqué
         jti = decoded_token.get("jti")
-        print(f"Vérification de la révocation du token avec jti : {jti}")
         if is_token_revoked(jti):
             return False, "Token révoqué"
 

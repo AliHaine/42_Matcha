@@ -96,7 +96,7 @@ def create_app(test_config=None):
                 return jsonify({'status': 'ok'}), 200
         return app
     except Exception as e:
-        print("Init server failed, stopping", e)
+        print("INIT FAIL : server creation failed, stopping", e)
         raise e
 
 def socketio_setup(app):

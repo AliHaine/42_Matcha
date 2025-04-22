@@ -91,7 +91,7 @@ def update_interests(interests, user_email):
         db.commit()
         return True
     except Exception as e:
-        print("Failed to update interests (func : update_interests, file : user.py). Error : ", e)
+        print("UPDATE INTEREST FAIL : error :", e)
         return False
 
 def update_user_fields(user_informations, user_email):
@@ -136,7 +136,7 @@ def update_user_fields(user_informations, user_email):
             db.commit()
         return True
     except Exception as e:
-        print("Failed to update user fields (func : update_user_fields, file : user.py). Error : ", e)
+        print("UPDATE USER FIELDS FAIL : Error : ", e)
         return False
 
 def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
@@ -368,7 +368,7 @@ def check_registration_status(other_email=None):
             verify_jwt_in_request()
             user_email = get_jwt_identity()
         except Exception as e:
-            print("Failed to verify JWT in request (func : check_registration_status, file : user.py). Error : ", e)
+            print("CHECK REGISTRATION STATIUS FAIL : No token provided : ", e)
             return False
     if user_email is None:
         return False
@@ -398,7 +398,7 @@ def check_registration_status(other_email=None):
                 db.commit()
                 return True
     except Exception as e:
-        print("Failed to check registration status (func : check_registration_status, file : user.py). Error : ", e)
+        print("CHECK REGISTRATION STATIUS FAIL : Error : ", e)
         return False
     
 
@@ -426,7 +426,7 @@ def send_confirmation_email(email):
             print("Mail not configured")
             return True
     except Exception as e:
-        print("Failed to send email to confirm email (func : send_confirmation_email, file : user.py). Error : ", e)
+        print("SEND CONFIRMATION EMAIL FAIL : Failed to send email : Error : ", e)
         return False
 
 def send_reset_password_email(email):
@@ -453,5 +453,5 @@ def send_reset_password_email(email):
             print("Mail not configured")
             return True
     except Exception as e:
-        print("Failed to send email to reset password (func : send_reset_password_email, file : user.py). Error : ", e)
+        print("SEND RESET PASSWORD EMAIL FAIL : Failed to send email : Error : ", e)
         return False

@@ -61,7 +61,6 @@ def me():
                     return error
                 if 'password' in user_informations:
                     user_informations['password'] = generate_password_hash(user_informations['password'])
-                print("USER INFORAMTION :", user_informations)
                 update_user_fields(user_informations, user['email'])
                 from .auth import invalidate_token
                 if check_change_mail == True or 'password' in user_informations:
@@ -70,7 +69,7 @@ def me():
                     if check_change_mail == True:
                         from .user import send_confirmation_email
                         if send_confirmation_email(user['email']) == False:
-                            print("Failed to send confirmation email")
+                            print("MAIL ERROR : Failed to send confirmation email")
                     return jsonify({'success': True, 'disconnect': True})
                 return jsonify({'success': True})
             except Exception as e:
@@ -104,7 +103,6 @@ def check_fields_validity(user_informations):
             return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
     if len(fields["step3"]) > 0:
         result = check_fields_step3(user_informations, fields["step3"])
-        print("RESULT :", result)
         if result["success"] == False:
             return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
     return True, None
@@ -204,7 +202,8 @@ def get_profile(id):
             try:
                 return parse_profile_type(user, user_getting)
             except Exception as e:
-                print("failed to update user views", e)
+                print("GET PROFILE : failed to update user views", e)
+                return jsonify({'success': False, 'error': 'An error occured'})
         else:
             return jsonify({'success': False, 'error': f'User {user["id"]} did not complete the registration'})
     elif request.method == 'POST':
