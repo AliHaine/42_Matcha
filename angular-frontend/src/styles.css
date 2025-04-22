@@ -70,22 +70,6 @@ body {
 }
 
 .button-style-1 {
-    font-size: 1.5em;
-    line-height: 3em;
-    background-color: var(--color-2);
-    border-radius: 10px;
-    border: solid var(--color-4);
-}
-
-.button-style-1:disabled {
-    background-color: gray;
-}
-
-.button-style-1:hover:enabled {
-    background-color: var(--color-1);
-}
-
-.button-style-2 {
     font-size: 1em;
     line-height: 2em;
     background-color: var(--color-3);
@@ -93,21 +77,32 @@ body {
     color: var(--color-1);
 }
 
-.button-style-2:disabled {
-    background-color: gray;
+.button-style-1:disabled {
+    opacity: 0.6;
+    background-color: #614e7c;
 }
 
-.button-style-2:hover:enabled {
+.button-style-1:hover:enabled {
     background-color: var(--color-4);
 }
 
 .input-style-1 {
-    background-color: var(--color-1);
+    background-color: var(--color-3);
     line-height: 2.8em;
     border-radius: 10px;
     border: solid var(--color-4);
     text-indent: 5px;
     font-size: 0.9em;
+    color: var(--color-1);
+}
+
+.input-style-1:focus {
+    border: 3px solid var(--color-2);
+}
+
+.input-style-1::placeholder {
+    opacity: 0.7;
+    color: var(--color-1);
 }
 
 .form-style-1 {
@@ -121,7 +116,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 25px;
-    animation: shadow 10s infinite;
     box-shadow: 0 0 0.5vmin black;
 }
 
@@ -194,7 +188,9 @@ input[type='radio'] {
 }
 
 .mat-mdc-form-field {
-    background-color: var(--color-1);
+    border: solid var(--color-4);
+    background-color: var(--color-3);
+    color: var(--color-1);
     border-radius: 10px;
 }
 

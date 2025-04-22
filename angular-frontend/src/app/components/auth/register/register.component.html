@@ -60,7 +60,6 @@
         </div>
     </div>
 
-    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
 	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
 </form>
@@ -164,7 +163,6 @@
             </select>
         </div>
     </div>
-    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
 </form>
 
@@ -194,6 +192,5 @@
         </textarea>
         </mat-form-field>
     </div>
-    <p class="error" *ngIf="this.errorMessage.length > 0">{{this.errorMessage}}</p>
 	<button class="button-style-1">Finish</button>
 </form>

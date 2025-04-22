@@ -28,7 +28,7 @@
         </div>
     </form>
     <div id="cards">
-        <app-card *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p, totalItems: searchService.maxPages * 6 }"
+        <app-card *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p(), totalItems: searchService.maxPages * 6 }"
                   [profile]="profile">
         </app-card>
     </div>

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {CardComponent} from "../card/card/card.component";
 import {NgForOf} from "@angular/common";
 import {NgxPaginationModule} from 'ngx-pagination';
@@ -30,7 +30,7 @@ import {MatIconButton} from "@angular/material/button";
 export class SearchComponent {
 
   searchService = inject(SearchService);
-  p: number = 1;
+  p = signal<number>(1);
   formGroup = new FormGroup({
     ageMin: new FormControl(15),
     ageMax: new FormControl(80),
@@ -45,7 +45,7 @@ export class SearchComponent {
   }
 
   updateSearch(page: number) {
-    this.p = page;
+    this.p.set(page);
     this.searchService.getSearchProfiles(Object.assign({"page": page}, this.formGroup.value));
   }
 

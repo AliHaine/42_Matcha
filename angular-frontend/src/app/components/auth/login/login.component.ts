@@ -19,7 +19,6 @@ export class LoginComponent {
     registerService = inject(RegisterService);
     router = inject(Router)
     popupService = inject(PopupService);
-    errorMessage: string = "";
     formNumber = signal<number>(0);
     formControlGroup = new FormGroup({
         username: new FormControl('', Validators.required),

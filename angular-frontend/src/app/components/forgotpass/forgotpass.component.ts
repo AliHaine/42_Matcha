@@ -11,6 +11,7 @@ import {
   Validators
 } from "@angular/forms";
 import { Router } from '@angular/router';
+import {PopupService} from "../../services/popup.service";
 
 @Component({
   selector: 'app-forgotpass',
@@ -20,9 +21,9 @@ import { Router } from '@angular/router';
 })
 export class ForgotpassComponent {
   apiService = inject(ApiService);
+  popupService = inject(PopupService);
   router = inject(Router);
   route = inject(ActivatedRoute);
-  errorMsg: string = "";
 
   formGroupForgot = new FormGroup({
     password: new FormControl('', Validators.required),
@@ -33,10 +34,9 @@ export class ForgotpassComponent {
     event.preventDefault();
     const token = this.route.snapshot.paramMap.get("token");
     this.apiService.postData("/auth/reset_password", {token: token, password: this.formGroupForgot.value.password}).subscribe(result => {
+      this.popupService.displayPopupBool(result['message'], result['success'])
       if (result["success"]) {
         this.router.navigate(['/login'])
-      } else {
-        this.errorMsg = result['error'];
       }
     })
   }

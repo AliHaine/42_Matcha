@@ -42,7 +42,6 @@ export class RegisterComponent {
 	authService = inject(AuthService);
 	popupService = inject(PopupService);
 	isCityGet = signal(0);
-	errorMessage: string = "";
 
 	formControlGroupStep1 = new FormGroup(
 		{
@@ -113,10 +112,6 @@ export class RegisterComponent {
 				response["message"],
 				response["success"]
 			);
-			/*if (this.registerService.currentStep() === 2) {
-              console.log(this.formControlGroupStep2.value);
-              console.log(response);
-          }*/
 			if (!response["success"]) return;
 			if (this.registerService.currentStep() === 1) {
 				this.router.navigate(["auth/login"]);
@@ -128,7 +123,6 @@ export class RegisterComponent {
 				this.registerService.setStep(1);
 			}
 			this.registerService.increaseStep();
-			//this.errorMessage = "";
 		});
 	}
 

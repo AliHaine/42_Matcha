@@ -21,12 +21,6 @@ h1 {
     flex-direction: column;
 }
 
-.error {
-    color: var(--color-error);
-    font-weight: bold;
-    text-align: center;
-}
-
 fieldset {
     border: none;
     display: flex;
