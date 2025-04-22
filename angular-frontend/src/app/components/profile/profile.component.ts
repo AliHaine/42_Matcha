@@ -33,7 +33,6 @@ export class ProfileComponent {
   constructor() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
       this.apiService.getData(`/profiles/${params.get('id')}`, {}).subscribe(profile => {
-        console.log(profile)
         this.profile.set(this.profileFactory.getNewProfile(profile['user']));
       })
     })

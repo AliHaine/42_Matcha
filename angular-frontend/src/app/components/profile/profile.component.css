@@ -122,3 +122,38 @@
     padding: 2%;
     font-size: 120%;
 }
+
+@media (max-width: 1000px) {
+    #infos-left {
+        width: 100%;
+
+    }
+
+    #profile-picture {
+        width: 150px;
+        height: 150px;
+    }
+
+    #profile-infos {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #profile {
+        overflow: scroll;
+        width: auto;
+        height: auto;
+    }
+
+    .c {
+        font-size: 0.6em;
+    }
+
+    #header {
+        font-size: 1em;
+    }
+
+    #city {
+        text-align: initial;
+    }
+}

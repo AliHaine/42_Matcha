@@ -29,10 +29,6 @@ a, h1, h2 {
     gap: 3px;
 }
 
-#description {
-    color: var(--color-4);
-}
-
 @media (min-width: 1080px) {
     #main-form-1 {
         display: grid;
