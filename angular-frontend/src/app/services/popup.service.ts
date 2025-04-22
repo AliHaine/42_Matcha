@@ -6,26 +6,37 @@ import {Injectable} from "@angular/core";
 export class PopupService {
     message: string = "";
     classColor: string = ""; //green, blue or red
-
-    displayPopup(message: string, color: string): void {
-        if (!message) {
-            this.resetPopup();
-            return;
-        }
-        this.message = message;
-        this.classColor = color;
-    }
+    private timeout: ReturnType<typeof setTimeout> | undefined;
 
     displayPopupBool(message: string, color: boolean): void {
-        if (!message) {
-            this.resetPopup();
+        if (!this.popupInit(message))
             return;
-        }
         this.message = message;
         color ? this.classColor = "green": this.classColor = "red";
     }
 
+    popupInit(message: string): boolean {
+        if (!message) {
+            this.resetPopup();
+            return false;
+        }
+        this.runTask();
+        return true;
+    }
+
+    runTask(): void {
+        if (this.timeout !== undefined) {
+            clearTimeout(this.timeout);
+            this.timeout = undefined;
+        }
+        this.timeout = setTimeout(() => {
+            this.resetPopup();
+        }, 5000);
+    }
+
     resetPopup(): void {
+        clearTimeout(this.timeout);
+        this.timeout = undefined;
         this.message = "";
         this.classColor = "";
     }

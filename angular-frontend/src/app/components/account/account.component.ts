@@ -7,8 +7,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {SliderComponent} from "../utils/slider/slider.component";
-import {LocationComponent} from "../location/location.component";
-import { PaypalComponent } from "../paypal/paypal.component";
+import {LocationComponent} from "../utils/location/location.component";
+import { PaypalComponent } from "../utils/paypal/paypal.component";
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { ProfileModel } from '../../models/profile.model';
@@ -107,7 +107,7 @@ export class AccountComponent {
 
     formaData.append("picture", file);
     this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
-      console.log(result);
+      this.popupService.displayPopupBool(result["message"], result['success'])
       this.formNumber.set(0);
       this.authService.refreshCurrentProfile()
     });
@@ -123,12 +123,6 @@ export class AccountComponent {
 
   sliderTrigger(index: number) {
     this.currentImageIndex = index;
-  }
-
-  premiumTrigger() {
-    this.apiService.postData("/profiles/me/premium", {}).subscribe(result => {
-      console.log(result);
-    });
   }
 
   viewProfileTrigger() {

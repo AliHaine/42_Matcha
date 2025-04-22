@@ -17,7 +17,7 @@ import { AuthService } from "../../../services/auth.service";
 import { TextFieldModule } from "@angular/cdk/text-field";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { LocationComponent } from "../../location/location.component";
+import { LocationComponent } from "../../utils/location/location.component";
 import { PopupService } from "../../../services/popup.service";
 
 @Component({

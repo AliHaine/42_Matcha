@@ -5,7 +5,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import {SearchService} from "../../services/search.service";
 import {MatSlider, MatSliderRangeThumb} from '@angular/material/slider';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {LocationComponent} from "../location/location.component";
+import {LocationComponent} from "../utils/location/location.component";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {RouterLink} from "@angular/router";
 import {MatIconButton} from "@angular/material/button";

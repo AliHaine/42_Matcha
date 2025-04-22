@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxPayPalModule, IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
-import { ApiService } from '../../services/api.service';
-import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 
 
 @Component({
