@@ -76,7 +76,7 @@ def upload_file():
                     send_message(arguments=arguments, rooms=[f"user_{receiver_id}", f"user_{user_id}"])
                 return jsonify({"success": True})
             except Exception as e:
-                print("Failed to save file", e)
+                print("CHAT FAIL : Failed to save file", e)
                 return jsonify({"success": False, "error": "An error occurred while saving the file"})
         else:
             return jsonify({"success": False, "error": "No file provided"})

@@ -74,7 +74,7 @@ def research():
             else:
                 errors.append('Invalid sortBy')
     except Exception as e:
-        print("failed arguments research", e)
+        print("RESEARCH : failed arguments research", e)
         return jsonify({'error': 'Invalid parameters'})
     db = get_db()
     with db.cursor() as cur:

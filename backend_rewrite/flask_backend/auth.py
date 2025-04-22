@@ -52,13 +52,19 @@ def register_step1(data):
     }
     check = check_fields_step1(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
+        return jsonify({'success': False, 'message': ", ".join(check['errors'])})
     dup_password = user_informations['password']
     user_informations['password'] = generate_password_hash(user_informations['password'])
     if create_user(user_informations):
         from .user import send_confirmation_email
         if send_confirmation_email(user_informations['email']) == False:
-            return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
+            return jsonify({'success': False, 'message': 'Failed to send confirmation email'})
+        # response = login_user(user_informations['username'], dup_password, registering=True)
+        # if response is None or response['success'] == False:
+            # return jsonify({'success': False, 'message': response['error']})
+        # else:
+            # return jsonify({'success': True, 'access_token': response['access_token']})
+            # return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
         # response = login_user(user_informations['username'], dup_password, registering=True)
         return jsonify({'success': True, 'message': 'User created successfully, please check your email to confirm your account before logging in to continue your registration'})
         # if response is None or response['success'] == False:
@@ -66,11 +72,10 @@ def register_step1(data):
         # else:
         #     return jsonify({'success': True, 'access_token': response['access_token']})
     else:
-        return jsonify({'success': False, 'error': 'Failed to create user'})
+        return jsonify({'success': False, 'message': 'Failed to create user'})
 
 @jwt_required()
 def register_step2(data):
-    print("register_step2")
     user_informations = {
         'city': data.get('city', ""),
         'searching': data.get('searching', ''),
@@ -85,19 +90,17 @@ def register_step2(data):
     }
     check = check_fields_step2(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
+        return jsonify({'success': False, 'message': ", ".join(check['errors'])})
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
-    print("register_step2 result")
     if result == True:
         return jsonify({'success': True})
     else:
-        return jsonify({'success': False, 'error': 'Failed to update user fields'})
+        return jsonify({'success': False, 'message': 'Failed to update user fields'})
 
 @jwt_required()
 def register_step3(data):
-    print("register_step3")
     interests = data.get('Culture', [])
     if 'Sport' in data:
         interests.extend(data.get('Sport', []))
@@ -109,15 +112,14 @@ def register_step3(data):
     }
     check = check_fields_step3(user_informations)
     if check['success'] == False:
-        return jsonify({'success': False, 'error': ", ".join(check['errors'])})
+        return jsonify({'success': False, 'message': ", ".join(check['errors'])})
     user_email = get_jwt_identity()
     result = update_user_fields(user_informations, user_email)
     check_registration_status()
-    print("register_step3 result")
     if result == True:
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Registration completed'})
     else:
-        return jsonify({'success': False, 'error': 'Failed to update user fields'})
+        return jsonify({'success': False, 'message': 'Failed to update user fields'})
     
 @bp.route('/register', methods=['POST'])
 def register():
@@ -125,13 +127,12 @@ def register():
         data = request.json
     except Exception as e:
         print("REGISTER ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'})
-    print("REGISTER DATA :", data)
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
     step = data.get("step", 0)
     if step == 2 or step == 3:
         result = check_registration_status()
         if result == True:
-            return jsonify({'success': False, 'error': 'User already completed the registration'})
+            return jsonify({'success': False, 'message': 'User already completed the registration'})
     if step == 1:
         return register_step1(data)
     elif step == 2:
@@ -139,7 +140,7 @@ def register():
     elif step == 3:
         return register_step3(data)
     else:
-        return jsonify({'success': False, 'error': 'Invalid step'})
+        return jsonify({'success': False, 'message': 'Invalid step'})
     
     
 
@@ -186,17 +187,16 @@ def login():
         data = request.json
     except Exception as e:
         print("LOGIN ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'})
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
     username = data.get('username', '')
     password = data.get('password', '')
-    print(username, password, flush=True)
     response = login_user(username, password)
     if response is None or response['success'] == False:
         if 'missing_steps' in response:
-            return jsonify({'success': False, 'error': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
+            return jsonify({'success': False, 'message': 'Registration not completed', 'missing_steps': response['missing_steps'], 'access_token': response['access_token']})
         if 'error' in response:
-            return jsonify({'success': False, 'error': response['error']})
-        return jsonify({'success': False, 'error': 'Failed to login'})
+            return jsonify({'success': False, 'message': response['error']})
+        return jsonify({'success': False, 'message': 'Failed to login'})
     else:
         if 'need_confirmation' in response:
             return jsonify({'success': True, 'error': 'Email not verified', 'access_token': response['access_token'], 'need_confirmation': True})
@@ -206,7 +206,7 @@ def login():
 @jwt_required()
 def logout():
     invalidate_token(get_jwt()['jti'])
-    return jsonify({"msg": "Successfully logged out"})
+    return jsonify({'success': True, "message": "Successfully logged out"})
 
 
 @bp.route('/verify_token', methods=['GET'])
@@ -219,7 +219,7 @@ def verify_token():
         cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
     return jsonify({'success': True})
 
 @bp.route('/confirm_email', methods=['POST'])
@@ -229,22 +229,22 @@ def confirm_email():
         data = request.json
     except Exception as e:
         print("CONFIRM EMAIL ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'})
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
     token = data.get('token', None)
     if token is None:
-        return jsonify({'success': False, 'error': 'No token provided'})
+        return jsonify({'success': False, 'message': 'No token provided'})
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email_token = %s', (token,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         if user['email_verified'] == True:
             return jsonify({'success': True, 'error': 'Email already verified'})
         if user['email_token'] != token:
-            return jsonify({'success': False, 'error': 'Invalid token'})
+            return jsonify({'success': False, 'message': 'Invalid token'})
         cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user['email'],))
         db.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'message': 'Email verified successfully'})
 
 @bp.route('/resend_confirmation', methods=['POST'])
 @jwt_required()
@@ -255,13 +255,13 @@ def resend_confirmation():
         cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         if user['email_verified'] == True:
             return jsonify({'success': True, 'error': 'Email already verified'})
         from .user import send_confirmation_email
         if send_confirmation_email(user['email']) == False:
-            return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
-    return jsonify({'success': True})
+            return jsonify({'success': False, 'message': 'Failed to send confirmation email'})
+    return jsonify({'success': True, 'message': 'Confirmation email resent successfully'})
 
 @bp.route('/get_reset_password', methods=['POST'])
 def get_reset_password():
@@ -269,20 +269,20 @@ def get_reset_password():
         data = request.json
     except Exception as e:
         print("GET RESET PASS ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'})
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
     email = data.get('email', '')
     if email == '':
-        return jsonify({'success': False, 'error': 'Email not provided'})
+        return jsonify({'success': False, 'message': 'Email not provided'})
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email = %s', (email,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         from .user import send_reset_password_email
         if send_reset_password_email(user['email']) == False:
-            return jsonify({'success': False, 'error': 'Failed to send reset password email'})
-    return jsonify({'success': True})
+            return jsonify({'success': False, 'message': 'Failed to send reset password email'})
+    return jsonify({'success': True, 'message': 'Reset password email sent successfully'})
 
 @bp.route('/reset_password', methods=['POST'])
 def reset_password():
@@ -290,25 +290,25 @@ def reset_password():
         data = request.json
     except Exception as e:
         print("RESET PASS ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'error': 'Invalid JSON'})
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
     token = data.get('token', '')
     password = data.get('password', '')
     if token == '' or password == '':
-        return jsonify({'success': False, 'error': 'Email, token or password not provided'})
+        return jsonify({'success': False, 'message': 'Email, token or password not provided'})
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE reset_token = %s', (token,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         import datetime
         if user["expiration"] < datetime.datetime.now():
-            return jsonify({'success': False, 'error': 'Token expired'})
+            return jsonify({'success': False, 'message': 'Token expired'})
         from .user import check_fields_step1
         ret = check_fields_step1({'password': password}, ['password'])
         if ret['success'] == False:
-            return jsonify({'success': False, 'error': ", ".join(ret['errors'])})
+            return jsonify({'success': False, 'message': ", ".join(ret['errors'])})
         hashed_password = generate_password_hash(password)
         cur.execute('UPDATE users SET password = %s, reset_token = NULL, expiration = NULL WHERE id = %s', (hashed_password, user['id']))
         db.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'message': 'Password reset successfully'})

@@ -29,10 +29,10 @@ def parse_post_actions(user, user_getting, action):
             if success:
                 return jsonify({'success': True})
             else:
-                return jsonify({'success': False, 'error': message})
+                return jsonify({'success': False, 'message': message})
     except Exception as e:
         current_app.logger.error(f"Error in parse_post_actions: {e}")
-        return jsonify({'success': False, 'error': 'Internal server error'})
+        return jsonify({'success': False, 'message': 'Internal server error'})
         
 def like_action(user, user_getting, user_view, old_matched):
     """

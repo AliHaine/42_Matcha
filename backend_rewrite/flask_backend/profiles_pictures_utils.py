@@ -7,10 +7,10 @@ def upload_profile_picture():
     import os
     # verifie si le fichier est bien present
     if 'picture' not in request.files:
-        return jsonify({'success':False, 'error': 'No file part'})
+        return jsonify({'success': False, 'message': 'No file part'})
     file = request.files['picture']
     if file.filename == '':
-        return jsonify({'success':False, 'error': 'No selected file'})
+        return jsonify({'success': False, 'message': 'No selected file'})
     if file:
         db = get_db()
         user_email = get_jwt_identity()
@@ -19,11 +19,11 @@ def upload_profile_picture():
             cur.execute("SELECT pictures_number, id FROM users WHERE email = %s", (user_email,))
             result = cur.fetchone()
             if result is None:
-                return jsonify({'success': False, 'error': 'User not found'})
+                return jsonify({'success': False, 'message': 'User not found'})
             pictures_number = result["pictures_number"]
             user_id = result["id"]
             if pictures_number >= current_app.config['MAX_PICTURES']:
-                return jsonify({'success': False, 'error': 'Maximum number of pictures reached'})
+                return jsonify({'success': False, 'message': 'Maximum number of pictures reached'})
         # verification du type de fichier
         if allowed_file_extension(file.filename):
             # on le sauvegarde
@@ -33,12 +33,12 @@ def upload_profile_picture():
             # on verifie si l'image est corrompue
             if is_image_corrupted(file_path):
                 os.remove(file_path)
-                return jsonify({'success': False, 'error': 'Corrupted image'})
+                return jsonify({'success': False, 'message': 'Corrupted image'})
             # on incremente le nombre de photos de profil
             with db.cursor() as cur:
                 cur.execute("UPDATE users SET pictures_number = pictures_number + 1 WHERE id = %s", (user_id,))
                 db.commit()
-            return jsonify({'success': True, 'filename': filename})
+            return jsonify({'success': True, 'filename': filename, 'message': 'File uploaded successfully'})
 
 def get_profile_picture():
     """Get the profile pictures of the user indicated by the id."""
@@ -47,25 +47,25 @@ def get_profile_picture():
     user_id = request.args.get('user_id', None)
     photo_number = request.args.get('photo_number', None)
     if user_id is None or photo_number is None:
-        return jsonify({'success': False, 'error': 'Missing parameters'})
+        return jsonify({'success': False, 'message': 'Missing parameters'})
     try:
         user_id = int(user_id)
         photo_number = int(photo_number)
     except Exception as e:
-        return jsonify({'success': False, 'error': 'Invalid parameters'})
+        return jsonify({'success': False, 'message': 'Invalid parameters'})
     if photo_number < 0 or photo_number >= current_app.config['MAX_PICTURES']:
-        return jsonify({'success': False, 'error': 'Invalid photo number'})
+        return jsonify({'success': False, 'message': 'Invalid photo number'})
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT id, pictures_number FROM users WHERE id = %s", (user_id,))
         result = cur.fetchone()
         if result is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         filename = f"{user_id}_{photo_number}"
         file_path = current_app.config['PROFILE_PICTURES_DIR']
         result = find_file_without_extension(file_path, filename)
         if result is None:
-            return jsonify({'success': False, 'error': 'File not found'})
+            return jsonify({'success': False, 'message': 'File not found'})
         return send_from_directory(file_path, f"{filename}.{result.rsplit('.', 1)[1]}")
         
 def delete_profile_picture():
@@ -75,25 +75,25 @@ def delete_profile_picture():
     file_number = request.args.get('file_number', None)
     import os
     if file_number is None:
-        return jsonify({'success': False, 'error': 'Missing parameters'})
+        return jsonify({'success': False, 'message': 'Missing parameters'})
     try:
         file_number = int(file_number)
     except Exception as e:
-        return jsonify({'success': False, 'error': 'Invalid parameters'})
+        return jsonify({'success': False, 'message': 'Invalid parameters'})
     if file_number < 0 or file_number >= current_app.config['MAX_PICTURES']:
-        return jsonify({'success': False, 'error': 'Invalid photo number'})
+        return jsonify({'success': False, 'message': 'Invalid photo number'})
     db = get_db()
     user_email = get_jwt_identity()
     with db.cursor() as cur:
         cur.execute("SELECT id FROM users WHERE email = %s", (user_email,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
     filename = f"{user['id']}_{file_number}"
     file_path = current_app.config['PROFILE_PICTURES_DIR']
     file = find_file_without_extension(file_path, filename)
     if file is None:
-        return jsonify({'success': False, 'error': 'File not found'})
+        return jsonify({'success': False, 'message': 'File not found'})
     os.remove(file)
     with db.cursor() as cur:
         cur.execute("UPDATE users SET pictures_number = pictures_number - 1 WHERE id = %s", (user["id"],))
@@ -120,7 +120,6 @@ def is_image_corrupted(image):
         img.verify()
         return False
     except Exception as e:
-        print(e)
         return True
     
 

@@ -166,6 +166,6 @@ def register_blueprints(app):
         app.register_blueprint(get_informations.bp)
         app.register_blueprint(chat.bp)
     except Exception as e:
-        print("Failed to register blueprints", e)
+        print("INIT FAIL : Failed to register blueprints", e)
         raise e
     print("INIT : Blueprints registered successfully")

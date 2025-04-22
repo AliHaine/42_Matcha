@@ -57,13 +57,13 @@ prod: dev-rmv switch-prod
 	@docker compose --env-file ./settings/.database.env -f ./docker-compose.yml up -d
 
 prod-down:
-	@docker compose -f ./docker-compose.yml down
+	@docker compose --env-file ./settings/.database.env -f ./docker-compose.yml down
 
 prod-logs:
-	@docker compose -f ./docker-compose.yml logs -f
+	@docker compose --env-file ./settings/.database.env -f ./docker-compose.yml logs -f
 
 prod-rmv:
-	@docker compose -f ./docker-compose.yml down --volumes
+	@docker compose --env-file ./settings/.database.env -f ./docker-compose.yml down --volumes
 
 
 dev: prod-rmv switch-dev

@@ -95,7 +95,7 @@ export class AccountComponent {
       else {
         this.authService.refreshCurrentProfile()
       }
-      this.popupService.displayPopupBool("Message", result['success'])
+      this.popupService.displayPopupBool(result["message"], result['success'])
     });
   }
 
