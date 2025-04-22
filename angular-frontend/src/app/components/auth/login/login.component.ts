@@ -3,12 +3,12 @@ import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
-import {NgIf} from "@angular/common";
 import {RegisterService} from "../../../services/register.service";
+import { PopupService } from '../../../services/popup.service';
 
 @Component({
   selector: 'app-login',
-    imports: [RouterLink, ReactiveFormsModule, NgIf],
+    imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,6 +18,7 @@ export class LoginComponent {
     apiService = inject(ApiService);
     registerService = inject(RegisterService);
     router = inject(Router)
+    popupService = inject(PopupService);
     errorMessage: string = "";
     formNumber = signal<number>(0);
     formControlGroup = new FormGroup({
@@ -29,32 +30,27 @@ export class LoginComponent {
 
     submit(event: Event) {
         event.preventDefault();
-        this.apiService.postData("/auth/login", this.formControlGroup.value).subscribe(res => {
-            console.log(res)
-            if (res['success']) {
-                this.apiService.saveAccessToken(res['access_token']);
+        this.apiService.postData("/auth/login", this.formControlGroup.value).subscribe(result => {
+            if (result['success']) {
+                this.apiService.saveAccessToken(result['access_token']);
                 this.authService.login();
                 this.router.navigate(['']);
             } else {
-                if (res['missing_steps']) {
-                    this.apiService.saveAccessToken(res["access_token"]);
-                    this.registerService.setStep(res['missing_steps'].at(0));
+                if (result['missing_steps']) {
+                    this.apiService.saveAccessToken(result["access_token"]);
+                    this.registerService.setStep(result['missing_steps'].at(0));
                     this.router.navigate(['auth/register']);
-                } else {
+                } else
                     this.formControlGroup.get("password")?.setValue("");
-                    this.errorMessage = res['error'];
-                }
             }
+            this.popupService.displayPopupBool(result['message'], result['success'])
       });
     }
 
     submitForgot(event: Event) {
         event.preventDefault();
-        this.apiService.postData("/auth/get_reset_password", {email: this.resetmail.value}).subscribe(res => {
-            if (res['success'])
-                this.errorMessage = "Email send check out your email box";
-            else 
-                this.errorMessage = "No account found with this email";
+        this.apiService.postData("/auth/get_reset_password", {email: this.resetmail.value}).subscribe(result => {
+            this.popupService.displayPopupBool(result['message'], result['success'])
       });
     }
 }

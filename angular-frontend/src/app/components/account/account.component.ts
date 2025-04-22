@@ -39,7 +39,6 @@ export class AccountComponent {
   apiService = inject(ApiService);
   authService = inject(AuthService);
   popupService = inject(PopupService);
-  placeHolderMessage: string = "";
   private currentImageIndex: number = 0;
   formNumber = signal<number>(0);
   profilesView = signal<ProfileModel[]>([]);
@@ -90,17 +89,10 @@ export class AccountComponent {
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       if (result['disconnect'])
         this.authService.logout();
-      if (!result['success'])
-        this.placeHolderMessage = result['error'];
-      else {
+      else
         this.authService.refreshCurrentProfile()
-      }
       this.popupService.displayPopupBool(result["message"], result['success'])
     });
-  }
-
-  keyPressed() {
-    this.placeHolderMessage = "";
   }
 
   addPicture() {
@@ -125,8 +117,7 @@ export class AccountComponent {
     this.apiService.deleteData("/profiles/profile_pictures", {"file_number": this.currentImageIndex}).subscribe(result => {
       if (result['success'])
         this.authService.refreshCurrentProfile();
-      else
-        this.placeHolderMessage = result['error'];
+      this.popupService.displayPopupBool(result["message"], result['success'])
     });
   }
 

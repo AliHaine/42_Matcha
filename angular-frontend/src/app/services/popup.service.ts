@@ -13,7 +13,6 @@ export class PopupService {
     }
 
     displayPopupBool(message: string, color: boolean): void {
-        console.log(color)
         this.message = message;
         color ? this.classColor = "green": this.classColor = "red";
     }

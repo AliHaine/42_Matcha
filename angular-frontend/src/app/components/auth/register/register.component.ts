@@ -17,6 +17,7 @@ import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {LocationComponent} from "../../location/location.component";
+import { PopupService } from '../../../services/popup.service';
 
 @Component({
     selector: 'app-register',
@@ -31,6 +32,7 @@ export class RegisterComponent {
     router = inject(Router)
     registerService = inject(RegisterService);
     authService = inject(AuthService);
+    popupService = inject(PopupService);
     isCityGet = signal(0);
     errorMessage: string = "";
 
@@ -88,26 +90,24 @@ export class RegisterComponent {
           this.setupInterests(values);
 
       this.apiService.postData('/auth/register', values).subscribe(response => {
-          if (this.registerService.currentStep() === 2) {
+        this.popupService.displayPopupBool(response['message'], response['success'])
+          /*if (this.registerService.currentStep() === 2) {
               console.log(this.formControlGroupStep2.value);
               console.log(response);
-          }
-          if (!response['success']) {
-              this.errorMessage = response['error'];
+          }*/
+          if (!response['success'])
               return;
-          }
-          //   this.apiService.saveAccessToken(response['access_token'])
-          if (this.registerService.currentStep() === 1) {
+          /*if (this.registerService.currentStep() === 1) {
               this.errorMessage = response['message']
                 return;
-          }
+          }*/
           if (this.registerService.currentStep() === 3) {
               this.authService.login();
               this.router.navigate(['']);
               this.registerService.setStep(1);
           }
           this.registerService.increaseStep();
-          this.errorMessage = "";
+          //this.errorMessage = "";
       });
     }
 
