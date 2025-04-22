@@ -20,9 +20,9 @@ def matcha():
         try:
             nb_profiles = int(nb_profiles)
         except Exception as e:
-            return jsonify({'success': False, 'error': 'Invalid parameters'})
+            return jsonify({'success': False, 'message': 'Invalid parameters'})
     if nb_profiles <= 0:
-        return jsonify({'success': False, 'error': 'Invalid parameters'})
+        return jsonify({'success': False, 'message': 'Invalid parameters'})
     user = None
     users_send = []
     db = get_db()
@@ -30,14 +30,14 @@ def matcha():
         cur.execute('SELECT * FROM users WHERE email = %s', (get_jwt_identity(),))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         list_of_users = first_layer_algo(user, cur)
         if list_of_users is None or len(list_of_users) < nb_profiles:
-            return jsonify({'success': False, 'error': 'No enough users found..'})
+            return jsonify({'success': False, 'message': 'No enough users found..'})
         users_send = second_layer_algo(user, list_of_users)
         users_send = third_layer_algo(user['premium'], users_send, nb_profiles)
         users_send = [convert_to_public_profile(u, user) for u in users_send]
-    return jsonify({'success': True, 'result': users_send}), 200
+    return jsonify({'success': True, 'result': users_send})
 
 
 def first_layer_algo(user=None, cur=None) -> dict | None:

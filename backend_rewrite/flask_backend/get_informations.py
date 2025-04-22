@@ -33,7 +33,7 @@ def get_interests_list():
             return jsonify({'success':True, 'interests': interestsReturn})
     except Exception as e:
         print("GET INFORMATION ERROR : Failed to get interests list from database", e)
-        return jsonify({'success':False, 'error': 'failed to get and parse interests'})
+        return jsonify({'success': False, 'message': 'failed to get and parse interests'})
 
 @bp.route('/register', methods=['GET'])
 def get_register_info():

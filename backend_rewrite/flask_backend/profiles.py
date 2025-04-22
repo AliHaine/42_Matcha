@@ -23,7 +23,7 @@ def me():
     cursor.execute("SELECT * FROM users WHERE email = %s", (current_user,))
     user = cursor.fetchone()
     if user is None:
-        return jsonify({'success': False, 'error': 'User not found'})
+        return jsonify({'success': False, 'message': 'User not found'})
     if request.method == 'GET':
         profile = convert_to_public_profile(user)
         profile['email'] = user['email']
@@ -32,7 +32,7 @@ def me():
         try:
             data = request.json
         except:
-            return jsonify({'success': False, 'error': 'Invalid JSON'})
+            return jsonify({'success': False, 'message': 'Invalid JSON'})
         user_informations = {}
         from .user import FIELDS_UPDATABLE, STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS, check_fields_step1, check_fields_step2, check_fields_step3, update_user_fields
         for field in FIELDS_UPDATABLE:
@@ -43,10 +43,10 @@ def me():
                 user_informations[field] = data.get(field, None)
         check = check_registration_status(user["email"])
         if check is False:
-            return jsonify({'success': False, 'error': 'User did not complete the registration'})
+            return jsonify({'success': False, 'message': 'User did not complete the registration'})
         else:
             if len(user_informations) == 0:
-                return jsonify({'success': False, 'error': 'No field to update'})
+                return jsonify({'success': False, 'message': 'No field to update'})
             try:
                 check_change_mail = False
                 check_change_username = False
@@ -70,10 +70,10 @@ def me():
                         from .user import send_confirmation_email
                         if send_confirmation_email(user['email']) == False:
                             print("MAIL ERROR : Failed to send confirmation email")
-                    return jsonify({'success': True, 'disconnect': True})
-                return jsonify({'success': True})
+                    return jsonify({'success': True, 'disconnect': True, 'message': 'User updated successfully, please check your email'})
+                return jsonify({'success': True, 'message': 'User updated successfully'})
             except Exception as e:
-                return jsonify({'success': False, 'error': str(e)})
+                return jsonify({'success': False, 'message': str(e)})
 
 def check_fields_validity(user_informations):
     """
@@ -96,15 +96,15 @@ def check_fields_validity(user_informations):
     if len(fields["step1"]) > 0:
         result = check_fields_step1(user_informations, fields["step1"], False)
         if result["success"] == False:
-            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
+            return False, jsonify({'success': False, 'message': ", ".join(result["errors"])})
     if len(fields["step2"]) > 0:
         result = check_fields_step2(user_informations, fields["step2"])
         if result["success"] == False:
-            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
+            return False, jsonify({'success': False, 'message': ", ".join(result["errors"])})
     if len(fields["step3"]) > 0:
         result = check_fields_step3(user_informations, fields["step3"])
         if result["success"] == False:
-            return False, jsonify({'success': False, 'error': ", ".join(result["errors"])})
+            return False, jsonify({'success': False, 'message': ", ".join(result["errors"])})
     return True, None
             
     
@@ -127,7 +127,7 @@ def get_views():
         cur.execute("SELECT * FROM users WHERE email = %s", (current_user,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         cur.execute("SELECT * FROM user_views WHERE viewed_id = %s", (user['id'],))
         views = cur.fetchall()
         ids = []
@@ -161,12 +161,12 @@ def premium():
         cur.execute("SELECT * FROM users WHERE email = %s", (current_user,))
         user = cur.fetchone()
         if user is None:
-            return jsonify({'success': False, 'error': 'User not found'})
+            return jsonify({'success': False, 'message': 'User not found'})
         if user['premium'] == True:
-            return jsonify({'success': False, 'error': 'User already premium'})
+            return jsonify({'success': False, 'message': 'User already premium'})
         cur.execute("UPDATE users SET premium = TRUE WHERE email = %s", (current_user,))
         db.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'User upgraded to premium'})
 
 @bp.route('/<int:id>', methods=['GET', 'POST'])
 @jwt_required()
@@ -184,7 +184,7 @@ def get_profile(id):
         cursor.execute("SELECT * FROM users WHERE email = %s", (user_getting,))
         user_getting = cursor.fetchone()
         if user_getting is None:
-            return jsonify({'success': False, 'error': 'User not authenticated'})
+            return jsonify({'success': False, 'message': 'User not authenticated'})
         query = f"""
             {current_app.config['QUERIES'].get('-- get users')}
             WHERE u.id = %(id)s
@@ -193,9 +193,9 @@ def get_profile(id):
         cursor.execute(query, {'city_id': user_getting['city_id'], 'user_id': user_getting['id'], 'id': id})
         user = cursor.fetchone()
     if user is None:
-        return jsonify({'success': False, 'error': 'User not found'})
+        return jsonify({'success': False, 'message': 'User not found'})
     if user['id'] == user_getting['id']:
-        return jsonify({'success': False, 'error': 'You cannot get your own profile at this endpoint'})
+        return jsonify({'success': False, 'message': 'You cannot get your own profile at this endpoint'})
     if request.method == 'GET':
         result = check_registration_status(user["email"])
         if result is True:
@@ -203,23 +203,23 @@ def get_profile(id):
                 return parse_profile_type(user, user_getting)
             except Exception as e:
                 print("GET PROFILE : failed to update user views", e)
-                return jsonify({'success': False, 'error': 'An error occured'})
+                return jsonify({'success': False, 'message': 'An error occured'})
         else:
-            return jsonify({'success': False, 'error': f'User {user["id"]} did not complete the registration'})
+            return jsonify({'success': False, 'message': f'User {user["id"]} did not complete the registration'})
     elif request.method == 'POST':
         try:
             data = request.json
         except:
             print("GET USER FAIL : Json conversion failed :", e)
-            return jsonify({'success': False, 'error': 'Invalid JSON'})
+            return jsonify({'success': False, 'message': 'Invalid JSON'})
         try:
             action = data.get('action', None)
             if action is None:
-                return jsonify({'success': False, 'error': 'No action provided'})
+                return jsonify({'success': False, 'message': 'No action provided'})
             return parse_post_actions(user, user_getting, action)
         except Exception as e:
             print("GET PROFILE FAIL : failed to update user views:", e)
-            return jsonify({'success': False, 'error': 'An error occured'})
+            return jsonify({'success': False, 'message': 'An error occured'})
 
 @bp.route('/profile_pictures', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required()
@@ -235,7 +235,7 @@ def profile_pictures():
         elif request.method == 'DELETE':
             return delete_profile_picture()
         else:
-            return jsonify({'success': False, 'error': 'Invalid method'})
+            return jsonify({'success': False, 'message': 'Invalid method'})
     except Exception as e:
         print("PROFILE PIC FAIL :", e)
-        return jsonify({'success': False, 'error': 'An error occured'})
+        return jsonify({'success': False, 'message': 'An error occured'})
