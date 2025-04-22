@@ -11,7 +11,7 @@ interface Location {
   providedIn: 'root'
 })
 export class LocationService {
-  locations: Location[] = [];
+  locations: string[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -26,9 +26,10 @@ export class LocationService {
         this.cityGetFromGouv(value).subscribe(result => {
           this.locations = [];
           for (const name of result) {
-            if (value === name['nom'])
+            const nameConverted = `${name['nom']} ${name['codeDepartement']}`;
+            if (value === nameConverted)
               break;
-            this.locations.push({ city: name['nom'], code: name['codeDepartement'] });
+            this.locations.push(nameConverted);
           }
         });
     });

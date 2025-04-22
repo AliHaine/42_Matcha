@@ -21,10 +21,6 @@ h1 {
     flex-direction: column;
 }
 
-#description {
-    color: var(--color-4);
-}
-
 .error {
     color: var(--color-error);
     font-weight: bold;
@@ -181,6 +177,12 @@ fieldset {
 
     #accountContent {
         gap: 0;
+    }
+}
+
+@media (min-width: 1100px) {
+    #description-container {
+        grid-column: span 2;
     }
 }
 
