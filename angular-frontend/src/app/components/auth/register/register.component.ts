@@ -45,16 +45,16 @@ export class RegisterComponent {
 
 	formControlGroupStep1 = new FormGroup(
 		{
-			lastname: new FormControl("tes", Validators.required),
-			firstname: new FormControl("test", Validators.required),
-			email: new FormControl("test@gmail.com", [
+			lastname: new FormControl("", Validators.required),
+			firstname: new FormControl("", Validators.required),
+			email: new FormControl("", [
 				Validators.required,
 				Validators.email,
 			]),
-			username: new FormControl("mysuperusername", Validators.required),
-			password: new FormControl("Test123-", Validators.required),
-			passwordConfirm: new FormControl("Test123-", Validators.required),
-			age: new FormControl(19, [
+			username: new FormControl("", Validators.required),
+			password: new FormControl("", Validators.required),
+			passwordConfirm: new FormControl("", Validators.required),
+			age: new FormControl('', [
 				Validators.required,
 				Validators.min(15),
 				Validators.max(80),

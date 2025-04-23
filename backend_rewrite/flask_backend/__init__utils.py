@@ -86,7 +86,7 @@ def load_common_passwords(app, file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             lines = f.read().splitlines()
         # Remove duplicates and empty lines
-        common_passwords = set(filter(None, (line.strip().lower() for line in lines if line.strip())))
+        common_passwords = set(filter(None, (line.strip().lower() for line in lines if line.strip() and len(line.strip()) >= 5)))
         print("INIT : Common passwords loaded successfully")
     except Exception as e:
         print(f"INIT FAIL : Failed to load common passwords from {file_path}: {e}")
