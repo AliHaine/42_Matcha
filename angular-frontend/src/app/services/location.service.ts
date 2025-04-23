@@ -16,7 +16,7 @@ export class LocationService {
   constructor(private http: HttpClient) { }
 
   cityGetFromGouv(city: string): Observable<any> {
-      return this.http.get("https://geo.api.gouv.fr/communes/", { params: {"nom": city, "limit": 5, "boost": "population"} });
+      return this.http.get("https://geo.api.gouv.fr/communes/", { params: {"nom": city, "limit": 5, "boost": "population", "fields": "nom,codesPostaux"} });
   }
 
   observableToSubscribe(observable: Observable <any>) {
@@ -26,7 +26,7 @@ export class LocationService {
         this.cityGetFromGouv(value).subscribe(result => {
           this.locations = [];
           for (const name of result) {
-            const nameConverted = `${name['nom']} ${name['codeDepartement']}`;
+            const nameConverted = `${name['nom']} (${name['codesPostaux'][0]})`;
             if (value === nameConverted)
               break;
             this.locations.push(nameConverted);

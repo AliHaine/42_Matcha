@@ -2,7 +2,15 @@ from .db import get_db
 import requests
 
 def get_city_id(cityname):
-    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&fields=code,nom,departement,region,centre").json()
+    print(f"City name: {cityname}")
+    print(cityname.rsplit(" "))
+    citycode = cityname.split(" ")[-1]
+    citycode = citycode[1:len(citycode) - 1]
+    cityname = cityname[0:(len(cityname) - len(citycode) - 2)].strip()
+    print(f"City code: '{citycode}'")
+    print(f"City name: '{cityname}'")
+    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&codePostal={citycode}&fields=code,nom,departement,region,centre").json()
+    print(f"City informations: {city_informations}")
     if len(city_informations) == 0:
         return None
     city_found = False

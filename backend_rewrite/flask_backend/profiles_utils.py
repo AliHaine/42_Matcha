@@ -45,9 +45,9 @@ def convert_to_public_profile(user, user_requesting=None):
     db = get_db()
     if cityID is not None:
         with db.cursor() as cursor:
-            cursor.execute("SELECT cityname FROM cities WHERE id = %s", (cityID,))
+            cursor.execute("SELECT cityname, citycode FROM cities WHERE id = %s", (cityID,))
             cityElement = cursor.fetchone()
-            city = cityElement['cityname']
+            city = cityElement['cityname'] + f" ({cityElement['citycode']})"
     lookingFor = [user['searching'], user['commitment'], user['frequency']]
     shape = [user['weight'], user['size'], user['shape']]
     health = [user['smoking'], user['alcohol'], user['diet']]
