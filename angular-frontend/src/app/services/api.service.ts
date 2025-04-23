@@ -58,10 +58,10 @@ export class ApiService {
           switchMap(ipAddress => this.http.get<any>("http://ip-api.com/json/" + ipAddress).pipe(
               catchError(error => {
                 console.error("Error fetching city:", error);
-                return of({ city: "Mulhouse 68" })
+                return of({ city: "Mulhouse (68100)" })
               })
           )),
-          map(value => `${value.city} ${value.zip.slice(0,2)}`)
+          map(value => `${value.city} (${value.zip.slice(0,5)})`)
       )
     }
 }
