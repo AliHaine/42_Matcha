@@ -94,4 +94,8 @@ nav {
     #mobileDevice {
         display: block;
     }
+
+    .img {
+        width: 24px;
+    }
 }

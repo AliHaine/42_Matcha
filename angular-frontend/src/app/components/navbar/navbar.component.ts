@@ -5,6 +5,7 @@ import {WebsocketService} from "../../services/websocket.service";
 import {NotificationService} from "../../services/notification.service";
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, NotificationComponent, MatButtonModule, MatMenuModule],
@@ -17,6 +18,7 @@ export class NavbarComponent {
   showNotif = signal<boolean>(false);
   websocketService = inject(WebsocketService);
   notificationService = inject(NotificationService);
+  authService = inject(AuthService);
   menuItems = [
     { label: 'HOME', link: '/' },
     { label: 'CHATROOM', link: '/chat' },

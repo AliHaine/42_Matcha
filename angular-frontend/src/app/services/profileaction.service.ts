@@ -22,8 +22,7 @@ export class ProfileActionService {
     }
 
     blockUser(profile: ProfileModel, action: string) {
-        this.apiService.postData(`/profiles/${profile.userId}`, {action: action}).subscribe(profile => {
-            console.log(profile);
+        this.apiService.postData(`/profiles/${profile.userId}`, {action: action}).subscribe(_ => {
         });
     }
 }

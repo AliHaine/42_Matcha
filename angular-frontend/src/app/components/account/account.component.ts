@@ -86,6 +86,9 @@ export class AccountComponent {
       return;
     }
 
+    if (typeof this.formGroup.value["interests"] === 'string')
+      this.formGroup.value["interests"] = this.formGroup.value["interests"].split(',');
+
     this.apiService.postData("/profiles/me", this.formGroup.value).subscribe(result => {
       if (result['disconnect'])
         this.authService.logout();
