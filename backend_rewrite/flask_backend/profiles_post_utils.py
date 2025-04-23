@@ -22,7 +22,7 @@ def parse_post_actions(user, user_getting, action):
             elif action == 'block':
                 success = block_action(user, user_getting, user_view)
             elif action == 'report':
-                cursor.execute("UPDATE user_views SET reported = TRUE WHERE id = %s", (user_view["id"],))
+                cursor.execute("UPDATE user_views SET report = TRUE WHERE id = %s", (user_view["id"],))
                 db.commit()
             else:
                 message = "Invalid action"
