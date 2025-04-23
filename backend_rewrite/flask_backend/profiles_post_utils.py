@@ -49,6 +49,12 @@ def like_action(user, user_getting, user_view, old_matched):
             return False, "User has no profile picture set"
         cursor.execute("UPDATE user_views SET liked = NOT liked WHERE id = %s", (user_view["id"],))
         db.commit()
+        cursor.execute("SELECT liked from user_views WHERE id = %s", (user_view["id"],))
+        user_view = cursor.fetchone()
+        if user_view["liked"] == True:
+            send_notification(user_getting["id"], user["id"], "unlike", "User liked you")
+        else:
+            send_notification(user_getting["id"], user["id"], "like", "User unliked you")
         cursor.execute(current_app.config["QUERIES"].get("-- check match"), {"user_id_1": user['id'], "user_id_2": user_getting['id']})
         actual_match = cursor.fetchone()
         if actual_match is not None:

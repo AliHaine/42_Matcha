@@ -208,7 +208,7 @@ def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
                     result['errors'].append(f"Field {field} is not valid")
             if field == "password":
                 PASSWORD_ALLOWED_CHARACTERS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-                SPECIAL_CHARACTERS = set("-/!@#$%^&*()_+;:,.?<>")
+                SPECIAL_CHARACTERS = set("-/!@#$%^&*()_+;:,.?<>~`'\"{}[]|\\")
                 
                 password = data.get(field)
                 
