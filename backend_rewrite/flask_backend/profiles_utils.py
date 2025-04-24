@@ -102,6 +102,7 @@ def convert_to_public_profile(user, user_requesting=None):
         "email_verified": user['email_verified'],
         "premium": user['premium'],
         "score": score,
+        "last_connection": user['last_conn'].strftime("%Y-%m-%d %H:%M:%S") if user['active_connections'] == 0 else "Active",
     }
     return base
 

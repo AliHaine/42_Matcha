@@ -145,9 +145,9 @@ def register():
     
 
 def login_user(username, password, registering=False):
-    check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], profile_exists_check=False)
-    if check['success'] == False:
-        return {'success': False, 'error': "".join(check['errors'])}
+    # check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], profile_exists_check=False)
+    # if check['success'] == False:
+    #     return {'success': False, 'error': "".join(check['errors'])}
     db = get_db()
     missing_steps = []
     with db.cursor() as cur:
