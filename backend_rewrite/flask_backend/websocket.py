@@ -193,12 +193,15 @@ def send_message(arguments={}, rooms=[]):
             socketio.emit('message', arguments, room=room)
             receiver = int(room.split("_")[-1])
             if receiver != arguments["author_id"]:
-                cur.execute("SELECT created_at FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 2", (arguments["author_id"], receiver, receiver, arguments["author_id"]))
-                messages = cur.fetchall()
-                if len(messages) == 2:
-                    time_required = timedelta(seconds=300)
-                    if messages[0]["created_at"] - messages[1]["created_at"] > time_required:
-                        send_notification(arguments["author_id"], receiver, "chat", f"Vous avez un nouveau message de {arguments['author_id']}")
+                cur.execute('SELECT * FROM waiting_notifications WHERE receiver = %s AND emmiter = %s', (receiver, arguments["author_id"]))
+                if cur.fetchone() is None:
+                    send_notification(arguments["author_id"], receiver, "message", f"Vous avez un nouveau message de {arguments['author_id']}")
+                # cur.execute("SELECT created_at FROM messages WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY created_at DESC LIMIT 2", (arguments["author_id"], receiver, receiver, arguments["author_id"]))
+                # messages = cur.fetchall()
+                # if len(messages) == 2:
+                #     time_required = timedelta(seconds=300)
+                #     if messages[0]["created_at"] - messages[1]["created_at"] > time_required:
+                #         send_notification(arguments["author_id"], receiver, "chat", f"Vous avez un nouveau message de {arguments['author_id']}")
         except Exception as e:
             print(f"Erreur d'envoi de message : {e}")
 
