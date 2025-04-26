@@ -1,16 +1,13 @@
+form {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .label-input-flex {
     display: flex;
     flex-direction: column;
-}
-
-fieldset {
-    display: flex;
-    gap: 3px;
-    border-width: 0;
-}
-
-a, h1, h2 {
-    text-align: center;
 }
 
 #checkbox-area {
@@ -24,7 +21,7 @@ a, h1, h2 {
     flex-direction: column;
 }
 
-.test {
+.interest-row {
     display: flex;
     gap: 3px;
 }

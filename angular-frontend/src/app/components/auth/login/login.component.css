@@ -1,6 +1,14 @@
+form {
+    padding: 15px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
 #checkbox-forgot-area {
     display: flex;
-    gap: 20px;
+    justify-content: space-between;
 }
 
 #checkbox-area {
@@ -17,6 +25,9 @@ input[type="checkbox"] {
     accent-color: var(--color-1);
 }
 
-a, h1 {
-    text-align: center;
+@media (min-width: 1024px) {
+    form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
 }

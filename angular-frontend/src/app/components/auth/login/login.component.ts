@@ -25,7 +25,7 @@ export class LoginComponent {
         password: new FormControl('', Validators.required),
         checkbox: new FormControl(false)
     });
-    resetmail = new FormControl('', Validators.required);
+    resetmail = new FormControl('', Validators.email);
 
     submit(event: Event) {
         event.preventDefault();

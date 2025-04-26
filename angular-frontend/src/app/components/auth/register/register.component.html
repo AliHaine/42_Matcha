@@ -1,7 +1,6 @@
-<script src="../../../services/register.service.ts"></script>
-<form *ngIf="this.registerService.currentStep() == 1" class="form-style-1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
-	<h1>Register</h1>
-        <div id="main-form-1">
+<form *ngIf="this.registerService.currentStep() == 1" [formGroup]="formControlGroupStep1" (submit)="submit($event, formControlGroupStep1.value)">
+	<h1 class="text-center">Register</h1>
+    <div id="main-form-1">
         <div class="label-input-flex">
             <label>Lastname</label>
             <input class="input-style-1" type="text" placeholder="Enter your lastname" formControlName='lastname'>
@@ -30,49 +29,47 @@
 
         <div class="label-input-flex">
             <label>Age</label>
-            <input class="input-style-1" type="number" placeholder="" formControlName='age'>
+            <input class="input-style-1" type="number" placeholder="Enter you age" formControlName='age'>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
             <label>Sexual orientation</label>
             <fieldset>
                 <div>
-                    <input type="radio" [value]=true formControlName="hetero" />
-                    <label>Hetero</label>
+                    <input id="hetero" type="radio" [value]=true formControlName="hetero" />
+                    <label for="hetero">Hetero</label>
                 </div>
                 <div>
-                    <input type="radio" [value]=false formControlName="hetero" />
-                    <label>Other</label>
+                    <input id="other" type="radio" [value]=false formControlName="hetero" />
+                    <label for="other">Other</label>
                 </div>
             </fieldset>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
             <label>Gender</label>
             <fieldset>
                 <div>
-                    <input type="radio" value="M" formControlName="gender" />
-                    <label>Male</label>
+                    <input id="male" type="radio" value="M" formControlName="gender" />
+                    <label for="male">Male</label>
                 </div>
                 <div>
-                    <input type="radio" value="F" formControlName="gender" />
-                    <label>Female</label>
+                    <input id="female" type="radio" value="F" formControlName="gender" />
+                    <label for="female">Female</label>
                 </div>
             </fieldset>
         </div>
     </div>
-
 	<button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
-	<a class="text-hover-style-1" routerLink="/auth/login">Already register ?</a>
+	<a  class="text-center" routerLink="/auth/login">Already register ?</a>
 </form>
 
-<div class="form-style-1" *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() === 0">
+<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() === 0">
     <h1>Do you agree to share your location ?</h1>
-    <button (click)="this.isCityGet.set(1)">Yes</button>
-    <button (click)="this.isCityGet.set(2)">No</button>
-    <p></p>
-</div>
+    <button class="button-style-1" type="button" (click)="this.isCityGet.set(1)">Yes</button>
+    <button class="button-style-1" type="button" (click)="this.isCityGet.set(2)">No</button>
+</form>
 
-<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() > 0" class="form-style-1" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
-	<h1>Complete your profile</h1>
+<form *ngIf="this.registerService.currentStep() == 2 && this.isCityGet() > 0" [formGroup]="formControlGroupStep2" (submit)="submit($event, formControlGroupStep2.value)">
+	<h1 class="text-center">Complete your profile</h1>
     <div id="main-form-2">
         @if (this.isCityGet() === 1) {
             <div style="display: flex; flex-direction: column; grid-column: span 3;">
@@ -82,7 +79,7 @@
             </div>
         }
 
-        <h2 class="title-form-2">What are you looking for ?</h2>
+        <h2 class="title-form-2 text-center">What are you looking for ?</h2>
         <div class="label-input-flex">
             <label>Searching</label>
             <select id="searching" formControlName='searching'>
@@ -107,7 +104,7 @@
             </select>
         </div>
 
-        <h2 class="title-form-2">Your shape</h2>
+        <h2 class="title-form-2 text-center">Your shape</h2>
         <div class="label-input-flex">
             <label>Weight (KG)</label>
             <select id="weight" formControlName='weight'>
@@ -125,14 +122,14 @@
         </div>
 
         <div class="label-input-flex">
-            <label>shape</label>
+            <label>Shape</label>
             <select id="shape" formControlName='shape'>
                 <option value='' disabled selected>-- Select an option --</option>
                 <option *ngFor="let val of this.registerService.registerInfo()['shape']" [value]="val">{{val}}</option>
             </select>
         </div>
 
-        <h2 class="title-form-2">Your health</h2>
+        <h2 class="title-form-2 text-center">Your health</h2>
         <div class="label-input-flex">
             <label>Smoking ?</label>
             <fieldset style="justify-content: center;">
@@ -166,12 +163,12 @@
 	<button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
 </form>
 
-<form *ngIf="this.registerService.currentStep() >= 3" class="form-style-1" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
-    <h1>Finish your profile</h1>
+<form *ngIf="this.registerService.currentStep() >= 3" [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
+    <h1 class="text-center">Finish your profile</h1>
     <div id="checkbox-area">
         <fieldset *ngFor="let formArrayName of this.getGroupForm3()" [formArrayName]=formArrayName>
             <h2>{{formArrayName}}</h2>
-              <div class="test" *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
+              <div class="interest-row" *ngFor="let _ of getFromArray(formArrayName).controls; let i = index">
                 <input
                     type="checkbox" [id]="formArrayName + i"
                     [formControlName]=i

@@ -1,4 +1,4 @@
-<form class="form-style-1" [formGroup]="formControlGroup" (submit)="submit($event)">
+<form [formGroup]="formControlGroup" (submit)="submit($event)">
 	@if (formNumber() === 0) {
 		<h1>Login</h1>
 		<div id="login-area">
@@ -10,16 +10,16 @@
 				<input type="checkbox" placeholder="Enter your password" formControlName="checkbox">
 				<label>Remember</label>
 			</div>
-			<a class="text-hover-style-1" (click)="formNumber.set(1)">Forgot password</a>
+			<a (click)="formNumber.set(1)">Forgot password</a>
 		</div>
 		<button class="button-style-1" [disabled]="formControlGroup.invalid">Login</button>
-		<a class="text-hover-style-1" routerLink="/auth/register">Create account</a>
+		<a routerLink="/auth/register">Create account</a>
 	} @else {
 		<h1>Forgot password</h1>
 
-		<input class="input-style-1" type="text" placeholder="Enter your email" [formControl]=resetmail>
+		<input class="input-style-1" type="email" placeholder="Enter your email" [formControl]=resetmail>
 		<button class="button-style-1" [disabled]="resetmail.invalid" (click)="submitForgot($event)">Send reset mail</button>
 
-		<a class="text-hover-style-1" (click)="formNumber.set(0)">Return to login</a>
+		<a (click)="formNumber.set(0)">Return to login</a>
 	}
 </form>

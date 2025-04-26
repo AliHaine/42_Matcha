@@ -61,8 +61,7 @@ export class RegisterComponent {
 			]),
 			hetero: new FormControl(true, Validators.required),
 			gender: new FormControl("M", Validators.required),
-		},
-		{ validators: passwordValidator }
+		}
 	);
 
 	formControlGroupStep2 = new FormGroup({
@@ -154,22 +153,3 @@ export class RegisterComponent {
 		});
 	}
 }
-
-export const passwordValidator: ValidatorFn = (
-	control: AbstractControl
-): ValidationErrors | null => {
-	const password: string = <string>control.get("password")?.value;
-	if (
-		password.length < 8 ||
-		!/[A-Z]/.test(password) ||
-		!/[a-z]/.test(password) ||
-		!/[1-9]/.test(password)
-	)
-		return { securityError: true };
-
-	if (password !== <string>control.get("passwordConfirm")?.value) {
-		return { confirmationError: true };
-	}
-
-	return null;
-};

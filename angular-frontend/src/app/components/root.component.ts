@@ -18,7 +18,7 @@ import {PopupComponent} from "./utils/popup/popup.component";
   `
     <div id="root-content">
       <app-navbar></app-navbar>
-      <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+      <div style="flex: 1;">
         <router-outlet></router-outlet>
       </div>
       <app-footer></app-footer>
