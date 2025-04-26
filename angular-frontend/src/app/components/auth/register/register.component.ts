@@ -1,17 +1,13 @@
 import { Component, effect, inject, signal } from "@angular/core";
 import {
-	AbstractControl,
 	FormArray,
 	FormControl,
 	FormGroup,
 	ReactiveFormsModule,
-	ValidationErrors,
-	ValidatorFn,
 	Validators,
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { ApiService } from "../../../services/api.service";
-import { NgForOf, NgIf } from "@angular/common";
 import { RegisterService } from "../../../services/register.service";
 import { AuthService } from "../../../services/auth.service";
 import { TextFieldModule } from "@angular/cdk/text-field";
@@ -25,8 +21,6 @@ import { PopupService } from "../../../services/popup.service";
 	imports: [
 		ReactiveFormsModule,
 		RouterLink,
-		NgIf,
-		NgForOf,
 		TextFieldModule,
 		MatFormField,
 		MatInput,
