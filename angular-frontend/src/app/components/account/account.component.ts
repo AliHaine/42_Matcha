@@ -15,27 +15,29 @@ import { ProfileModel } from '../../models/profile.model';
 import { ProfileFactory } from '../../services/profile.factory';
 import {RouterLink} from "@angular/router";
 import {PopupService} from "../../services/popup.service";
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-account',
-  imports: [
-    ReactiveFormsModule,
-    CdkTextareaAutosize,
-    MatFormFieldModule,
-    MatInputModule,
-    TextFieldModule,
-    SliderComponent,
-    LocationComponent,
-    PaypalComponent,
-    MatMenuModule,
-    MatButtonModule, 
-    RouterLink
-],
+    imports: [
+        ReactiveFormsModule,
+        CdkTextareaAutosize,
+        MatFormFieldModule,
+        MatInputModule,
+        TextFieldModule,
+        SliderComponent,
+        LocationComponent,
+        PaypalComponent,
+        MatMenuModule,
+        MatButtonModule,
+        RouterLink,
+        MatSidenavModule
+    ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
 export class AccountComponent {
-
+  showFiller = false;
   apiService = inject(ApiService);
   authService = inject(AuthService);
   popupService = inject(PopupService);

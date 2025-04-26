@@ -1,19 +1,24 @@
-h1 {
-    text-align: center;
-    margin-bottom: 5%;
-}
-
 #inputs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 5px;
 }
 
-#pictures-description {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 1%;
-    margin-bottom: 5%;
+#openButton {
+    position: fixed;
+    -webkit-mask: url('/icons/arrow.png') center/contain;
+    mask-repeat: no-repeat;
+    aspect-ratio: 1;
+    display: inline-block;
+    background: var(--color-4);
+    left: 0;
+}
+
+#closeButton {
+    -webkit-mask: url('/icons/arrow.png') center/contain;
+    mask-repeat: no-repeat;
+    aspect-ratio: 1;
+    display: inline-block;
+    background: var(--color-4);
+    rotate: 180deg;
 }
 
 .input-area {
@@ -21,10 +26,8 @@ h1 {
     flex-direction: column;
 }
 
-fieldset {
-    border: none;
-    display: flex;
-    gap:5px
+#normalDeviceArea {
+    display: none;
 }
 
 #deleteImageButton {
@@ -45,41 +48,27 @@ fieldset {
     gap: 15%;
 }
 
-.input-radio {
-    align-items: center;
-}
 
 /* -------- */
 
 #accountContent {
     display: flex;
-    gap: 30px;
-}
-
-#normalDeviceArea {
-    display: flex; 
-    flex-direction: column;
-    gap: 10px;
-}
-
-#mobileDeviceArea {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
+    padding: 5px;
+    justify-content: center;
 }
 
 #profilePictures {
-    width: 300px;
-    height: 300px;
+    width: 150px;
+    aspect-ratio: 1/1;
     position: relative;
 }
 
 .premium-border {
     border: 3px solid gold;
-  }
+}
 
 .button {
-    width: 100%;
+    width: 150px;
     text-align: center;
 }
 
@@ -88,12 +77,6 @@ fieldset {
     background-size: 400% 400%;
     animation: gradient 5s ease infinite;
 }
-
-#premiumButton:hover {
-    background: none;
-    background-color: #f5d904;
-    color: var(--color-4);
-} 
 
 @keyframes gradient {
     0% {
@@ -109,10 +92,6 @@ fieldset {
 
 #logoutButton {
     background-color: var(--color-error);
-}
-
-#logoutButton:hover {
-    background-color: red;
 }
 
 #rightElements {
@@ -138,52 +117,62 @@ fieldset {
     padding: 3px;
 }
 
-
-.viewsMainDiv:hover {
-    border: solid var(--color-4) 3px;
-}
-
 .viewsPicture {
     width: 32px;
     height: 32px;
 }
 
 
-@media (max-width: 1100px) {
+@media (min-width: 1024px) {
     #inputs {
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
-
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
 
-    #mobileDeviceArea {
-        display: block;        
-    }
-
-    #normalDeviceArea {
-        display: none
-    }
-
-    #profilePictures {
-        width: 100%;
-        aspect-ratio: 1/1;
-    }
-
-    #accountContent {
-        gap: 0;
-    }
-}
-
-@media (min-width: 1100px) {
     #description-container {
         grid-column: span 2;
     }
-}
 
-.img {
-    -webkit-mask: url('/icons/navbarDropdown.png') center/contain;
-    width: 100%;
-    aspect-ratio: 1;
-    display: inline-block;
-    background: var(--color-4);
+    #premiumButton:hover {
+        background: none;
+        background-color: #f5d904;
+        color: var(--color-4);
+    }
+
+    #logoutButton:hover {
+        background-color: red;
+    }
+
+    #accountContent {
+        padding: 25px;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    #profilePictures {
+        width: 300px;
+        aspect-ratio: 1/1;
+        position: relative;
+    }
+
+    .button {
+        width: 300px;
+        text-align: center;
+    }
+
+
+    #openButton {
+        display: none;
+    }
+
+    .viewsMainDiv:hover {
+        border: solid var(--color-4) 3px;
+    }
+
+    #normalDeviceArea {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 }

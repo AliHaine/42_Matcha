@@ -43,4 +43,8 @@ form {
     .title-form-2 {
         grid-column: span 3;
     }
+
+    #email {
+        grid-column: span 2;
+    }
 }

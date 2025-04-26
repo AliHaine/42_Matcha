@@ -17,9 +17,9 @@
             }
         </div>
     </ul>
-    <div id="middleLogo"><a routerLink="/">MATCHA</a></div>
+    <div id="middleLogo"><a style="color: var(--color-1)" routerLink="/">MATCHA</a></div>
     <div id="rightElements">
-        <a routerLink="/account" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain" (click)="authService.logout()"></a>
+        <a routerLink="/account" class="img" style="-webkit-mask: url('/icons/disconect.png') center/contain" (click)="authService.logout()"></a>
         <div class="img" style="-webkit-mask: url('/icons/navHeart.png') center/contain" (mouseover)="notificationHover()" (mouseleave)="notificationUnHover()"></div>
         <a routerLink="/account" class="img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
     </div>
