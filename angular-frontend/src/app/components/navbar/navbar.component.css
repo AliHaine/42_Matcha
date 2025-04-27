@@ -1,101 +1,36 @@
 nav {
     background-color: var(--color-4);
-    padding: 10px;
-    font-size: 1.7em;
-    color: var(--color-1);
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    justify-content: space-between;
-}
-
-#normalDevice {
-    display: flex;
 }
 
 #mobileDevice {
-    display: none;
-    height: 100%;
-}
-
-#leftElements {
-    list-style-type: none;
     display: flex;
+    justify-content: space-between;
+    padding: 10px;
 }
 
-#leftElements li {
-    margin-left: 0.7vw;
-    transition: transform 0.5s, color 0.5s;
+#desktopDevice {
+    display: none;
 }
 
-#leftElements li:hover {
-    transform: scale(1.1) translateY(-0.1vmin);
-    color: var(--color-2);
-}
-
-#leftElements li a {
-    text-decoration: none; /* Remove underline */
-    color: inherit; /* Inherit color from parent li */
-    display: block; /* Make the link take full block space for better hover area */
-}
-
-#middleLogo {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-inline: auto;
-    width: fit-content;
-    font-family: 'Jua';
-    font-size: 2em;
-}
-
-#middleLogo a {
-    bottom: 0;
-}
-
-#rightElements img {
-    margin-right: 0.7vw;
-}
-
-.img {
-    margin-right: 15px;
-    width: 48px;
-    aspect-ratio: 1;
-    display: inline-block;
-    background: var(--color-1);
-    transition: transform 0.5s, background 0.5s;
-}
-
-.img:hover {
-    background: var(--color-2);
-    transform: scale(1.1) translateY(-0.1vmin);
-}
-
-@media (max-width: 1475px) {
-    #middleLogo {
-        font-size: 1.7em;
-    }
-
-    nav {
-        font-size: 1.2em;
-        padding: 5px;
-    }
-
-    .img {
-        width: 32px;
-    }
-}
-
-@media (max-width: 1100px) {
-    #normalDevice {
+@media (min-width: 1024px) {
+    #mobileDevice {
         display: none;
     }
 
-    #mobileDevice {
-        display: block;
+    #desktopDevice {
+        padding: 10px;
+        color: var(--color-1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .img {
-        width: 24px;
+    a {
+        color: var(--color-1);
+    }
+
+    .items {
+        display: flex;
+        gap: 15px;
     }
 }

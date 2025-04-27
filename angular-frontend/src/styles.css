@@ -208,6 +208,10 @@ input[type='radio'] {
     color: var(--color-4);
 }
 
+.mat-icon {
+    width: 42px !important;
+    height: 42px !important;
+}
 
 @media (min-width: 1024px) {
     a:hover {
