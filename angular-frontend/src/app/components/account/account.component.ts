@@ -37,7 +37,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   styleUrl: './account.component.css'
 })
 export class AccountComponent {
-  showFiller = false;
   apiService = inject(ApiService);
   authService = inject(AuthService);
   popupService = inject(PopupService);

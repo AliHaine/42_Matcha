@@ -213,6 +213,10 @@ input[type='radio'] {
     height: 42px !important;
 }
 
+.mat-drawer-container {
+    z-index: 0 !important;
+}
+
 @media (min-width: 1024px) {
     a:hover {
         font-weight: bold;

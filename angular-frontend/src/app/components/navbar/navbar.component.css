@@ -30,7 +30,20 @@ nav {
     }
 
     .items {
+        font-size: 2em;
         display: flex;
         gap: 15px;
+    }
+
+    .items a:hover {
+        transition: transform 1s;
+        transform: scale(1.1);
+    }
+
+    #middleLogo {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        font-size: 2.5em;
     }
 }
