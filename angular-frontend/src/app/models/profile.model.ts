@@ -23,8 +23,10 @@ export class ProfileModel {
     username: string;
     premium: boolean;
     matching: string;
+    lastConnetion: string;
 
     constructor(data: {[key: string]: any}) {
+        console.log(data)
         this.email = data["email"];
         this.firstname = data["firstname"];
         this.lastname = data["lastname"];
@@ -52,6 +54,7 @@ export class ProfileModel {
         this.username = data["username"];
         this.premium = data["premium"];
         this.matching = data["matching"]
+        this.lastConnetion = data["last_connection"];
     }
 
     dumpAsDict(): {[key: string]: any} {
