@@ -11,6 +11,7 @@ import {loginGuard} from "./others/login.guard";
 import {AccountComponent} from "./components/account/account.component";
 import {EmailconfirmComponent} from "./components/emailconfirm/emailconfirm.component";
 import { ForgotpassComponent } from './components/forgotpass/forgotpass.component';
+import {NotificationComponent} from "./components/notification/notification.component";
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [authGuard] },
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
     { path: 'search', component: SearchComponent, canActivate: [authGuard] },
     { path: 'account', component: AccountComponent, canActivate: [authGuard] },
+    { path: 'notification', component: NotificationComponent, canActivate: [authGuard] },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
     { path: 'emailconfirm/:token', component: EmailconfirmComponent },
     { path: 'forgotpass/:token', component: ForgotpassComponent, canActivate: [loginGuard] },

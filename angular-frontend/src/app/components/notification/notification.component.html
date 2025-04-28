@@ -1,5 +1,7 @@
 <div id="notif-content">
-        <table *ngIf="notificationService.notifications().length > 0; else nothing">
+    @if (notificationService.notifications().length > 0) {
+        <button class="button-style-1" (click)="notificationClear()">Clear</button>
+        <table>
             <caption>
                 Notifications
             </caption>
@@ -8,17 +10,18 @@
             <th scope="col">Name</th>
             <th scope="col">Action</th>
 
-            <tr *ngFor="let notif of notificationService.notifications()">
-                <td>{{ notif.userId }}</td>
-                <td>{{ notif.userFullName }}</td>
-                <td>{{ notif.action }}</td>
-            </tr>
+            @for (notification of notificationService.notifications(); track $index) {
+                <tr>
+                    <td>{{ notification.userId }}</td>
+                    <td>{{ notification.userFullName }}</td>
+                    <td>{{ notification.action }}</td>
+                </tr>
+            }
         </table>
-
-    <ng-template #nothing>
+    } @else {
         <div id="nothing">
             <h1>Notifications</h1>
             <p>You don't have any notifications</p>
         </div>
-    </ng-template>
+    }
 </div>
