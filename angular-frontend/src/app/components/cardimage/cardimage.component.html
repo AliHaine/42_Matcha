@@ -9,9 +9,11 @@
         <div class="nameAge">
             <span class="name">{{ profile().firstname }}</span>
             <span>{{ profile().age }}</span>
-            <div class="button premiumButton">
-                <mat-icon svgIcon="premium"/>
-            </div>
+            @if (profile().premium) {
+                <div class="button premiumButton">
+                    <mat-icon svgIcon="premium"/>
+                </div>
+            }
         </div>
         <div class="profilePicIcons">
             @if (profile().matching === "like" || profile().matching === "match") {

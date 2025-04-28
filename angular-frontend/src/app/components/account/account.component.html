@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-    <mat-sidenav style="width: 150px;" #sidenav mode="over" [opened]="false">
+    <mat-sidenav id="sidenav" #sidenav mode="over" [opened]="false">
         <div id="profilePictures">
             <app-slider [images]="authService.currentUserProfileModel().profilePicturePath"
                         (currentIndexEvent)="sliderTrigger($event)">

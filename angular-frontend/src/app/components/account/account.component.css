@@ -12,6 +12,10 @@
     left: 0;
 }
 
+#sidenav {
+    width: 150px;
+}
+
 #closeButton {
     -webkit-mask: url('/icons/arrow.png') center/contain;
     mask-repeat: no-repeat;
@@ -55,6 +59,7 @@
     display: flex;
     padding: 5px;
     justify-content: center;
+    min-height: 420px;
 }
 
 #profilePictures {
@@ -148,6 +153,7 @@
         padding: 25px;
         justify-content: center;
         gap: 15px;
+        min-height: initial;
     }
 
     #profilePictures {
@@ -163,6 +169,10 @@
 
 
     #openButton {
+        display: none;
+    }
+
+    #sidenav {
         display: none;
     }
 
