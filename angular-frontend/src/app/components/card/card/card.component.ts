@@ -6,6 +6,7 @@ import {ProfileModel} from "../../../models/profile.model";
 import {NgForOf} from "@angular/common";
 import {CardService} from "../../../services/card.service";
 import {ProfileActionService} from "../../../services/profileaction.service";
+import {CardimageComponent} from "../../cardimage/cardimage.component";
 
 @Component({
   selector: 'app-card',
@@ -13,6 +14,7 @@ import {ProfileActionService} from "../../../services/profileaction.service";
     InterestComponent,
     RouterLink,
     NgForOf,
+    CardimageComponent,
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css',

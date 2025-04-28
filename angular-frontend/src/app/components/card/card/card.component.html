@@ -1,20 +1,6 @@
 <div id="main" [routerLink]="['/profile/', profile().userId]">
     <div id="pictureAndIcons">
-        <div class="profileContainer">
-            <img class="profilePic" [src]=profile().profilePicturePath.at(0) />
-            <div class="score">
-                <div style="font-size: 90%;">{{profile().score}}%</div>
-                <img class="icon-img" src="/icons/objectif.png">
-            </div>
-            <div class="profilePicIcons" (click)="$event.stopPropagation()">
-                <img class="giftIcon" src="/icons/gift.png">
-                @if (profile().matching === "like" || profile().matching === "match") {
-                    <img class="unlikeIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/unlike.png">
-                } @else {
-                    <img class="heartIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/heart.png">
-                }
-            </div>
-        </div>
+            <app-cardimage [profile]="profile()"/>
     </div>
 
     <div id="profile">

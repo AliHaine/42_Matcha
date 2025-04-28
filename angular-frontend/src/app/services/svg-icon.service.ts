@@ -35,5 +35,30 @@ export class SvgIconService {
         this.matIconRegistry.addSvgIcon(
             'logout',
             this.domSanitizer.bypassSecurityTrustResourceUrl('icons/logout.svg')
-        );    }
+        );
+        this.matIconRegistry.addSvgIcon(
+            'target',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/target.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'heart',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/heart.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'star',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/star.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'x',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/x.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'report',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/report.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'premium',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/premium.svg')
+        );
+    }
 }

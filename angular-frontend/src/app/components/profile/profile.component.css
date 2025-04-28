@@ -1,4 +1,4 @@
-#profile {
+/*#profile {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -25,8 +25,6 @@
     width: 85%;
     height: 43%;
 }
-
-/*---------------------------------------------*/
 
 #infos-left {
     align-self: center;
@@ -79,7 +77,6 @@
     line-height: 2em;
 }
 
-/*---------------------------------------------*/
 
 #infos-right {
     height: 100%;
@@ -103,7 +100,6 @@
 }
 
 
-/*---------------------------------------------*/
 
 #description {
     background-color: var(--color-3);
@@ -158,5 +154,42 @@
 
     #city {
         text-align: initial;
+    }
+}*/
+
+
+#profileMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    gap: 5px;
+}
+
+.multipleArea {
+    gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.value {
+    border-radius: 8px;
+    background-color: var(--color-4);
+    color: var(--color-1);
+    padding: 5px;
+}
+
+#description {
+    padding: 10px;
+    background-color: var(--color-4);
+    color: var(--color-1);
+}
+
+@media (min-width: 1024px) {
+    .profilePicturesContainer {
+        display: flex;
+        justify-content: center;
+        width: 500px;
     }
 }

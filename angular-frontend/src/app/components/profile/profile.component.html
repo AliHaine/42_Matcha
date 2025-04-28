@@ -1,62 +1,41 @@
-<div id="profile">
-    <h1 id="header">{{profile().firstname}} {{profile().lastname}}'s profile</h1>
-    <div id="profile-infos">
-        <div id="infos-left">
-            <div id="profile-picture" [style.--border-color]="profile().status ? 'var(--color-green)': 'var(--color-error)'">
-                <app-slider [images]="profile().profilePicturePath"></app-slider>
-                <div class="caption">
-                    <div class="icon" style="-webkit-mask: url('/icons/alarme.png') center/contain">
-                        <div [matMenuTriggerFor]="menu">Sort By</div>
-                        <mat-menu #menu="matMenu">
-                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for fake Account</div>
-                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for non-premium</div>
-                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for feeding</div>
-                            <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'block')">Block user</div>
-                        </mat-menu>
-
-                    </div>
-                    @if (profile().matching === "match") {
-                        <div class="icon" style="-webkit-mask: url('/icons/message.png') center/contain" (click)="sendMessageTrigger()"></div>
-                    }
-                    <img class="giftIcon">
-                    @if (profile().matching === "like" || profile().matching === "match") {
-                        <img class="unlikeIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/unlike.png">
-                    } @else {
-                        <img class="heartIcon" (click)="profileActionService.likeProfile(profile())" src="/icons/heart.png">
-                    }
-                </div>
-            </div>
-            <div id="city">
-                {{profile().age}} years old, from {{profile().city}}. Fame: {{profile().fameRate}}. Score: {{profile().score}}, match: {{profile().matching}}
-            </div>
-        </div>
-        <div id="infos-right">
-            <h3>Shape</h3>
-            <div class="content">
-                @if (profile().shape) {
-                    <div class="c">{{ profile().shape.at(2) }}</div>
-                    <div class="c">{{ profile().shape.at(0) }}CM</div>
-                    <div class="c">{{ profile().shape.at(1) }}KG</div>
-                }
-            </div>
-            <h3>Health</h3>
-            <div class="content">
-                <div class="c">Vegan</div>
-                <div class="c">Don't smoke</div>
-                <div class="c">Drink alcohol occasionally</div>
-            </div>
-            <h3>Looking for</h3>
-            <div class="content">
-                <div class="c">Meet friends</div>
-                <div class="c">Long term relation</div>
-                <div class="c">Occasional contact</div>
-            </div>
-            <h3>Interests</h3>
-            <div class="content">
-                <div *ngFor="let interest of profile().interestsModels.at(0)?.interests" class="c">{{interest}}</div>
-            </div>
-        </div>
+<div id="profileMain">
+    <h1>{{profile().firstname}} {{profile().lastname}}</h1>
+    <div class="profilePicturesContainer">
+        <app-cardimage [profile]="profile()"></app-cardimage>
     </div>
+
+    <div id="city">
+        From {{profile().city}}. Fame: {{profile().fameRate}}, match: {{profile().matching}}
+    </div>
+
+    <h3>Looking for</h3>
+    <div class="multipleArea">
+        @for (value of profile().lookingFor; track value) {
+            <div class="value">{{ value }}</div>
+        }
+    </div>
+
+    <h3>Shape</h3>
+    <div class="multipleArea">
+        <div class="value">{{ profile().shape.at(2) }}</div>
+        <div class="value">{{ profile().shape.at(0) }}CM</div>
+        <div class="value">{{ profile().shape.at(1) }}KG</div>
+    </div>
+
+    <h3>Health</h3>
+    <div class="multipleArea">
+        @for (value of profile().health; track value) {
+            <div class="value">{{ value }}</div>
+        }
+    </div>
+
+    <h3>Interests</h3>
+    <div class="multipleArea">
+        @for (value of profile().interestsModels.at(0)?.interests; track value) {
+            <div class="value">{{ value }}</div>
+        }
+    </div>
+
     <div id="description">
         <h2>More about me</h2>
         <p>{{profile().description}}</p>

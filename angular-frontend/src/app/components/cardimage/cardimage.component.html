@@ -1,0 +1,45 @@
+<div class="profileImageMain">
+    <img class="profilePic" [src]=profile().profilePicturePath.at(0) />
+    <div class="score">
+        <div style="font-size: 90%;">{{profile().score}}%</div>
+        <mat-icon svgIcon="target"/>
+    </div>
+    <div class="gradient-overlay"></div>
+    <div class="bottomArea" (click)="$event.stopPropagation()">
+        <div class="nameAge">
+            <span class="name">{{ profile().firstname }}</span>
+            <span>{{ profile().age }}</span>
+            <div class="button premiumButton">
+                <mat-icon svgIcon="premium"/>
+            </div>
+        </div>
+        <div class="profilePicIcons">
+            @if (profile().matching === "like" || profile().matching === "match") {
+                <button (click)="profileActionService.likeProfile(profile())" class="button xButton">
+                    <mat-icon svgIcon="x"></mat-icon>
+                </button>
+            } @else {
+                <button (click)="profileActionService.likeProfile(profile())" class="button heartButton">
+                    <mat-icon svgIcon="heart"></mat-icon>
+                </button>
+            }
+            <button class="button superLikeButton">
+                <mat-icon svgIcon="star"></mat-icon>
+            </button>
+            @if (profile().matching === "match") {
+                <button (click)="sendMessageTrigger()" class="button messageButton">
+                    <mat-icon svgIcon="chat"></mat-icon>
+                </button>
+            }
+            <button [matMenuTriggerFor]="menu" class="button reportButton">
+                <mat-icon svgIcon="report"></mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for fake Account</div>
+                <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for non-premium</div>
+                <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'report')">Report for feeding</div>
+                <div mat-menu-item (click)="profileActionService.blockUser(profile(), 'block')">Block user</div>
+            </mat-menu>
+        </div>
+    </div>
+</div>
