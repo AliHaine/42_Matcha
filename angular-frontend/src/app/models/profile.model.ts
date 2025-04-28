@@ -1,4 +1,5 @@
 import {InterestModel} from "./interest.model";
+import {signal, WritableSignal} from "@angular/core";
 
 export class ProfileModel {
     email: string;
@@ -11,10 +12,11 @@ export class ProfileModel {
     lookingFor: [];
     shape: [];
     health: [];
+
     interests: []
     interestsModels: InterestModel[];
     picturesNumber: number;
-    profilePicturePath: string[] = [];
+    profilePicturePath: WritableSignal<string[]> = signal(["defaultpp.jpg"]);
     status: string;
     userId: number;
     fameRate: number;
@@ -44,7 +46,6 @@ export class ProfileModel {
             new InterestModel("/icons/search.png", "Looking for", data['lookingFor']),
         ];
         this.picturesNumber = data["picturesNumber"];
-        this.profilePicturePath.push("defaultpp.jpg");
         this.status = data["status"];
         this.userId = data["id"];
         this.fameRate = data["fame_rate"];

@@ -1,7 +1,7 @@
 <mat-sidenav-container>
     <mat-sidenav id="sidenav" #sidenav mode="over" [opened]="false">
         <div id="profilePictures">
-            <app-slider [images]="authService.currentUserProfileModel().profilePicturePath"
+            <app-slider [images]="authService.currentUserProfileModel().profilePicturePath()"
                         (currentIndexEvent)="sliderTrigger($event)">
             </app-slider>
             @if (authService.currentUserProfileModel().picturesNumber > 0) {
@@ -22,7 +22,7 @@
     <mat-sidenav-content id="accountContent">
         <div id="normalDeviceArea">
             <div id="profilePictures" [class.premium-border]="authService.currentUserProfileModel().premium">
-                <app-slider [images]="authService.currentUserProfileModel().profilePicturePath" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
+                <app-slider [images]="authService.currentUserProfileModel().profilePicturePath()" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
                 @if (authService.currentUserProfileModel().picturesNumber > 0) {
                     <div id="deleteImageButton" class="icon"
                         (click)="deletePicture()"></div>
@@ -182,7 +182,7 @@
                         <div id="viewForm">
                             @for (user of profilesView(); track user.userId) {
                                 <div class="viewsMainDiv" [routerLink]="['/profile/', user.userId]">
-                                    <img class="viewsPicture" [src]=user.profilePicturePath.at(0)>
+                                    <img class="viewsPicture" [src]=user.profilePicturePath().at(0)>
                                         {{user.firstname}}
                                         {{user.age}} years old, from
                                         {{user.city}}

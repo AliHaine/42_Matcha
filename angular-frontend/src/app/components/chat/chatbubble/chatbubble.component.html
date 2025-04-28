@@ -1,5 +1,5 @@
 <div class="chatbubble-content" [ngClass]="isSelfBubble() ? 'left-bubble' : 'right-bubble'">
-    <img [src]="isSelfBubble() ? this.chatModel().picturePath : this.authService.currentUserProfileModel().profilePicturePath.at(0)">
+    <img [src]="isSelfBubble() ? this.chatModel().picturePath : this.authService.currentUserProfileModel().profilePicturePath().at(0)">
     @if (chatBubble().type !== "image") {
         <div class="message">{{ chatBubble().content }}</div>
     } @else {

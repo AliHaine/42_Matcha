@@ -13,7 +13,7 @@ export class ProfileFactory {
         const profile = new ProfileModel(data);
         if (profile.picturesNumber === 0)
             return profile;
-        profile.profilePicturePath.pop();
+        profile.profilePicturePath.set([]);
         const array = Array.from({length: profile.picturesNumber}, (_, i) => i);
         from(array).pipe(
             concatMap(value => this.apiService.getDataImg("/profiles/profile_pictures", {"user_id": profile.userId, "photo_number": value}))
@@ -21,7 +21,7 @@ export class ProfileFactory {
             const reader = new FileReader();
             reader.readAsDataURL(result);
             reader.onloadend = () => {
-                profile.profilePicturePath.push(reader.result as string);
+                profile.profilePicturePath.update(arr => [...arr, reader.result as string])
             }
         });
         return profile;
