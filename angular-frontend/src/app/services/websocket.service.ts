@@ -37,7 +37,7 @@ export class WebsocketService {
       });
 
       this.websocket.on('notification', (msg: any) => {
-        this.notificationService.addNotification(new NotificationModel(msg.author_id, msg.author_name, msg.action));
+        this.notificationService.addNotification(new NotificationModel(msg.author.id, msg.author.fullname, msg.action));
       });
 
       this.websocket.on('message', (msg: any) => {

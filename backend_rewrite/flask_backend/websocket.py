@@ -105,7 +105,17 @@ def send_notification(emitter, receiver, action, message):
                 return
             cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))
             db.commit()
-            socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':action, 'message':message}, room=f"user_{user_receiver['id']}")
+            author_avatar = False
+            if user_emitter["pictures_number"] > 0:
+                author_avatar = True
+            author = {
+                "id": user_emitter["id"],
+                "fullname": f"{user_emitter['firstname']} {user_emitter['lastname']}",
+                "avatar": author_avatar,
+                "premium": user_emitter["premium"],
+
+            }
+            socketio.emit('notification', {'author': author, 'action':action, 'message':message}, room=f"user_{user_receiver['id']}")
     except Exception as e:
         print(f"Erreur d'envoi de notification : {e}")
 
@@ -126,6 +136,15 @@ def send_all_notifications(user_id):
                 cur.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif["id"],))
                 db.commit()
                 continue
+            avatar = False
+            if user_emitter["pictures_number"] > 0:
+                avatar = True
+            author = {
+                "id": user_emitter["id"],
+                "fullname": f"{user_emitter['firstname']} {user_emitter['lastname']}",
+                "avatar": avatar,
+                "premium": user_emitter["premium"],
+            }
             socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
 
 def parse_service_notification(data):
