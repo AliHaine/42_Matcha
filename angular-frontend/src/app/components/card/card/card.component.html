@@ -1,12 +1,8 @@
 <div id="main" [routerLink]="['/profile/', profile().userId]">
-    <div id="pictureAndIcons">
-            <app-cardimage [profile]="profile()"/>
+    <div class="pictureArea">
+        <app-cardimage [profile]="profile()"/>
     </div>
-
-    <div id="profile">
-        <div id="nameAndAge">
-            {{profile().firstname}} {{profile().age}} years old, {{profile().city}}
-        </div>
+    <div class="profile">
         <div id="description">
             {{profile().description}}
         </div>
