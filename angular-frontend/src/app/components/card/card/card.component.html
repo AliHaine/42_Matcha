@@ -3,11 +3,13 @@
         <app-cardimage [profile]="profile()"/>
     </div>
     <div class="profile">
-        <div id="description">
+        <div class="description">
             {{profile().description}}
         </div>
         <div class="details">
-            <app-interest *ngFor="let interest of this.profile().interestsModels" [interest]="interest"/>
+            @for (interest of this.profile().interestsModels; track interest) {
+                <app-interest [interest]="interest"/>
+            }
         </div>
     </div>
 </div>

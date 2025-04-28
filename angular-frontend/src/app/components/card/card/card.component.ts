@@ -3,9 +3,6 @@ import {InterestComponent} from "../interest/interest.component";
 import {RouterLink} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {ProfileModel} from "../../../models/profile.model";
-import {NgForOf} from "@angular/common";
-import {CardService} from "../../../services/card.service";
-import {ProfileActionService} from "../../../services/profileaction.service";
 import {CardimageComponent} from "../../cardimage/cardimage.component";
 
 @Component({
@@ -13,7 +10,6 @@ import {CardimageComponent} from "../../cardimage/cardimage.component";
   imports: [
     InterestComponent,
     RouterLink,
-    NgForOf,
     CardimageComponent,
   ],
   templateUrl: './card.component.html',
@@ -24,5 +20,4 @@ import {CardimageComponent} from "../../cardimage/cardimage.component";
 export class CardComponent {
   profile: InputSignal<ProfileModel> = input.required();
   apiService = inject(ApiService);
-  profileActionService = inject(ProfileActionService);
 }

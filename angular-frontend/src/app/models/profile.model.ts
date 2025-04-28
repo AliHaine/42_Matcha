@@ -26,7 +26,6 @@ export class ProfileModel {
     lastConnetion: string;
 
     constructor(data: {[key: string]: any}) {
-        console.log(data)
         this.email = data["email"];
         this.firstname = data["firstname"];
         this.lastname = data["lastname"];

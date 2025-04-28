@@ -15,7 +15,7 @@ export class SearchService {
   profilePerPage: number = 2;
 
   constructor() {
-    this.setProfilePerPage(6);
+    this.setProfilePerPage(4);
   }
 
   setProfilePerPage(per_page: number) {

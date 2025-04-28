@@ -13,15 +13,15 @@
 @media (min-width: 1024px) {
     #main {
         display: flex;
-        height: 220px;
-        width: 700px;
+        width: 800px;
         background: var(--color-4);
         border-radius: 11px;
         color: white;
         font-size: 14px;
-        border: solid var(--color-2);
-        border-width: 1px;
+        border: solid 1px var(--color-2);
         box-shadow: 0 0 1.5vmin #000000a3;
+        padding: 10px;
+        gap: 10px;
     }
 
 
@@ -33,22 +33,24 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 30%;
+        width: 40%;
         height: 100%;
     }
 
     .profile {
-        width: 70%;
-        height: 90%;
+        width: 60%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        margin-top: 1.5%;
     }
 
     .details {
         display: flex;
         justify-content: space-around;
-        font-size: 13px;
+        font-size: 1em;
+    }
+
+    .description {
+        font-size: 1.7em;
     }
 }
