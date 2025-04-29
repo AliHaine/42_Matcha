@@ -20,11 +20,13 @@
     </div>
 
     <h3>Shape</h3>
-    <div class="multipleArea">
-        <div class="value">{{ profile().shape.at(2) }}</div>
-        <div class="value">{{ profile().shape.at(0) }}CM</div>
-        <div class="value">{{ profile().shape.at(1) }}KG</div>
-    </div>
+    @if (profile().shape) {
+        <div class="multipleArea">
+            <div class="value">{{ profile().shape.at(2) }}</div>
+            <div class="value">{{ profile().shape.at(0) }}CM</div>
+            <div class="value">{{ profile().shape.at(1) }}KG</div>
+        </div>
+    }
 
     <h3>Health</h3>
     <div class="multipleArea">
