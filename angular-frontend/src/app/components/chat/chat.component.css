@@ -39,7 +39,6 @@
     }
 
     #chat-list {
-        padding: 10px;
         overflow-y: scroll;
         width: 25%;
     }

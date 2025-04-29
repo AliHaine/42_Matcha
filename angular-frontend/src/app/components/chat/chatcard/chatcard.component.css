@@ -28,13 +28,12 @@
 }
 
 @media (min-width: 1024px) {
-    #chatcard-content {
+    .chatCardMain {
         display: flex;
         padding: 20px;
-        height: 10%;
     }
 
-    #chatcard-content:hover {
+    .chatCardMain:hover {
         background-color: var(--color-3);
     }
 

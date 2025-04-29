@@ -108,7 +108,7 @@
 
 #viewForm {
     max-height: 500px;
-    overflow: scroll;
+    overflow: auto;
     display: flex;
     flex-direction: column;
     gap: 3px;

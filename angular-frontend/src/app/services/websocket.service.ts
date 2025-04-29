@@ -33,10 +33,10 @@ export class WebsocketService {
 
       this.websocket.on('connect', () => {
         console.log('Socket.IO Connected ✅');
-        this.sendMessage({ msg: "salut from angular" }); // Send after connection
       });
 
       this.websocket.on('notification', (msg: any) => {
+        console.log(msg);
         this.notificationService.addNotification(new NotificationModel(msg.author.id, msg.author.fullname, msg.action));
       });
 
