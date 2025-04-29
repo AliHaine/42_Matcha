@@ -78,11 +78,12 @@ def block_action(user, user_getting, user_view):
     from .db import get_db
     db = get_db()
     with db.cursor() as cursor:
+        if user_view["blocked"] == False:
+            send_notification(user_getting["id"], user["id"], "block", "User blocked you")
+            cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
+            db.commit()
         cursor.execute("UPDATE user_views SET blocked = NOT blocked WHERE id = %s", (user_view["id"],))
         db.commit()
         if user_view["blocked"] == True:
             send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
-        else:
-            cursor.execute("UPDATE user_views SET liked = FALSE WHERE id = %s", (user_view["id"],))
-            send_notification(user_getting["id"], user["id"], "block", "User blocked you")
     return True
