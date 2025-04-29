@@ -9,7 +9,7 @@ def get_city_id(cityname):
     cityname = cityname[0:(len(cityname) - len(citycode) - 2)].strip()
     print(f"City code: '{citycode}'")
     print(f"City name: '{cityname}'")
-    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&codePostal={citycode}&fields=code,nom,departement,region,centre").json()
+    city_informations = requests.get(f"https://geo.api.gouv.fr/communes?boost=population&limit=5&nom={cityname}&codePostal={citycode}&fields=nom,departement,region,centre,codesPostaux").json()
     print(f"City informations: {city_informations}")
     if len(city_informations) == 0:
         return None
@@ -26,7 +26,8 @@ def get_city_id(cityname):
         cur.execute('SELECT * FROM cities WHERE cityname = %s', (city_informations["nom"],))
         result = cur.fetchone()
         if result is None:
-            cur.execute('INSERT INTO cities (cityname, citycode, departementname, departementcode, regionname, regioncode, centerlon, centerlat) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (city_informations["nom"], city_informations["code"], city_informations["departement"]["nom"], city_informations["departement"]["code"], city_informations["region"]["nom"], city_informations["region"]["code"], city_informations["centre"]["coordinates"][0], city_informations["centre"]["coordinates"][1],))
+            cur.execute('INSERT INTO cities (cityname, citycode, departementname, departementcode, regionname, regioncode, centerlon, centerlat) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                        (city_informations["nom"], city_informations["codesPostaux"][0], city_informations["departement"]["nom"], city_informations["departement"]["code"], city_informations["region"]["nom"], city_informations["region"]["code"], city_informations["centre"]["coordinates"][0], city_informations["centre"]["coordinates"][1],))
             db.commit()
             cur.execute('SELECT * FROM cities WHERE cityname = %s', (city_informations["nom"],))
             result = cur.fetchone()
