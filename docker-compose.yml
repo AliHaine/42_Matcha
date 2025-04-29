@@ -33,6 +33,12 @@ services:
       - ./backend_rewrite/tools/database/servers.json:/pgadmin4/servers.json
     networks:
       - matcha-network
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
   flask-backend:
     container_name: flask-backend
     build:
@@ -66,6 +72,8 @@ services:
       - "8000:80"
     depends_on:
       flask-backend:
+        condition: service_healthy
+      pgadmin:
         condition: service_healthy
     networks:
       - matcha-network
