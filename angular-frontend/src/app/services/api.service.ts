@@ -16,8 +16,7 @@ export class ApiService {
         return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend })
             .pipe(
                 catchError(error => {
-                    console.log('HTTP GET error:', error);
-                    return throwError(() => error);
+                  return of(null);
                 })
             );
     }
@@ -25,8 +24,7 @@ export class ApiService {
     getDataImg(targetUrl: string, paramsToSend: any): Observable<any> {
         return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend, responseType: "blob" }).pipe(
           catchError(error => {
-              console.log('HTTP GET error:', error);
-              return throwError(() => error);
+            return of(null);
           })
       );
     }
@@ -35,8 +33,7 @@ export class ApiService {
         return this.http.post(`${this.baseUrl}${targetUrl}`, dataToPost)
           .pipe(
             catchError(error => {
-                console.log('HTTP GET error:', error);
-                return throwError(() => error);
+              return of(null);
             })
           );
     }
@@ -44,8 +41,7 @@ export class ApiService {
     putData(targetUrl: string, dataToPost: any): Observable<any> {
       return this.http.put(`${this.baseUrl}${targetUrl}`, dataToPost).pipe(
         catchError(error => {
-            console.log('HTTP GET:', error);
-            return throwError(() => error);
+            return of(null);
         })
     );
     }
@@ -53,8 +49,7 @@ export class ApiService {
     deleteData(targetUrl: string, paramsToSend: any): Observable<any> {
       return this.http.delete(`${this.baseUrl}${targetUrl}`, { params: paramsToSend }).pipe(
         catchError(error => {
-            console.log('HTTP GET:', error);
-            return throwError(() => error);
+          return of(null);
         })
     );
     }
