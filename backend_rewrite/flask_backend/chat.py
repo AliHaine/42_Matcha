@@ -58,7 +58,7 @@ def upload_file():
                 if not os.path.exists(file_path):
                     os.makedirs(file_path)
                 file.save(os.path.join(file_path, filename))
-                from .profiles import is_image_corrupted
+                from .profiles_pictures_utils import is_image_corrupted
                 if is_image_corrupted(os.path.join(file_path, filename)):
                     os.remove(os.path.join(file_path, filename))
                     return jsonify({"success": False, "error": "Image is corrupted"})
