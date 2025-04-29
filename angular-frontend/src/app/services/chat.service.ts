@@ -54,19 +54,6 @@ export class ChatService {
         reader.onloadend = () => {
             user.picturePath = reader.result as string;
             this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-            this.addNewChatModel(new ChatModel(user));
-
-            this.addNewChatModel(new ChatModel(user));
         };
     });
   }

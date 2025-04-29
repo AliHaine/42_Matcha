@@ -1,4 +1,4 @@
-import {Component, inject, input, InputSignal} from '@angular/core';
+import {Component, inject, input, InputSignal, signal} from '@angular/core';
 import {ProfileModel} from "../../models/profile.model";
 import {ProfileActionService} from "../../services/profileaction.service";
 import {SvgIconService} from "../../services/svg-icon.service";
@@ -22,9 +22,22 @@ export class CardimageComponent {
     svgIconService = inject(SvgIconService);
     router = inject(Router)
     profile: InputSignal<ProfileModel> = input.required();
+    currentIndex = signal<number>(0);
 
     sendMessageTrigger() {
         //Need to active the chat with this user
         this.router.navigate(['chat'])
+    }
+
+    arrowLeftClick() {
+        this.currentIndex.set(this.currentIndex()-1);
+        if (this.currentIndex() < 0)
+            this.currentIndex.set(this.profile().profilePicturePath().length-1);
+    }
+
+    arrowRightClick() {
+        this.currentIndex.set(this.currentIndex()+1);
+        if (this.currentIndex() > this.profile().profilePicturePath().length-1)
+            this.currentIndex.set(0);
     }
 }

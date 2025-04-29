@@ -1,5 +1,12 @@
 <div class="profileImageMain">
-    <img class="profilePic" [src]=profile().profilePicturePath().at(0) />
+    <img class="profilePic" [src]=profile().profilePicturePath().at(currentIndex()) />
+    @if (profile().profilePicturePath().length > 1) {
+        <div class="arrows">
+            <mat-icon (click)="arrowLeftClick()" style="rotate: 180deg" svgIcon="arrow"/>
+            <mat-icon (click)="arrowRightClick()" svgIcon="arrow"/>
+        </div>
+
+    }
     <div class="score">
         <div style="font-size: 90%;">{{profile().score}}%</div>
         <mat-icon svgIcon="target"/>
