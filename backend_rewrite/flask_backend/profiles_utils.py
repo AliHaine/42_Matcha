@@ -25,7 +25,10 @@ def parse_profile_type(user, user_getting):
     from flask import request, jsonify
     from .websocket import send_notification
     get_user_view(user_getting["id"], user["id"], accessed=True)
-    if 'chat' in request.args and request.args['chat'] != 'true':
+    if 'chat' in request.args:
+        if request.args['chat'] == 'false':
+            send_notification(user_getting["id"], user["id"], "view", "User viewed your profile")
+    else:
         send_notification(user_getting["id"], user["id"], "view", "User viewed your profile")
     if 'chat' in request.args and request.args['chat'] == 'true':
         if 'all_messages' in request.args and request.args['all_messages'] == 'true':
