@@ -37,6 +37,8 @@ def me():
         from .user import FIELDS_UPDATABLE, STEP1_FIELDS, STEP2_FIELDS, STEP3_FIELDS, check_fields_step1, check_fields_step2, check_fields_step3, update_user_fields
         for field in FIELDS_UPDATABLE:
             if field in data:
+                if type(data[field]) not in [bool, int, str, list]:
+                    return jsonify({'success': False, 'message': f'Invalid type for field {field}'})
                 if type(data[field]) != int and type(data[field]) != bool:
                     if len(data[field]) == 0:
                         continue
