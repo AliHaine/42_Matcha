@@ -4,6 +4,7 @@ import {FooterComponent} from "./footer/footer.component";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {AuthService} from "../services/auth.service";
 import {PopupComponent} from "./utils/popup/popup.component";
+import {SvgIconService} from "../services/svg-icon.service";
 
 
 @Component({
@@ -29,4 +30,5 @@ import {PopupComponent} from "./utils/popup/popup.component";
 })
 export class RootComponent {
   authService = inject(AuthService);
+  svgIconService = inject(SvgIconService);
 }

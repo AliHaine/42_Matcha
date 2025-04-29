@@ -106,11 +106,6 @@
 }
 
 @media (min-width: 1024px) {
-    .profilePic {
-        width: 600px;
-        aspect-ratio: 1/1;
-    }
-
     .button:hover {
         transform: scale(1.2);
         transition: transform 0.5s;

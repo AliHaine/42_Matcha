@@ -34,10 +34,12 @@
     display: none;
 }
 
-#deleteImageButton {
-    -webkit-mask: url('/icons/x.png') center/contain; 
-    width: 32px; 
-    height: 32px;
+.deleteImageButton {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
 }
 
 .caption {

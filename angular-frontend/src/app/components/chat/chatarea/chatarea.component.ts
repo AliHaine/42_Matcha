@@ -1,5 +1,4 @@
 import {Component, inject, input, InputSignal} from '@angular/core';
-import {RouterLink} from "@angular/router";
 import {ChatModel} from "../../../models/chat.model";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {WebsocketService} from "../../../services/websocket.service";
@@ -7,14 +6,11 @@ import {ChatbubbleComponent} from "../chatbubble/chatbubble.component";
 import {ChatService} from "../../../services/chat.service";
 import {NgForOf} from "@angular/common";
 import { ApiService } from '../../../services/api.service';
-import {SvgIconService} from "../../../services/svg-icon.service";
 import { MatIconModule } from '@angular/material/icon';
-
 
 @Component({
   selector: 'app-chatarea',
   imports: [
-    RouterLink,
     ReactiveFormsModule,
     ChatbubbleComponent,
     NgForOf,
@@ -27,7 +23,6 @@ export class ChatareaComponent {
   webSocketService = inject(WebsocketService);
   chatService = inject(ChatService);
   apiService = inject(ApiService);
-  svgIconService = inject(SvgIconService);
   chatModel: InputSignal<ChatModel> = input.required();
   messageInput = new FormControl('');
 

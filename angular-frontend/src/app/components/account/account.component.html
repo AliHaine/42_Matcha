@@ -5,7 +5,7 @@
                         (currentIndexEvent)="sliderTrigger($event)">
             </app-slider>
             @if (authService.currentUserProfileModel().picturesNumber > 0) {
-                <div id="deleteImageButton" class="icon" (click)="deletePicture()"></div>
+                <mat-icon (click)="deletePicture()" class="deleteImageButton" svgIcon="x"/>
             }
         </div>
         <button class="button button-style-1" (click)="formNumber.set(0); sidenav.close()">Profile</button>
@@ -24,8 +24,7 @@
             <div id="profilePictures" [class.premium-border]="authService.currentUserProfileModel().premium">
                 <app-slider [images]="authService.currentUserProfileModel().profilePicturePath()" (currentIndexEvent)="sliderTrigger($event)"></app-slider>
                 @if (authService.currentUserProfileModel().picturesNumber > 0) {
-                    <div id="deleteImageButton" class="icon"
-                        (click)="deletePicture()"></div>
+                    <mat-icon (click)="deletePicture()" class="deleteImageButton" svgIcon="x"/>
                 }
             </div>
             <button class="button button-style-1" (click)="formNumber.set(0)">Profile</button>

@@ -16,6 +16,8 @@ import { ProfileFactory } from '../../services/profile.factory';
 import {RouterLink} from "@angular/router";
 import {PopupService} from "../../services/popup.service";
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-account',
@@ -31,7 +33,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
         MatMenuModule,
         MatButtonModule,
         RouterLink,
-        MatSidenavModule
+        MatSidenavModule,
+        MatIconModule
     ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
