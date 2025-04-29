@@ -12,17 +12,23 @@ export class ChatService {
 
   apiService = inject(ApiService);
   bubbleFactory = inject(BubbleFactory);
+  displayMode = signal<string>("list"); //list or chat or both
   activeChat = signal<ChatModel | undefined>(undefined);
   availableChats = signal<ChatModel[]>([]);
   currentChatBubbles = signal<ChatBubbleModel[]>([]);
 
   updateCurrentChat(chatModel: ChatModel): ChatModel {
     this.activeChat.set(chatModel);
+    this.updateDisplayMode("chat")
+    this.displayMode.set("chat");
     this.apiService.getData(`/profiles/${chatModel.userId}` , {chat: true, all_messages: true} ).subscribe(data => {
-        console.log(data)
       this.setupAllBubbles(data["user"]["allMessages"]);
     });
     return chatModel;
+  }
+
+  updateDisplayMode(mode: string) {
+      this.displayMode.set(mode);
   }
 
   updateAvailableChats(data: number[]) {
@@ -47,6 +53,19 @@ export class ChatService {
         reader.readAsDataURL(imageBlob);
         reader.onloadend = () => {
             user.picturePath = reader.result as string;
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+            this.addNewChatModel(new ChatModel(user));
+
             this.addNewChatModel(new ChatModel(user));
         };
     });

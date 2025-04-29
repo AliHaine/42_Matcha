@@ -1,4 +1,26 @@
 <div id="chat">
+    @if (chatService.displayMode() === "list" || chatService.displayMode() === "both") {
+        <div id="chat-list">
+            @if (chatService.availableChats().length > 0) {
+                <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
+            } @else {
+                <div style="text-align: center; height: 100%; align-content: center;">You don't have any match..</div>
+            }
+        </div>
+    }
+    @if (chatService.displayMode() === "chat" || chatService.displayMode() === "both") {
+        <div id="chat-area">
+            @if (chatService.activeChat()) {
+                <app-chatarea *ngIf="chatService.activeChat() as chatModel" [chatModel]=chatModel></app-chatarea>
+            } @else {
+                <div style="text-align: center; height: 100%; align-content: center;">Select a chat in the chat list
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div id="chatDesktop">
     <div id="chat-list">
         @if (chatService.availableChats().length > 0) {
             <app-chatcard *ngFor="let chatModel of chatService.availableChats()" [chatModel]="chatModel"></app-chatcard>
@@ -10,7 +32,8 @@
         @if (chatService.activeChat()) {
             <app-chatarea *ngIf="chatService.activeChat() as chatModel" [chatModel]=chatModel></app-chatarea>
         } @else {
-            <div style="text-align: center; height: 100%; align-content: center;">Select a chat in the chat list</div>
+            <div style="text-align: center; height: 100%; align-content: center;">Select a chat in the chat list
+            </div>
         }
     </div>
 </div>

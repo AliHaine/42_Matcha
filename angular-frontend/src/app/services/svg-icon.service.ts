@@ -60,5 +60,17 @@ export class SvgIconService {
             'premium',
             this.domSanitizer.bypassSecurityTrustResourceUrl('icons/premium.svg')
         );
+        this.matIconRegistry.addSvgIcon(
+            'folder',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/folder.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'send',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/send.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
+            'arrow',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/arrow.svg')
+        );
     }
 }

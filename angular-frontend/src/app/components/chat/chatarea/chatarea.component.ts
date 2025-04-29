@@ -7,6 +7,9 @@ import {ChatbubbleComponent} from "../chatbubble/chatbubble.component";
 import {ChatService} from "../../../services/chat.service";
 import {NgForOf} from "@angular/common";
 import { ApiService } from '../../../services/api.service';
+import {SvgIconService} from "../../../services/svg-icon.service";
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-chatarea',
@@ -15,6 +18,7 @@ import { ApiService } from '../../../services/api.service';
     ReactiveFormsModule,
     ChatbubbleComponent,
     NgForOf,
+    MatIconModule,
   ],
   templateUrl: './chatarea.component.html',
   styleUrl: './chatarea.component.css'
@@ -23,6 +27,7 @@ export class ChatareaComponent {
   webSocketService = inject(WebsocketService);
   chatService = inject(ChatService);
   apiService = inject(ApiService);
+  svgIconService = inject(SvgIconService);
   chatModel: InputSignal<ChatModel> = input.required();
   messageInput = new FormControl('');
 

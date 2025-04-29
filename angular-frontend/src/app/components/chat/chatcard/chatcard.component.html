@@ -1,12 +1,10 @@
-<div id="chatcard-content" (click)="chatService.updateCurrentChat(chatModel())">
-    <div id="profile-picture">
-        <img [src]=this.chatModel().picturePath [style.--border-color]="this.chatModel().status ? 'var(--color-green)': 'var(--color-error)'">
-    </div>
-    <div id="text-area">
-        <div id="top">
+<div class="chatCardMain" (click)="chatService.updateCurrentChat(chatModel())">
+    <img class="profilePicture" [src]=this.chatModel().picturePath [style.--border-color]="this.chatModel().status ? 'var(--color-green)': 'var(--color-error)'">
+    <div style="overflow: hidden;" class="textArea">
+        <div class="top">
             <h3>{{this.chatModel().firstname}} {{this.chatModel().age}}, {{this.chatModel().city}}</h3>
             <h5>{{this.chatModel().lastMsgTime}}</h5>
         </div>
-        <p>{{this.chatModel().lastMessage}}</p>
+        <p class="lastMessage">{{this.chatModel().lastMessage}}</p>
     </div>
 </div>

@@ -3,25 +3,34 @@
     flex-direction: row-reverse;
 }
 
-
 .chatbubble-content {
     display: flex;
-    max-width: 48%;
-    gap: 2%;
+    gap: 5px;
     color: var(--color-1);
 }
 
 .chatbubble-content img {
-    width: 10%;
-    height: 10%;
-    aspect-ratio: 1/1;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
 }
 
 .message {
-    background-color: var(--color-3);
+    background-color: var(--color-4);
     border-radius: 20px;
     height: 100%;
-    padding: 2%;
+    padding: 10px;
     word-break: break-word;
+}
+
+.time {
+    font-size: 0.8em;
+    color: var(--color-4);
+}
+
+@media (min-width: 1024px) {
+    .chatbubble-content {
+        max-width: 48%;
+        gap: 15px;
+    }
 }

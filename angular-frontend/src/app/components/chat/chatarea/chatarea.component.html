@@ -1,31 +1,27 @@
-<div id="chat-header">
-    <div id="left-content">
-        <img [src]=this.chatModel().picturePath>
+<div id="chatAreaMain">
+    <div id="chatHeader">
+        <mat-icon id="returnButton" svgIcon="arrow" (click)="chatService.updateDisplayMode('list')"></mat-icon>
         <div id="text-area">
             <div>
-                <h3>{{this.chatModel().firstname}} {{this.chatModel().age}}, {{this.chatModel().city}}</h3>
-            </div>
-            <div id="online-area">
-                <div id="status-circle"></div>
-                <div>Online</div>
+                <h3>{{this.chatModel().firstname}} {{this.chatModel().age}}</h3>
             </div>
         </div>
+        <mat-icon svgIcon="folder" (click)="chatService.updateDisplayMode('list')"></mat-icon>
     </div>
-    <div id="right-content">
-        <img class="giftIcon chatarea-img">
-        <a [routerLink]="['/profile/', this.chatModel().userId]" class="icon chatarea-img" style="-webkit-mask: url('/icons/navProfile.png') center/contain"></a>
-    </div>
-</div>
 
-<div id="chat-box">
-    <app-chatbubble *ngFor="let bubble of chatService.currentChatBubbles()" [chatBubble]="bubble" [chatModel]="chatModel()" class="right-bubble"></app-chatbubble>
-</div>
-
-<div id="chat-footer">
-    <textarea placeholder="Enter your message here" rows="1" [formControl]=this.messageInput (keydown.enter)="sendMessage($event)"></textarea>
-    <div>
-        <label for="picture" class="icon chatarea-img" style="-webkit-mask: url('/icons/fileInput.png') center/contain"></label>
-        <input style="display: none;" id="picture" type="file" accept="image/png, image/jpeg">
-        <div class="icon chatarea-img" style="-webkit-mask: url('/icons/sendArrow.png') center/contain" (click)="sendMessage($event)"></div>
+    <div id="chatBox">
+        <app-chatbubble *ngFor="let bubble of chatService.currentChatBubbles()" [chatBubble]="bubble" [chatModel]="chatModel()" class="right-bubble"></app-chatbubble>
     </div>
+
+    <div id="chatFooter">
+        <textarea placeholder="Enter your message here" rows="1" [formControl]=this.messageInput (keydown.enter)="sendMessage($event)"></textarea>
+        <div>
+            <label for="picture">
+                <mat-icon svgIcon="folder"></mat-icon>
+            </label>
+            <input style="display: none;" id="picture" type="file" accept="image/png, image/jpeg">
+            <mat-icon svgIcon="send" (click)="sendMessage($event)"></mat-icon>
+        </div>
+    </div>
+
 </div>
