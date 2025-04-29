@@ -28,7 +28,6 @@ export class WebsocketService {
         transports: ['websocket'],
         query: { 'access_token': this.apiService.getAccessToken() },
         reconnectionAttempts: -1
-
       });
 
       this.websocket.on('connect', () => {
@@ -36,7 +35,6 @@ export class WebsocketService {
       });
 
       this.websocket.on('notification', (msg: any) => {
-        console.log(msg);
         this.notificationService.addNotification(new NotificationModel(msg.author.id, msg.author.fullname, msg.action));
       });
 

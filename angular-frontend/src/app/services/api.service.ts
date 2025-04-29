@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {catchError, map, Observable, of, switchMap} from 'rxjs';
+import {catchError, map, Observable, of, switchMap, throwError} from 'rxjs';
 import {backendIP} from "../app.config";
 
 @Injectable({
@@ -13,7 +13,13 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
     getData(targetUrl: string, paramsToSend: any): Observable<any> {
-      return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend });
+        return this.http.get(`${this.baseUrl}${targetUrl}`, { params: paramsToSend })
+            .pipe(
+                catchError(error => {
+                    console.error('HTTP GET error:', error);
+                    return throwError(() => error);
+                })
+            );
     }
 
     getDataImg(targetUrl: string, paramsToSend: any): Observable<any> {
