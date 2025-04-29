@@ -145,7 +145,7 @@ def send_all_notifications(user_id):
                 "avatar": avatar,
                 "premium": user_emitter["premium"],
             }
-            socketio.emit('notification', {'author_id':user_emitter["id"], 'author_name':f"{user_emitter['firstname']} {user_emitter['lastname']}", 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
+            socketio.emit('notification', {'author':author, 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
 
 def parse_service_notification(data):
     if not "action" in data:
