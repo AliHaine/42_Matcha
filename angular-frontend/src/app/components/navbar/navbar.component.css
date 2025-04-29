@@ -12,6 +12,19 @@ nav {
     display: none;
 }
 
+.notificationNumber {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.8em;
+    padding: 2px;
+    margin-top: 5px;
+    transform: translate(50%, -50%);
+}
+
 @media (min-width: 1024px) {
     #mobileDevice {
         display: none;
@@ -45,5 +58,17 @@ nav {
         left: 50%;
         transform: translate(-50%);
         font-size: 2.5em;
+    }
+
+    .notificationNumber {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        font-size: 0.5em;
+        padding: 2px;
+        transform: translate(50%, -50%);
     }
 }

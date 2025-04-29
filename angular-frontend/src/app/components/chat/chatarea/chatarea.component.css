@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 85vh;
 }
 
 #chatHeader {
@@ -13,12 +14,15 @@
 #chatBox {
     display: flex;
     flex-direction: column-reverse;
+    gap: 10px;
+    overflow-y: scroll;
 }
 
 #chatFooter {
     display: flex;
     justify-content: space-between;
-
+    width: 100%;
+    gap: 10px;
 }
 
 #returnButton {
@@ -32,7 +36,8 @@ textarea {
     color: var(--color-1);
     flex: 1;
     resize: none;
-    font-size: 140%;
+    font-size: 1.2em;
+    padding: 10px;
 }
 
 textarea:focus {
@@ -68,7 +73,6 @@ textarea::placeholder {
         display: flex;
         flex-direction: column-reverse;
         overflow: auto;
-
         gap: 2%;
         scrollbar-color: var(--color-4) var(--color-1);
         padding: 1%;

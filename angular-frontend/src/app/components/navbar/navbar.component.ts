@@ -4,6 +4,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { AuthService } from '../../services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   selector: 'app-navbar',
@@ -14,4 +15,5 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class NavbarComponent {
   authService = inject(AuthService);
+  notificationService = inject(NotificationService);
 }

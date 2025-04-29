@@ -3,10 +3,9 @@
         <mat-icon id="returnButton" svgIcon="arrow" (click)="chatService.updateDisplayMode('list')"></mat-icon>
         <div id="text-area">
             <div>
-                <h3>{{this.chatModel().firstname}} {{this.chatModel().age}}</h3>
+                <h3>{{this.chatModel().firstname}}, {{this.chatModel().age}}</h3>
             </div>
         </div>
-        <mat-icon svgIcon="folder" (click)="chatService.updateDisplayMode('list')"></mat-icon>
     </div>
 
     <div id="chatBox">
