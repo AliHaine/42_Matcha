@@ -56,7 +56,7 @@ def create_app(test_config=None):
         CHAT_UPLOAD_DIR=os.path.join(base_dir, 'uploads/chat'),
         # file configuration
         IMAGE_EXTENSIONS=['png', 'jpg', 'jpeg'],
-        MAX_CONTENT_LENGTH=25 * 1024 * 1024,
+        MAX_CONTENT_LENGTH=10 * 1024 * 1024,
         MAX_PICTURES=5,
         # mail configuration
         MAIL_SERVER=os.getenv('MAIL_SERVER', default='smtp.gmail.com'),
@@ -70,6 +70,12 @@ def create_app(test_config=None):
         SOCKETIO_INSTANCE=socketio,
         USE_RELOADER=os.getenv('USE_RELOADER', default='False') == 'True',   
     )
+    @app.errorhandler(413)
+    def request_entity_too_large(error):
+        """
+        Gère les erreurs de taille de requête trop grande.
+        """
+        return jsonify({'message': 'File passed is too large', 'success': False})
     try:
         with app.app_context():
             if 'init-db' in sys.argv:

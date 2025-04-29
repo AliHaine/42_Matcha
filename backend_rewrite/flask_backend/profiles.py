@@ -236,6 +236,6 @@ def profile_pictures():
             return delete_profile_picture()
         else:
             return jsonify({'success': False, 'message': 'Invalid method'})
-    except Exception as e:
+    except KeyError as e:
         print("PROFILE PIC FAIL :", e)
         return jsonify({'success': False, 'message': 'An error occured'})
