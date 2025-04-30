@@ -12,6 +12,13 @@ export class ProfileActionService {
     apiService = inject(ApiService);
     cardService = inject(CardService);
     popupService = inject(PopupService);
+    reportReason: string[] = [];
+
+    constructor() {
+        this.apiService.getData("/getInformations/reportReasons", {}).subscribe(result => {
+            this.reportReason = result["reportReasons"];
+        });
+    }
 
     likeProfile(profile: ProfileModel) {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: 'like'}).subscribe(result => {
@@ -21,8 +28,9 @@ export class ProfileActionService {
         })
     }
 
-    blockUser(profile: ProfileModel, action: string) {
-        this.apiService.postData(`/profiles/${profile.userId}`, {action: action}).subscribe(_ => {
+    blockUser(profile: ProfileModel, action: string, reason: string) {
+        this.apiService.postData(`/profiles/${profile.userId}`, {action: action, reason: reason}).subscribe(result => {
+            this.popupService.displayPopupBool(result['message'], result['success'])
         });
     }
 }
