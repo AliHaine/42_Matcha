@@ -38,3 +38,7 @@ def get_interests_list():
 @bp.route('/register', methods=['GET'])
 def get_register_info():
     return jsonify({'success': True, 'registerInfo': current_app.config['CONSTRAINTS']})
+
+@bp.route('/reportReasons', methods=['GET'])
+def get_report_reasons():
+    return jsonify({'success': True, 'reportReasons': current_app.config['CONSTRAINTS']['reason']})

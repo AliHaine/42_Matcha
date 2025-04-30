@@ -4,10 +4,11 @@ def export_constraints(app, cur):
     """
     Exporte les contraintes de la table "users" dans le fichier de configuration de l'application.
     """
-    table_name = "users"
+    table_names = ["users", "user_views"]
     columns_names = {
         "searching", "commitment", "frequency", "weight", "size", "shape",
-        "smoking", "alcohol", "diet", "firstname", "lastname", "description", "username"
+        "smoking", "alcohol", "diet", "firstname", "lastname", "description", "username",
+        "reason"
     }
     constraints = {}
 
@@ -17,36 +18,36 @@ def export_constraints(app, cur):
     WHERE contype = 'c' 
     AND conrelid = %s::regclass;
     """
-    
-    cur.execute(query, (table_name,))
-    results = cur.fetchall()
+    for table_name in table_names:
+        cur.execute(query, (table_name,))
+        results = cur.fetchall()
 
-    regex_pattern = re.compile(r"""
-        ARRAY\[(?P<values>[^\]]+)\]        # Capture ARRAY[...] (list of values)
-        |                                  # OR
-        [~|SIMILAR TO]\s+'(?P<regex>.*?)'  # Capture regex constraint
-    """, re.VERBOSE)
+        regex_pattern = re.compile(r"""
+            ARRAY\[(?P<values>[^\]]+)\]        # Capture ARRAY[...] (list of values)
+            |                                  # OR
+            [~|SIMILAR TO]\s+'(?P<regex>.*?)'  # Capture regex constraint
+        """, re.VERBOSE)
 
-    for row in results:
-        constraint_def = row["constraint_def"]
-        
-        for column in columns_names:
-            if column in constraint_def:
-                match = regex_pattern.search(constraint_def)
-                if match:
-                    if match.group("values"):
-                        raw_values = match.group("values").split(", ")
-                        values = []
-                        for v in raw_values:
-                            # Nettoyage de chaque valeur : on enlève les ::, les parenthèses et les apostrophes
-                            clean = re.sub(r"::.*", "", v)  # supprime tout ce qui suit "::"
-                            clean = clean.strip(" '()")     # supprime les ' ( ) et espaces autour
-                            values.append(clean)
-                        constraints[column] = values
+        for row in results:
+            constraint_def = row["constraint_def"]
+            
+            for column in columns_names:
+                if column in constraint_def:
+                    match = regex_pattern.search(constraint_def)
+                    if match:
+                        if match.group("values"):
+                            raw_values = match.group("values").split(", ")
+                            values = []
+                            for v in raw_values:
+                                # Nettoyage de chaque valeur : on enlève les ::, les parenthèses et les apostrophes
+                                clean = re.sub(r"::.*", "", v)  # supprime tout ce qui suit "::"
+                                clean = clean.strip(" '()")     # supprime les ' ( ) et espaces autour
+                                values.append(clean)
+                            constraints[column] = values
 
-                    elif match.group("regex"):
-                        # On remplace les doubles backslashes par un simple (il y en a 4 et 2 dans le replace car il faut echapper le backslash)
-                        constraints[column] = match.group("regex").replace("\\\\", "\\")
+                        elif match.group("regex"):
+                            # On remplace les doubles backslashes par un simple (il y en a 4 et 2 dans le replace car il faut echapper le backslash)
+                            constraints[column] = match.group("regex").replace("\\\\", "\\")
 
     app.config['CONSTRAINTS'] = constraints
     print("INIT : Constraints loaded successfully")

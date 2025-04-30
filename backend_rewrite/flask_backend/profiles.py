@@ -218,7 +218,7 @@ def get_profile(id):
             action = data.get('action', None)
             if action is None:
                 return jsonify({'success': False, 'message': 'No action provided'})
-            return parse_post_actions(user, user_getting, action)
+            return parse_post_actions(user, user_getting, action, data)
         except Exception as e:
             print("GET PROFILE FAIL : failed to update user views:", e)
             return jsonify({'success': False, 'message': 'An error occured'})

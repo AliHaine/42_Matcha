@@ -1,4 +1,4 @@
-def parse_post_actions(user, user_getting, action):
+def parse_post_actions(user, user_getting, action, other_data):
     """
     Parse the action of a post and update the database accordingly.
     """
@@ -22,8 +22,13 @@ def parse_post_actions(user, user_getting, action):
             elif action == 'block':
                 success = block_action(user, user_getting, user_view)
             elif action == 'report':
-                cursor.execute("UPDATE user_views SET report = TRUE WHERE id = %s", (user_view["id"],))
+                if 'reason' not in other_data:
+                    return jsonify({'success': False, 'message': 'Missing reason'})
+                if other_data['reason'] not in current_app.config['CONSTRAINTS']['reason']:
+                    return jsonify({'success': False, 'message': 'Invalid reason'})
+                cursor.execute("UPDATE user_views SET report = TRUE, reason = %s WHERE id = %s", (other_data["reason"], user_view["id"],))
                 db.commit()
+                success = True
             else:
                 message = "Invalid action"
             if success:
