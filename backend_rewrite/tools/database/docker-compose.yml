@@ -4,7 +4,7 @@ services:
     image: postgis/postgis:16-3.5-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./200k_fix.dump:/docker-entrypoint-initdb.d/sauvegarde.dump
+      - ./sauvegarde.dump:/docker-entrypoint-initdb.d/sauvegarde.dump
       - ./restore.sh:/docker-entrypoint-initdb.d/01_restore.sh
     env_file:
       - ../../../settings/.database.env
@@ -23,7 +23,6 @@ services:
       - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-      - ./servers.json:/pgadmin4/servers.json
 
 networks:
   postgres_network:
