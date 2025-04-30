@@ -153,55 +153,62 @@ def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
                 if not isinstance(data[field], str):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not a string")
-                if len(data[field]) < 3:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too short")
-                if len(data[field]) > 255:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too long")
-                if not re.match(current_app.config['CONSTRAINTS']['username'], data[field]):
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-                if profile_exists_check == True:
-                    with get_db().cursor() as cur:
-                        cur.execute('SELECT * FROM users WHERE username = %s', (data[field],))
-                        user = cur.fetchone()
-                        if user is not None:
-                            result['success'] = False
-                            result['errors'].append(f"Field {field} is already used")
+                else:
+                    if len(data[field]) < 3:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too short")
+                    if len(data[field]) > 255:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too long")
+                    if not re.match(current_app.config['CONSTRAINTS']['username'], data[field]):
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid")
+                    if profile_exists_check == True:
+                        with get_db().cursor() as cur:
+                            cur.execute('SELECT * FROM users WHERE username = %s', (data[field],))
+                            user = cur.fetchone()
+                            if user is not None:
+                                result['success'] = False
+                                result['errors'].append(f"Field {field} is already used")
             if field == "firstname" or field == "lastname":
                 regex_name = current_app.config['CONSTRAINTS'][field]
                 if not isinstance(data[field], str) or not re.match(regex_name, data[field]):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
-                if len(data[field]) < 2:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too short")
-                if len(data[field]) > 32:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too long")
+                else:
+                    if len(data[field]) < 2:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too short")
+                    if len(data[field]) > 32:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too long")
             if field == "age":
                 if not isinstance(data[field], int):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not an int")
-                if data[field] < 15:
-                    result['success'] = False
-                    result['errors'].append(f"You must be at least 15 years old")
-                if data[field] > 80:
-                    result['success'] = False
-                    result['errors'].append(f"You are too old for this app")
+                else:
+                    if data[field] < 15:
+                        result['success'] = False
+                        result['errors'].append(f"You must be at least 15 years old")
+                    if data[field] > 80:
+                        result['success'] = False
+                        result['errors'].append(f"You are too old for this app")
             if field == "email":
-                email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-                if not isinstance(data[field], str) or not re.match(email_regex, data[field]):
+                if not isinstance(data[field], str):
                     result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
-                if profile_exists_check == True:
-                    with get_db().cursor() as cur:
-                        cur.execute('SELECT * FROM users WHERE email = %s', (data[field],))
-                        user = cur.fetchone()
-                        if user is not None:
-                            result['success'] = False
-                            result['errors'].append(f"Field {field} is already used")
+                    result['errors'].append(f"Field {field} is not a string")
+                else:
+                    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+                    if not re.match(email_regex, data[field]):
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid")
+                    if profile_exists_check == True:
+                        with get_db().cursor() as cur:
+                            cur.execute('SELECT * FROM users WHERE email = %s', (data[field],))
+                            user = cur.fetchone()
+                            if user is not None:
+                                result['success'] = False
+                                result['errors'].append(f"Field {field} is already used")
             if field == "hetero":
                 if not isinstance(data[field], bool) or data[field] not in [True, False]:
                     result['success'] = False
@@ -215,38 +222,39 @@ def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
                 if not isinstance(password, str):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not a string")
-                elif len(password) < 8:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too short")
-                elif len(password) > 255:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too long")
                 else:
-                    invalid_chars = [c for c in password if c not in PASSWORD_ALLOWED_CHARACTERS and c not in SPECIAL_CHARACTERS]
-                    if invalid_chars:
+                    if len(password) < 8:
                         result['success'] = False
-                        result['errors'].append(f"Field {field} contains invalid characters: {', '.join(invalid_chars)}")
+                        result['errors'].append(f"Field {field} is too short")
+                    elif len(password) > 255:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too long")
                     else:
-                        has_lower = any(c.islower() for c in password)
-                        has_upper = any(c.isupper() for c in password)
-                        has_digit = any(c.isdigit() for c in password)
-                        has_special = any(c in SPECIAL_CHARACTERS for c in password)
+                        invalid_chars = [c for c in password if c not in PASSWORD_ALLOWED_CHARACTERS and c not in SPECIAL_CHARACTERS]
+                        if invalid_chars:
+                            result['success'] = False
+                            result['errors'].append(f"Field {field} contains invalid characters: {', '.join(invalid_chars)}")
+                        else:
+                            has_lower = any(c.islower() for c in password)
+                            has_upper = any(c.isupper() for c in password)
+                            has_digit = any(c.isdigit() for c in password)
+                            has_special = any(c in SPECIAL_CHARACTERS for c in password)
 
-                        if not has_lower:
-                            result['success'] = False
-                            result['errors'].append("Password : at least one lowercase letter is required")
-                        if not has_upper:
-                            result['success'] = False
-                            result['errors'].append("Password : at least one uppercase letter is required")
-                        if not has_digit:
-                            result['success'] = False
-                            result['errors'].append("Password : at least one digit is required")
-                        if not has_special:
-                            result['success'] = False
-                            result['errors'].append("Password : at least one special character is required")
-                        if check_common_password(password):
-                            result['success'] = False
-                            result['errors'].append(f"Field {field} is too common")
+                            if not has_lower:
+                                result['success'] = False
+                                result['errors'].append("Password : at least one lowercase letter is required")
+                            if not has_upper:
+                                result['success'] = False
+                                result['errors'].append("Password : at least one uppercase letter is required")
+                            if not has_digit:
+                                result['success'] = False
+                                result['errors'].append("Password : at least one digit is required")
+                            if not has_special:
+                                result['success'] = False
+                                result['errors'].append("Password : at least one special character is required")
+                            if check_common_password(password):
+                                result['success'] = False
+                                result['errors'].append(f"Field {field} is too common")
             if field == "gender":
                 if not isinstance(data[field], str) or data[field] not in ["M", "F"]:
                     result['success'] = False
@@ -349,15 +357,16 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                 if not isinstance(data[field], str):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not a string")
-                if len(data[field]) < 10:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too short")
-                if len(data[field]) > 1500:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is too long")
-                if re.match(current_app.config["CONSTRAINTS"]["description"], data[field]) is None:
-                    result['success'] = False
-                    result['errors'].append(f"Field {field} is not valid")
+                else:
+                    if len(data[field]) < 10:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too short")
+                    if len(data[field]) > 1500:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is too long")
+                    if re.match(current_app.config["CONSTRAINTS"]["description"], data[field]) is None:
+                        result['success'] = False
+                        result['errors'].append(f"Field {field} is not valid")
     return result
 
 def check_registration_status(other_email=None):
