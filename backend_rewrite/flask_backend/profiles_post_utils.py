@@ -21,6 +21,8 @@ def parse_post_actions(user, user_getting, action, other_data):
                 success, message = like_action(user, user_getting, user_view, old_matched)
             elif action == 'block':
                 success = block_action(user, user_getting, user_view)
+                if success:
+                    message = "User blocked successfully"
             elif action == 'report':
                 if 'reason' not in other_data:
                     return jsonify({'success': False, 'message': 'Missing reason'})
@@ -29,10 +31,11 @@ def parse_post_actions(user, user_getting, action, other_data):
                 cursor.execute("UPDATE user_views SET report = TRUE, reason = %s WHERE id = %s", (other_data["reason"], user_view["id"],))
                 db.commit()
                 success = True
+                message = "User reported successfully"
             else:
                 message = "Invalid action"
             if success:
-                return jsonify({'success': True})
+                return jsonify({'success': True, 'message': message})
             else:
                 return jsonify({'success': False, 'message': message})
     except Exception as e:
