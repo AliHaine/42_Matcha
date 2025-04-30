@@ -105,6 +105,10 @@ def send_notification(emitter, receiver, action, message):
                 return
             cur.execute('INSERT INTO waiting_notifications (emmiter, receiver, action, message) VALUES (%s, %s, %s, %s)', (emitter, receiver, action, message))
             db.commit()
+            cur.execute('SELECT id FROM waiting_notifications WHERE emmiter = %s AND receiver = %s AND action = %s AND message = %s', (emitter, receiver, action, message))
+            notification_id = cur.fetchone()
+            if notification_id is None:
+                return
             author_avatar = False
             if user_emitter["pictures_number"] > 0:
                 author_avatar = True
@@ -115,7 +119,7 @@ def send_notification(emitter, receiver, action, message):
                 "premium": user_emitter["premium"],
 
             }
-            socketio.emit('notification', {'author': author, 'action':action, 'message':message}, room=f"user_{user_receiver['id']}")
+            socketio.emit('notification', {'author': author, 'action':action, 'message':message, 'notif_id': notification_id}, room=f"user_{user_receiver['id']}")
     except Exception as e:
         print(f"Erreur d'envoi de notification : {e}")
 
@@ -145,12 +149,26 @@ def send_all_notifications(user_id):
                 "avatar": avatar,
                 "premium": user_emitter["premium"],
             }
-            socketio.emit('notification', {'author':author, 'action':notif["action"], 'message':notif["message"]}, room=f"user_{user_id}")
+            socketio.emit('notification', {'author':author, 'action':notif["action"], 'message':notif["message"], 'notif_id': notif["id"]}, room=f"user_{user_id}")
 
 def parse_service_notification(data):
     if not "action" in data:
         return
     if data["action"] == "clear":
+        if "notif_id" in data:
+            notif_id = data["notif_id"]
+            if type(notif_id) is not int:
+                return
+            db = get_db()
+            with db.cursor() as cur:
+                cur.execute('SELECT * FROM waiting_notifications WHERE id = %s', (notif_id,))
+                notif = cur.fetchone()
+                if notif is None:
+                    return
+                if notif["receiver"] != connected_users[request.sid]["id"]:
+                    return
+                cur.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif_id,))
+                db.commit()
         delete_all_notifications(connected_users[request.sid]["id"])
         return
     
