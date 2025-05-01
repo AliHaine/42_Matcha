@@ -19,23 +19,23 @@ def upload_file():
             cur.execute('SELECT id, status FROM users WHERE email = %s', (user_mail,))
             user = cur.fetchone()
             if not user:
-                return jsonify({"success": False, "error": "User not found"})
+                return jsonify({"success": False, "message": "User not found"})
             if user["status"] == False:
-                return jsonify({"success": False, "error": "User is not active"})
+                return jsonify({"success": False, "message": "User is not active"})
             user_id = user['id']
         try:
             data = request.form.get('receiver_id', None)
             if data is None:
-                return jsonify({"success": False, "error": "No data provided"})
+                return jsonify({"success": False, "message": "No data provided"})
             receiver_id = int(data)
         except Exception as e:
-            return jsonify({"success": False, "error": "Invalid value for receiver_id"})
+            return jsonify({"success": False, "message": "Invalid value for receiver_id"})
         # Check if receiver exists
         with db.cursor() as cur:
             cur.execute('SELECT id FROM users WHERE id = %s', (receiver_id,))
             receiver = cur.fetchone()
             if not receiver:
-                return jsonify({"success": False, "error": "Receiver not found"})
+                return jsonify({"success": False, "message": "Receiver not found"})
         file = request.files.get('file', None)
         if file:
             try:
@@ -46,11 +46,11 @@ def upload_file():
                     if last_image:
                         last_image_time = last_image['created_at']
                         if datetime.now() - last_image_time < time_required:
-                            return jsonify({"success": False, "error": "You can only send one image every minute"})
+                            return jsonify({"success": False, "message": "You can only send one image every minute"})
                 if file.filename == '':
-                    return jsonify({"success": False, "error": "No selected file"})
+                    return jsonify({"success": False, "message": "No selected file"})
                 if secure_filename(file.filename).split('.')[-1] not in current_app.config['IMAGE_EXTENSIONS']:
-                    return jsonify({"success": False, "error": f"Invalid file format, only : {str(current_app.config['IMAGE_EXTENSIONS'])} is allowed"})
+                    return jsonify({"success": False, "message": f"Invalid file format, only : {str(current_app.config['IMAGE_EXTENSIONS'])} is allowed"})
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 unique_id = uuid.uuid4().hex[:8]
                 filename = f"{user_id}-{timestamp}-{unique_id}.{secure_filename(file.filename).split('.')[-1]}"
@@ -61,7 +61,7 @@ def upload_file():
                 from .profiles_pictures_utils import is_image_corrupted
                 if is_image_corrupted(os.path.join(file_path, filename)):
                     os.remove(os.path.join(file_path, filename))
-                    return jsonify({"success": False, "error": "Image is corrupted"})
+                    return jsonify({"success": False, "message": "Image is corrupted"})
                 with db.cursor() as cur:
                     cur.execute("INSERT INTO messages (sender_id, receiver_id, message, type) VALUES (%s, %s, %s, %s)",
                                 (user_id, receiver_id, filename, "image"))
@@ -77,9 +77,9 @@ def upload_file():
                 return jsonify({"success": True})
             except Exception as e:
                 print("CHAT FAIL : Failed to save file", e)
-                return jsonify({"success": False, "error": "An error occurred while saving the file"})
+                return jsonify({"success": False, "message": "An error occurred while saving the file"})
         else:
-            return jsonify({"success": False, "error": "No file provided"})
+            return jsonify({"success": False, "message": "No file provided"})
  
 
 @bp.route('/recover_image', methods=['GET'])
@@ -93,18 +93,18 @@ def recover_image():
         cur.execute('SELECT id, status FROM users WHERE email = %s', (user_mail,))
         user = cur.fetchone()
         if not user:
-            return jsonify({"success": False, "error": "User not found"})
+            return jsonify({"success": False, "message": "User not found"})
         if user["status"] == False:
-            return jsonify({"success": False, "error": "User is not active"})
+            return jsonify({"success": False, "message": "User is not active"})
         user_id = user['id']
     try:
         image_name = request.args.get('image_name', None)
         if image_name is None:
-            return jsonify({"success": False, "error": "No data provided"})
+            return jsonify({"success": False, "message": "No data provided"})
     except Exception as e:
-        return jsonify({"success": False, "error": "Invalid value for image_name"})
+        return jsonify({"success": False, "message": "Invalid value for image_name"})
     file_path = f"{current_app.config['BASE_DIR']}/uploads/chat"
     if os.path.exists(os.path.join(file_path, image_name)):
         return send_file(os.path.join(file_path, image_name))
     else:
-        return jsonify({"success": False, "error": "File not found"})
+        return jsonify({"success": False, "message": "File not found"})

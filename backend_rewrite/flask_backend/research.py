@@ -18,16 +18,16 @@ def research():
     page = request.args.get('page', None)
     research_results = []
     if profile_per_page is None or page is None:
-        return jsonify({'error': 'Missing parameters'})
+        return jsonify({'success':False,'message': 'Missing parameters'})
     try:
         if isinstance(profile_per_page, str):
             profile_per_page = int(profile_per_page)
         if isinstance(page, str):
             page = int(page)
     except Exception as e:
-        return jsonify({'error': 'Invalid parameters'})
+        return jsonify({'success':False,'message': 'Invalid parameters'})
     if profile_per_page < 1 or page < 1:
-        return jsonify({'error': 'Invalid parameters'})
+        return jsonify({'success':False,'message': 'Invalid parameters'})
     arguments = {}
     errors = []
     try:
@@ -75,13 +75,13 @@ def research():
                 errors.append('Invalid sortBy')
     except Exception as e:
         print("RESEARCH : failed arguments research", e)
-        return jsonify({'error': 'Invalid parameters'})
+        return jsonify({'success':False,'message': 'Invalid parameters'})
     db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email = %s', (get_jwt_identity(),))
         current_user = cur.fetchone()
         if current_user is None:
-            return jsonify({'error': 'User not found'})
+            return jsonify({'success':False,'message': 'User not found'})
         user_id = current_user['id']
         my_city_id = current_user['city_id']
         baseRequest = '''
@@ -165,5 +165,5 @@ def research():
         max_page = count['count'] // profile_per_page
         if count['count'] % profile_per_page != 0:
             max_page += 1
-    return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page, 'profile_per_page': profile_per_page, 'errors': errors})
+    return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page, 'profile_per_page': profile_per_page, 'message': " ,".join(errors) if errors else "All good"})
 
