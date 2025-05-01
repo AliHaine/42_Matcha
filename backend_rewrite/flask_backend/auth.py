@@ -135,6 +135,7 @@ def register():
 
 def login_user(username, password, registering=False):
     missing_steps = []
+    db = get_db()
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cur.fetchone()
