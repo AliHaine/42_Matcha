@@ -49,11 +49,14 @@ export class AuthService {
 
   logout() {
     this.isLoggedIn.set(false);
-    this.apiService.removeAccessToken();
-    this.websocketService.closeSocket();
     this.apiService.postData("/auth/logout", {}).subscribe(result => {
-      window.location.reload();
+        this.apiService.removeAccessToken();
+        this.websocketService.closeSocket();
+        window.location.reload();
     });
+    // this.apiService.postData("/auth/logout", {}).subscribe(result => {
+    //   window.location.reload();
+    // });
   }
 
   refreshCurrentProfile():void {
