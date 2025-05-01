@@ -42,6 +42,9 @@ def export_constraints(app, cur):
                                 # Nettoyage de chaque valeur : on enlève les ::, les parenthèses et les apostrophes
                                 clean = re.sub(r"::.*", "", v)  # supprime tout ce qui suit "::"
                                 clean = clean.strip(" '()")     # supprime les ' ( ) et espaces autour
+                                print(clean)
+                                if clean == "": 
+                                    continue
                                 values.append(clean)
                             constraints[column] = values
 
