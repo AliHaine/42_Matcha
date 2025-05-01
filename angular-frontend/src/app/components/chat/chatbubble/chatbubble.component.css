@@ -9,10 +9,15 @@
     color: var(--color-1);
 }
 
-.chatbubble-content img {
+.profilePicture {
     width: 48px;
     height: 48px;
     border-radius: 50%;
+}
+
+.contentPicture {
+    border-radius: 0;
+    max-width: 100%;
 }
 
 .message {

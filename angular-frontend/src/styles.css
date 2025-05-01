@@ -161,6 +161,23 @@ input[type='radio'] {
     accent-color: var(--color-4);
 }
 
+input[type=file]::file-selector-button {
+    margin-right: 8px;
+    background: var(--color-3);
+    padding: 8px 12px;
+    color: var(--color-1);
+    cursor: pointer;
+}
+
+input[type=file]::file-selector-button:hover {
+    background: var(--color-3);
+}
+
+input[type=file]:focus {
+    outline: 5px dashed #000;
+    outline-offset: 2px;
+}
+
 .mdc-text-field--outlined .mat-mdc-form-field-infix,
 .mdc-text-field--no-label .mat-mdc-form-field-infix {
     padding-top: 4px !important;
