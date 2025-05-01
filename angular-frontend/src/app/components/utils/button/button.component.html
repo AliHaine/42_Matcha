@@ -1,0 +1,6 @@
+<button [disabled]="apiService.isButtonLoading || validator()"  style="width: 100%" class="button-style-1" (click)="triggerButton()">
+    @if (apiService.isButtonLoading) {
+        <i style="margin-left: -12px; margin-right: 8px;" class="fa fa-refresh fa-spin"></i>
+    }
+    {{ buttonName() }}
+</button>

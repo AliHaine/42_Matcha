@@ -1,5 +1,5 @@
 <form style="display: flex; flex-direction: column; gap:10px">
-    <button class="button-style-1" (click)="confirmationTrigger($event)">Confirm your email address</button>
-    <button class="button-style-1" (click)="resendEmail($event)">Receive a new confirmation email</button>
+    <app-button buttonName="Confirm your email address" (click)="confirmationTrigger($event)" />
+    <app-button buttonName="Receive a new confirmation email" (click)="resendEmail($event)"/>
 </form>
 

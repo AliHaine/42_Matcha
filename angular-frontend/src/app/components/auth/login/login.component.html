@@ -12,14 +12,13 @@
 			</div>
 			<a (click)="formNumber.set(1)">Forgot password</a>
 		</div>
-		<button class="button-style-1" [disabled]="formControlGroup.invalid">Login</button>
+        <app-button [validator]="formControlGroup.invalid" buttonName="Login"/>
 		<a routerLink="/auth/register">Create account</a>
 	} @else {
 		<h1>Forgot password</h1>
 
 		<input class="input-style-1" type="email" placeholder="Enter your email" [formControl]=resetmail>
-		<button class="button-style-1" [disabled]="resetmail.invalid" (click)="submitForgot($event)">Send reset mail</button>
-
+        <app-button [validator]="resetmail.invalid" buttonName="Send reset mail" (click)="submitForgot($event)"/>
 		<a (click)="formNumber.set(0)">Return to login</a>
 	}
 </form>

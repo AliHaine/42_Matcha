@@ -17,25 +17,27 @@ import {RouterLink} from "@angular/router";
 import {PopupService} from "../../services/popup.service";
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
+import {ButtonComponent} from "../utils/button/button.component";
 
 
 @Component({
   selector: 'app-account',
-    imports: [
-        ReactiveFormsModule,
-        CdkTextareaAutosize,
-        MatFormFieldModule,
-        MatInputModule,
-        TextFieldModule,
-        SliderComponent,
-        LocationComponent,
-        PaypalComponent,
-        MatMenuModule,
-        MatButtonModule,
-        RouterLink,
-        MatSidenavModule,
-        MatIconModule
-    ],
+  imports: [
+    ReactiveFormsModule,
+    CdkTextareaAutosize,
+    MatFormFieldModule,
+    MatInputModule,
+    TextFieldModule,
+    SliderComponent,
+    LocationComponent,
+    PaypalComponent,
+    MatMenuModule,
+    MatButtonModule,
+    RouterLink,
+    MatSidenavModule,
+    MatIconModule,
+    ButtonComponent
+  ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
@@ -98,7 +100,8 @@ export class AccountComponent {
         this.authService.logout();
       else
         this.authService.refreshCurrentProfile()
-      this.popupService.displayPopupBool(result["message"], result['success'])
+      this.popupService.displayPopupBool(result["message"], result['success']);
+      this.apiService.isButtonLoading = false;
     });
   }
 
@@ -107,8 +110,10 @@ export class AccountComponent {
     let file: File | undefined;
 
     file = pictureAsHtml.files?.[0];
-    if (!file)
+    if (!file) {
+      this.apiService.isButtonLoading = false;
       return;
+    }
 
     const formaData = new FormData();
 
@@ -116,7 +121,8 @@ export class AccountComponent {
     this.apiService.putData("/profiles/profile_pictures", formaData).subscribe(result => {
       this.popupService.displayPopupBool(result["message"], result['success'])
       this.formNumber.set(0);
-      this.authService.refreshCurrentProfile()
+      this.authService.refreshCurrentProfile();
+      this.apiService.isButtonLoading = false;
     });
   }
 
@@ -124,7 +130,9 @@ export class AccountComponent {
     this.apiService.deleteData("/profiles/profile_pictures", {"file_number": this.currentImageIndex}).subscribe(result => {
       if (result['success'])
         this.authService.refreshCurrentProfile();
-      this.popupService.displayPopupBool(result["message"], result['success'])
+      this.popupService.displayPopupBool(result["message"], result['success']);
+      this.apiService.isButtonLoading = false;
+
     });
   }
 

@@ -15,6 +15,7 @@ import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { LocationComponent } from "../../utils/location/location.component";
 import { PopupService } from "../../../services/popup.service";
+import {ButtonComponent} from "../../utils/button/button.component";
 
 @Component({
 	selector: "app-register",
@@ -25,6 +26,7 @@ import { PopupService } from "../../../services/popup.service";
 		MatFormField,
 		MatInput,
 		LocationComponent,
+		ButtonComponent,
 	],
 	templateUrl: "./register.component.html",
 	styleUrl: "./register.component.css",
@@ -101,6 +103,7 @@ export class RegisterComponent {
 		if (this.registerService.currentStep() === 3) this.setupInterests(values);
 
 		this.apiService.postData("/auth/register", values).subscribe((response) => {
+			this.apiService.isButtonLoading = false;
 			this.popupService.displayPopupBool(
 				response["message"],
 				response["success"]

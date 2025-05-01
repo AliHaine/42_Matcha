@@ -5,10 +5,11 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AuthService} from "../../../services/auth.service";
 import {RegisterService} from "../../../services/register.service";
 import { PopupService } from '../../../services/popup.service';
+import {ButtonComponent} from "../../utils/button/button.component";
 
 @Component({
   selector: 'app-login',
-    imports: [RouterLink, ReactiveFormsModule],
+    imports: [RouterLink, ReactiveFormsModule, ButtonComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -42,14 +43,16 @@ export class LoginComponent {
                 } else
                     this.formControlGroup.get("password")?.setValue("");
             }
-            this.popupService.displayPopupBool(result['message'], result['success'])
+            this.popupService.displayPopupBool(result['message'], result['success']);
+            this.apiService.isButtonLoading = false;
       });
     }
 
     submitForgot(event: Event) {
         event.preventDefault();
         this.apiService.postData("/auth/get_reset_password", {email: this.resetmail.value}).subscribe(result => {
-            this.popupService.displayPopupBool(result['message'], result['success'])
-      });
+            this.popupService.displayPopupBool(result['message'], result['success']);
+            this.apiService.isButtonLoading = false;
+        });
     }
 }

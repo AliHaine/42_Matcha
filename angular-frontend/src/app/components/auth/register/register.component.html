@@ -61,7 +61,7 @@
                 </fieldset>
             </div>
         </div>
-        <button class="button-style-1" [disabled]="formControlGroupStep1.invalid"> Register </button>
+        <app-button [validator]="formControlGroupStep1.invalid" buttonName="Register" />
         <a  class="text-center" routerLink="/auth/login">Already register ?</a>
     </form>
 } @else if (this.registerService.currentStep() == 2 && this.isCityGet() === 0) {
@@ -179,7 +179,7 @@
                 </select>
             </div>
         </div>
-        <button class="button-style-1" [disabled]="formControlGroupStep2.invalid">Continue</button>
+        <app-button [validator]="formControlGroupStep2.invalid" buttonName="Continue" />
     </form>
 } @else {
     <form [formGroup]="formControlGroupStep3" (submit)="submit($event, formControlGroupStep3.value)">
@@ -211,6 +211,6 @@
         </textarea>
             </mat-form-field>
         </div>
-        <button class="button-style-1">Finish</button>
+        <app-button buttonName="Finish" />
     </form>
 }

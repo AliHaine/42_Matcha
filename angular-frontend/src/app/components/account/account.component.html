@@ -192,7 +192,7 @@
                 </form>
             }
             @if (formNumber() !== 4 && formNumber() !== 2) {
-                <button class="button-style-1" (click)="applyTrigger()">Submit</button>
+                <app-button buttonName='Submit' (click)="applyTrigger()" />
             }
         </div>
     </mat-sidenav-content>
