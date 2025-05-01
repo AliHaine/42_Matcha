@@ -7,6 +7,8 @@ def parse_post_actions(user, user_getting, action, other_data):
     from .websocket import send_notification
     from .profiles_utils import get_user_view
     db = get_db()
+    if action not in ['like', 'block', 'report']:
+        return jsonify({'success': False, 'message': 'Invalid action'})
     try:
         with db.cursor() as cursor:
             user_view = get_user_view(user_getting["id"], user["id"])
@@ -39,7 +41,7 @@ def parse_post_actions(user, user_getting, action, other_data):
             else:
                 return jsonify({'success': False, 'message': message})
     except Exception as e:
-        current_app.logger.error(f"Error in parse_post_actions: {e}")
+        print("Error in parse_post_actions:", e)
         return jsonify({'success': False, 'message': 'Internal server error'})
         
 def like_action(user, user_getting, user_view, old_matched):

@@ -59,18 +59,7 @@ def register_step1(data):
         from .user import send_confirmation_email
         if send_confirmation_email(user_informations['email']) == False:
             return jsonify({'success': False, 'message': 'Failed to send confirmation email'})
-        # response = login_user(user_informations['username'], dup_password, registering=True)
-        # if response is None or response['success'] == False:
-            # return jsonify({'success': False, 'message': response['error']})
-        # else:
-            # return jsonify({'success': True, 'access_token': response['access_token']})
-            # return jsonify({'success': False, 'error': 'Failed to send confirmation email'})
-        # response = login_user(user_informations['username'], dup_password, registering=True)
         return jsonify({'success': True, 'message': 'User created successfully, please check your email to confirm your account before logging in to continue your registration'})
-        # if response is None or response['success'] == False:
-        #     return jsonify({'success': False, 'error': response['error']})
-        # else:
-        #     return jsonify({'success': True, 'access_token': response['access_token']})
     else:
         return jsonify({'success': False, 'message': 'Failed to create user'})
 
@@ -145,11 +134,10 @@ def register():
     
 
 def login_user(username, password, registering=False):
-    # check = check_fields_step1({'username': username, 'password': password}, ['username', 'password'], profile_exists_check=False)
-    # if check['success'] == False:
-    #     return {'success': False, 'error': "".join(check['errors'])}
-    db = get_db()
     missing_steps = []
+    db = get_db()
+    if type(username) != str or type(password) != str:
+        return {'success': False, 'error': 'Invalid username or password'}
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cur.fetchone()
@@ -198,8 +186,6 @@ def login():
             return jsonify({'success': False, 'message': response['error']})
         return jsonify({'success': False, 'message': 'Failed to login'})
     else:
-        if 'need_confirmation' in response:
-            return jsonify({'success': True, 'error': 'Email not verified', 'access_token': response['access_token'], 'need_confirmation': True})
         return jsonify({'success': True, 'access_token': response['access_token']})
 
 @bp.route('/logout', methods=['POST'])
@@ -233,13 +219,15 @@ def confirm_email():
     token = data.get('token', None)
     if token is None:
         return jsonify({'success': False, 'message': 'No token provided'})
+    if type(token) != str:
+        return jsonify({'success': False, 'message': 'Invalid token'})
     with db.cursor() as cur:
         cur.execute('SELECT * FROM users WHERE email_token = %s', (token,))
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'message': 'User not found'})
         if user['email_verified'] == True:
-            return jsonify({'success': True, 'error': 'Email already verified'})
+            return jsonify({'success': True, 'message': 'Email already verified'})
         if user['email_token'] != token:
             return jsonify({'success': False, 'message': 'Invalid token'})
         cur.execute('UPDATE users SET email_verified = TRUE, email_token = NULL WHERE email = %s', (user['email'],))
@@ -247,21 +235,27 @@ def confirm_email():
     return jsonify({'success': True, 'message': 'Email verified successfully'})
 
 @bp.route('/resend_confirmation', methods=['POST'])
-@jwt_required()
 def resend_confirmation():
-    user_email = get_jwt_identity()
+    try:
+        data = request.json
+    except Exception as e:
+        print("RESEND CONFIRMATION ERROR : Failed to get json :", e)
+        return jsonify({'success': False, 'message': 'Invalid JSON'})
+    email = data.get('email', '')
+    if email == '':
+        return jsonify({'success': False, 'message': 'Email not provided'})
+    if type(email) != str:
+        return jsonify({'success': False, 'message': 'Invalid email'})
     db = get_db()
     with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE email = %s', (user_email,))
+        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
         user = cur.fetchone()
         if user is None:
             return jsonify({'success': False, 'message': 'User not found'})
-        if user['email_verified'] == True:
-            return jsonify({'success': True, 'error': 'Email already verified'})
         from .user import send_confirmation_email
         if send_confirmation_email(user['email']) == False:
             return jsonify({'success': False, 'message': 'Failed to send confirmation email'})
-    return jsonify({'success': True, 'message': 'Confirmation email resent successfully'})
+    return jsonify({'success': True, 'message': 'Confirmation email sent successfully'})
 
 @bp.route('/get_reset_password', methods=['POST'])
 def get_reset_password():
@@ -271,6 +265,8 @@ def get_reset_password():
         print("GET RESET PASS ERROR : Failed to get json :", e)
         return jsonify({'success': False, 'message': 'Invalid JSON'})
     email = data.get('email', '')
+    if type(email) != str:
+        return jsonify({'success': False, 'message': 'Invalid email'})
     if email == '':
         return jsonify({'success': False, 'message': 'Email not provided'})
     db = get_db()
@@ -293,6 +289,10 @@ def reset_password():
         return jsonify({'success': False, 'message': 'Invalid JSON'})
     token = data.get('token', '')
     password = data.get('password', '')
+    if type(token) != str:
+        return jsonify({'success': False, 'message': 'Invalid token'})
+    if type(password) != str:
+        return jsonify({'success': False, 'message': 'Invalid password'})
     if token == '' or password == '':
         return jsonify({'success': False, 'message': 'Email, token or password not provided'})
     db = get_db()
