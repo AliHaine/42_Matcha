@@ -1,6 +1,8 @@
+import {signal, WritableSignal} from "@angular/core";
+
 export class ChatBubbleModel {
     author_id: number;
-    content: string = "";
+    content: WritableSignal<string> = signal("");
     src: string = "";
     type: string;
     created_at: string;
@@ -12,7 +14,7 @@ export class ChatBubbleModel {
         if (this.type === "image")
             this.src = data["message"];
         else
-            this.content = data["message"];
+            this.content.set(data["message"]);
         this.created_at = data["created_at"];
     }
 }

@@ -40,7 +40,7 @@
         <div id="rightElements">
             @if (formNumber() === 0) {
                 <form [formGroup]="formGroup">
-                    <h1>Edit profile</h1>
+                    <h1 class="title">Edit profile</h1>
                     <div id="inputs">
                         <div class="input-area">
                             <label>Firstname</label>
@@ -137,7 +137,7 @@
             }
             @else if (formNumber() === 1) {
                 <form [formGroup]="formGroup">
-                    <h1>Edit account</h1>
+                    <h1 class="title">Edit account</h1>
                     <div id="inputs">
                         <div class="input-area">
                             <label>Username</label>
@@ -162,19 +162,19 @@
             }
             @else if (formNumber() === 2) {
                 <form>
-                    <h1>Buy premium</h1>
+                    <h1 class="title">Buy premium</h1>
                     <app-paypal></app-paypal>
                 </form>
             }
             @else if (formNumber() === 3) {
                 <form>
-                    <h1 style="text-align: center;">Upload picture</h1>
-                        <input id="picture" type="file" accept="image/png, image/jpeg">
+                    <h1 class="title">Upload picture</h1>
+                    <input id="picture" type="file" accept="image/png, image/jpeg">
                 </form>
             }
             @else if (formNumber() === 4) {
                 <form>
-                    <h1 style="text-align: center;">Profile views</h1>
+                    <h1 class="title">Profile views</h1>
                     @if (profilesView().length == 0) {
                         <p>No one viewed you :(..</p>
                     } @else {

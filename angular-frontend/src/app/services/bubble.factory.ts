@@ -16,7 +16,7 @@ export class BubbleFactory {
             const reader = new FileReader();
             reader.readAsDataURL(result);
             reader.onloadend = () => {
-                bubbleModel.content = reader.result as string;
+                bubbleModel.content.set(reader.result as string);
             }
         });
         return bubbleModel;

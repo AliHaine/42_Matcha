@@ -4,7 +4,6 @@ import {ActivatedRoute} from "@angular/router";
 import {PageModel} from "../../models/page.model";
 import {switchMap} from 'rxjs'
 
-
 @Component({
   selector: 'app-page',
   imports: [],

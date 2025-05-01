@@ -7,6 +7,7 @@ import {ChatService} from "../../../services/chat.service";
 import {NgForOf} from "@angular/common";
 import { ApiService } from '../../../services/api.service';
 import { MatIconModule } from '@angular/material/icon';
+import {PopupService} from "../../../services/popup.service";
 
 @Component({
   selector: 'app-chatarea',
@@ -23,6 +24,7 @@ export class ChatareaComponent {
   webSocketService = inject(WebsocketService);
   chatService = inject(ChatService);
   apiService = inject(ApiService);
+  popupService = inject(PopupService);
   chatModel: InputSignal<ChatModel> = input.required();
   messageInput = new FormControl('');
 
@@ -33,8 +35,10 @@ export class ChatareaComponent {
     let file: File | undefined;
 
     file = pictureAsHtml.files?.[0];
-    if (file)
+    if (file) {
       this.sendImage(file);
+      pictureAsHtml.value = '';
+    }
 
     this.webSocketService.sendMessage({"receiver": this.chatModel().userId, "message": this.messageInput.value, "service": "message"});
     this.messageInput.setValue('');
@@ -47,7 +51,7 @@ export class ChatareaComponent {
     formaData.append("receiver_id", this.chatModel().userId.toString());
     this.apiService.putData("/chat/upload_file", formaData).subscribe(result => {
       if (!result['success'])
-        console.log(result);
+        this.popupService.displayPopupBool(result["message"], result["success"]);
     });
   }
 }
