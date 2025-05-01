@@ -130,6 +130,8 @@ def create_paths(app):
             os.makedirs(app.config['PROFILE_PICTURES_DIR'])
         if not os.path.exists(app.config['CHAT_UPLOAD_DIR']):
             os.makedirs(app.config['CHAT_UPLOAD_DIR'])
+        if not os.path.exists(app.config['PAGES_DIR']):
+            os.makedirs(app.config['PAGES_DIR'])
         print("INIT : Paths created successfully")
     except Exception as e:
         print("Failed to create paths", e)
@@ -161,6 +163,7 @@ def register_blueprints(app):
     from . import matcha
     from . import get_informations
     from . import chat
+    from . import pages
     try:
         app.register_blueprint(auth.bp)
         app.register_blueprint(profiles.bp)
@@ -168,6 +171,7 @@ def register_blueprints(app):
         app.register_blueprint(matcha.bp)
         app.register_blueprint(get_informations.bp)
         app.register_blueprint(chat.bp)
+        app.register_blueprint(pages.bp)
     except Exception as e:
         print("INIT FAIL : Failed to register blueprints", e)
         raise e

@@ -54,6 +54,7 @@ def create_app(test_config=None):
         BASE_DIR=base_dir,
         PROFILE_PICTURES_DIR=os.path.join(base_dir, 'uploads/profile_pictures'),
         CHAT_UPLOAD_DIR=os.path.join(base_dir, 'uploads/chat'),
+        PAGES_DIR=os.path.join(base_dir, 'pages'),
         # file configuration
         IMAGE_EXTENSIONS=['png', 'jpg', 'jpeg'],
         MAX_CONTENT_LENGTH=10 * 1024 * 1024,
