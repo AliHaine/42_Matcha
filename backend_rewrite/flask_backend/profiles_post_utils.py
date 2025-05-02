@@ -22,9 +22,7 @@ def parse_post_actions(user, user_getting, action, other_data):
             if action == 'like':
                 success, message = like_action(user, user_getting, user_view, old_matched)
             elif action == 'block':
-                success = block_action(user, user_getting, user_view)
-                if success:
-                    message = "User blocked successfully"
+                success, message = block_action(user, user_getting, user_view)
             elif action == 'report':
                 if 'reason' not in other_data:
                     return jsonify({'success': False, 'message': 'Missing reason'})
@@ -96,4 +94,5 @@ def block_action(user, user_getting, user_view):
         db.commit()
         if user_view["blocked"] == True:
             send_notification(user_getting["id"], user["id"], "unblock", "User unblocked you")
-    return True
+            return True, "User unblocked successfully"
+    return True, "User blocked successfully"
