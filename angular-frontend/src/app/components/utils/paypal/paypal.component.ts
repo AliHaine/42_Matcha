@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgxPayPalModule, IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
+import { PopupService } from '../../../services/popup.service';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class PaypalComponent implements OnInit  {
   public payPalConfig?: IPayPalConfig;
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
-
+  private popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.initConfig();
@@ -37,33 +38,33 @@ export class PaypalComponent implements OnInit  {
         }]
       },
       advanced: {
-        commit: 'true'
+        commit: 'true',
+        extraQueryParams: [
+          { name: 'disable-funding', value: 'card,venmo' }
+        ]
       },
       style: {
         layout: 'vertical'
       },
-      onApprove: (data, actions) => {
-        console.log('Transaction approved', data);
-        actions.order.capture().then((details: any) => {
-          console.log('Transaction completed!', details);
+      onApprove: (_, actions) => {
+        actions.order.capture().then((_: any) => {
           this.premium();
         });
       },
-      onClientAuthorization: (data) => {
-        console.log('Client Authorization:', data);
+      onClientAuthorization: (_) => {
       },
       onCancel: (data, actions) => {
-        console.log('Transaction canceled', data);
+        this.popupService.displayPopupBool("Transaction canceled", false);
       },
       onError: err => {
-        console.log('PayPal Error', err);
+        console.log('PayPal Error');
       }
     };
   }
 
   premium() {
     this.apiService.postData("/profiles/me/premium", {}).subscribe(result => {
-      console.log(result);
+      this.popupService.displayPopupBool("You are now premium", true);
       this.authService.refreshCurrentProfile();
     });
   }
