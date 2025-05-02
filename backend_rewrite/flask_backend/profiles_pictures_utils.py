@@ -39,6 +39,8 @@ def upload_profile_picture():
                 cur.execute("UPDATE users SET pictures_number = pictures_number + 1 WHERE id = %s", (user_id,))
                 db.commit()
             return jsonify({'success': True, 'filename': filename, 'message': 'File uploaded successfully'})
+        else:
+            return jsonify({'success': False, 'message': 'File type not allowed'})
 
 def get_profile_picture():
     """Get the profile pictures of the user indicated by the id."""
