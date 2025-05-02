@@ -35,7 +35,16 @@ def parse_post_actions(user, user_getting, action, other_data):
             else:
                 message = "Invalid action"
             if success:
-                return jsonify({'success': True, 'message': message})
+                new_matched = cursor.execute(current_app.config["QUERIES"].get("-- check match"), {"user_id_1": user['id'], "user_id_2": user_getting['id']})
+                matching = "none"
+                if new_matched is not None:
+                    matching = "match"
+                else:
+                    new_user_view = get_user_view(user_getting["id"], user["id"])
+                    if new_user_view is not None:
+                        if new_user_view["liked"] == True:
+                            matching = "like"
+                return jsonify({'success': True, 'message': message, 'matching': matching})
             else:
                 return jsonify({'success': False, 'message': message})
     except Exception as e:
