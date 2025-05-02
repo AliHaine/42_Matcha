@@ -24,7 +24,7 @@ export class ProfileModel {
     score: number;
     username: string;
     premium: boolean;
-    matching: string;
+    matching: WritableSignal<string>;
     lastConnetion: string;
 
     constructor(data: {[key: string]: any}) {
@@ -53,7 +53,7 @@ export class ProfileModel {
         this.score = data["score"];
         this.username = data["username"];
         this.premium = data["premium"];
-        this.matching = data["matching"]
+        this.matching = signal(data["matching"]);
         this.lastConnetion = data["last_connection"];
     }
 

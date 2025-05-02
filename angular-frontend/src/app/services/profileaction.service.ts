@@ -1,4 +1,4 @@
-import {inject, Injectable} from "@angular/core";
+import {inject, Injectable, InputSignal} from "@angular/core";
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
 import {CardService} from "./card.service";
@@ -20,17 +20,20 @@ export class ProfileActionService {
         });
     }
 
-    likeProfile(profile: ProfileModel) {
+    likeProfile(profile: ProfileModel): void {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: 'like'}).subscribe(result => {
             if (!result['success'])
                 this.popupService.displayPopupBool(result['message'], result['success'])
             this.cardService.switchProfile(this.cardService.getIndexFromProfile(profile));
+            profile.matching.set(result['matching'])
         })
     }
 
-    blockUser(profile: ProfileModel, action: string, reason: string) {
+    blockUser(profile: ProfileModel, action: string, reason: string): void {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: action, reason: reason}).subscribe(result => {
-            this.popupService.displayPopupBool(result['message'], result['success'])
+            this.popupService.displayPopupBool(result['message'], result['success']);
+            if (action === 'block')
+                profile.matching.set(result['matching'])
         });
     }
 }

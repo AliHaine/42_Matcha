@@ -23,7 +23,7 @@
             }
         </div>
         <div class="profilePicIcons">
-            @if (profile().matching === "like" || profile().matching === "match") {
+            @if (profile().matching() === "like" || profile().matching() === "match") {
                 <button (click)="profileActionService.likeProfile(profile())" class="button xButton">
                     <mat-icon svgIcon="x"></mat-icon>
                 </button>
@@ -35,7 +35,7 @@
             <button class="button superLikeButton">
                 <mat-icon svgIcon="star"></mat-icon>
             </button>
-            @if (profile().matching === "match") {
+            @if (profile().matching() === "match") {
                 <button (click)="sendMessageTrigger()" class="button messageButton">
                     <mat-icon svgIcon="chat"></mat-icon>
                 </button>
