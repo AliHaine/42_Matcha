@@ -1,8 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {PageService} from "../../services/page.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PageModel} from "../../models/page.model";
-import {switchMap} from 'rxjs'
+import {mergeMap, switchMap} from 'rxjs'
+import { ApiService } from '../../services/api.service';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-page',
@@ -14,17 +16,22 @@ changeDetection: ChangeDetectionStrategy.OnPush
 export class PageComponent implements OnInit {
 
     pageService = inject(PageService);
+    apiService = inject(ApiService);
+    popupService = inject(PopupService);
     route = inject(ActivatedRoute);
+    router = inject(Router);
     page = signal<PageModel>(new PageModel("Loading", "Page is loading.."));
 
     ngOnInit() {
         this.route.paramMap.pipe(
-            switchMap(param => {
-                const fileName = "pages/" + param.get('name') + ".txt";
-                return this.pageService.loadPage(fileName);
-            })
-        ).subscribe(page => {
-            this.page.set(page);
+            mergeMap(param => this.apiService.getData(`/pages/${param.get('name')}`, {}))
+        ).subscribe(pageResult => {
+            if (!pageResult['success']) {
+                this.router.navigate(['/']);
+                this.popupService.displayPopupBool(pageResult['message'], pageResult['success']);
+                return;
+            }
+            this.page.set(new PageModel(pageResult['title'], pageResult['content']));
         });
     }
 }

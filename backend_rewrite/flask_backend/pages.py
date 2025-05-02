@@ -17,6 +17,6 @@ def get_page(page_name):
         # Open and read the content of the page
         with open(page_path, 'r') as file:
             content = file.read()
-        return jsonify({'success': True, 'content': content})
+        return jsonify({'success': True, 'title': page_name.replace('-', ' ').capitalize(), 'content': content})
     except FileNotFoundError:
         return jsonify({'success': False, 'message': 'Page not found'})
