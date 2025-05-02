@@ -1,23 +1,18 @@
 <div id="notif-content">
     @if (notificationService.notifications().length > 0) {
-        <button class="button-style-1" (click)="notificationClear()">Clear</button>
-        <table>
-            <caption>
-                Notifications
-            </caption>
+        <h1 class="text-center">Notifications</h1>
 
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Action</th>
+        <button class="button-style-1" (click)="notificationClearAll()">Clear</button>
 
-            @for (notification of notificationService.notifications(); track $index) {
-                <tr>
-                    <td>{{ notification.userId }}</td>
-                    <td>{{ notification.userFullName }}</td>
-                    <td>{{ notification.action }}</td>
-                </tr>
+        <section id="main-grid">
+            @for (notif of notificationService.notifications(); track notif.notifId) {
+                <img class="profilePicture" [src]=notif.profilePicture />
+                <div>{{ notif.userFullName }}</div>
+                <div>{{ notif.action }}</div>
+                <button (click)="notificationClear(notif.notifId)" >del</button>
             }
-        </table>
+        </section>
+
     } @else {
         <div id="nothing">
             <h1>Notifications</h1>

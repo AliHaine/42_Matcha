@@ -3,19 +3,20 @@
     color: var(--color-4);
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
-table {
-    font-size: 1.1em;
+#main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
-th {
-    text-align: left;
+.profilePicture {
+    width: 64px;
+    aspect-ratio: 1/1;
 }
 
-caption {
-    font-size: 2em;
-}
 
 #nothing {
     text-align: center;
