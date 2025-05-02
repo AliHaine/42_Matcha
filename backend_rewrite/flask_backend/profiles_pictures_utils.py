@@ -25,7 +25,7 @@ def upload_profile_picture():
             if pictures_number >= current_app.config['MAX_PICTURES']:
                 return jsonify({'success': False, 'message': 'Maximum number of pictures reached'})
         # verification du type de fichier
-        if allowed_file_extension(file.filename):
+        if allowed_file_extension(file.filename) and correct_file_extension(file):
             # on le sauvegarde
             filename = f"{user_id}_{pictures_number}.{secure_filename(file.filename).rsplit('.', 1)[1].lower()}"
             file_path = os.path.join(current_app.config['PROFILE_PICTURES_DIR'], filename)
@@ -147,3 +147,16 @@ def realign_photos(user_id, file_number):
             break
         new_file = os.path.join(current_app.config['PROFILE_PICTURES_DIR'], f"{user_id}_{i}.{old_file.split('.')[-1]}")
         os.rename(old_file, new_file)
+
+def correct_file_extension(file):
+    """
+    Check if the file has the correct extension.
+    """
+    from PIL import Image
+    from flask import current_app
+    try:
+        img = Image.open(file)
+        file.seek(0)  # Reset the file pointer to the beginning
+        return img.format.lower() in current_app.config['IMAGE_EXTENSIONS']
+    except Exception as e:
+        return False

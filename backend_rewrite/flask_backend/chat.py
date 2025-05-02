@@ -5,6 +5,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from datetime import datetime, timedelta
 import os
 from werkzeug.utils import secure_filename
+from .profiles_pictures_utils import allowed_file_extension, correct_file_extension
 
 bp = Blueprint('chat', __name__, url_prefix='/api/chat')
 
@@ -49,7 +50,8 @@ def upload_file():
                             return jsonify({"success": False, "message": "You can only send one image every minute"})
                 if file.filename == '':
                     return jsonify({"success": False, "message": "No selected file"})
-                if secure_filename(file.filename).split('.')[-1] not in current_app.config['IMAGE_EXTENSIONS']:
+                if allowed_file_extension(secure_filename(file.filename)) == False\
+                        or correct_file_extension(file) == False:
                     return jsonify({"success": False, "message": f"Invalid file format, only : {str(current_app.config['IMAGE_EXTENSIONS'])} is allowed"})
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 unique_id = uuid.uuid4().hex[:8]
