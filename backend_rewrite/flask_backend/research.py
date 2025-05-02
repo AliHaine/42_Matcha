@@ -26,47 +26,65 @@ def research():
             page = int(page)
     except Exception as e:
         return jsonify({'success':False,'message': 'Invalid parameters'})
+    if not isinstance(profile_per_page, int) or not isinstance(page, int):
+        return jsonify({'success':False,'message': 'Invalid parameters'})
     if profile_per_page < 1 or page < 1:
         return jsonify({'success':False,'message': 'Invalid parameters'})
     arguments = {}
     errors = []
     try:
         if 'ageMin' in request.args:
-            if not request.args['ageMin'].isdigit():
+            if type(request.args['ageMin']) is not str:
                 errors.append('Invalid ageMin')
             else:
-                arguments['age_min'] = int(request.args['ageMin'])
+                if not request.args['ageMin'].isdigit():
+                    errors.append('Invalid ageMin')
+                else:
+                    arguments['age_min'] = int(request.args['ageMin'])
         if 'ageMax' in request.args:
-            if not request.args['ageMax'].isdigit():
+            if type(request.args['ageMax']) is not str:
                 errors.append('Invalid ageMax')
-            else:
-                arguments['age_max'] = int(request.args['ageMax'])
+            else:    
+                if not request.args['ageMax'].isdigit():
+                    errors.append('Invalid ageMax')
+                else:
+                    arguments['age_max'] = int(request.args['ageMax'])
         if 'location' in request.args:
             location = request.args['location']
-            if not location or location == '':
-                pass
+            if type(location) is not str:
+                errors.append('Invalid location')
             else:
-                arguments['location'] = location
+                if not location or location == '':
+                    pass
+                else:
+                    arguments['location'] = location
         if 'interest' in request.args:
             interest = request.args['interest']
-            if not interest or interest == '':
-                pass
+            if type(interest) is not str:
+                errors.append('Invalid interest')
             else:
-                arguments['interest'] = interest
+                if not interest or interest == '':
+                    pass
+                else:
+                    arguments['interest'] = interest
         if 'showBlocks' in request.args:
             show_blocks = request.args['showBlocks']
-            if show_blocks == 'true':
-                arguments['show_blocks'] = True
-            elif show_blocks == 'false':
-                arguments['show_blocks'] = False
-            else:
+            if type(show_blocks) is not str:
                 errors.append('Invalid showBlocks')
+            else:
+                if show_blocks not in ['true', 'false']:
+                    errors.append('Invalid showBlocks')
+                else:
+                    if show_blocks == 'true':
+                        arguments['show_blocks'] = True
+                    else:
+                        arguments['show_blocks'] = False
         if 'sortOrder' in request.args:
             sort_order = request.args['sortOrder']
-            if sort_order == 'ASC' or sort_order == 'DESC':
-                arguments['sort_order'] = sort_order
-            else:
+            if sort_order not in ['ASC', 'DESC']:
                 errors.append('Invalid sortOrder')
+            else:
+                arguments['sort_order'] = sort_order
         if 'sortBy' in request.args:
             sort_by = request.args['sortBy']
             if sort_by in ['common_interests', 'fame_rate', 'age', 'distance']:
@@ -84,34 +102,25 @@ def research():
             return jsonify({'success':False,'message': 'User not found'})
         user_id = current_user['id']
         my_city_id = current_user['city_id']
-        baseRequest = '''
-            SELECT 
-                users.*,
-                COUNT(DISTINCT common.interest_id) AS common_interests,
-                ST_Distance(user_city.geom::geography, my_city.geom::geography) AS distance
-            FROM users
-            JOIN cities user_city ON users.city_id = user_city.id
-            JOIN cities my_city ON my_city.id = %s
-            LEFT JOIN users_interests other ON other.user_id = users.id
-            LEFT JOIN users_interests common 
-                ON common.interest_id = other.interest_id AND common.user_id = %s
-            WHERE users.id != %s AND users.registration_complete = TRUE
-        '''
-        params = [my_city_id, user_id, user_id]
+        baseRequest = f"""
+            {current_app.config["QUERIES"].get('-- get users')}
+            WHERE u.id != %(user_id)s AND u.registration_complete = TRUE
+            """
+        params = {'user_id': user_id, 'city_id': my_city_id}
         if 'age_min' in arguments:
-            baseRequest += f' AND users.age >= %s'
-            params.append(arguments['age_min'])
+            baseRequest += ' AND u.age >= %(age_min)s'
+            params.update({'age_min': arguments['age_min']})
         if 'age_max' in arguments:
-            baseRequest += f' AND users.age <= %s'
-            params.append(arguments['age_max'])
+            baseRequest += ' AND u.age <= %(age_max)s'
+            params.update({'age_max': arguments['age_max']})
         if 'location' in arguments:
-            cur.execute('SELECT id FROM cities WHERE cityname = %s', (arguments['location'],))
-            location = cur.fetchone()
-            if location is None:
+            from .cities import get_city_id
+            city_id_requested = get_city_id(arguments['location'])
+            if city_id_requested is None:
                 errors.append('Invalid location')
             else:
-                baseRequest += f' AND users.city_id = %s'
-                params.append(location['id'])
+                baseRequest += ' AND u.city_id = %(city_id_requested)s'
+                params.update({'city_id_requested': city_id_requested})
         if 'interest' in arguments:
             cur.execute('SELECT id FROM interests WHERE name = %s', (arguments['interest'],))
             interest = cur.fetchone()
@@ -119,21 +128,21 @@ def research():
                 errors.append('Invalid interest')
             else:
                 baseRequest += f'''
-                    AND users.id IN (
-                        SELECT user_id FROM users_interests WHERE interest_id = %s
+                    AND u.id IN (
+                        SELECT user_id FROM users_interests WHERE interest_id = %(interest_id)s
                     )
                 '''
-                params.append(interest['id'])
+                params.update({'interest_id': interest['id']})
         if not arguments.get('show_blocks', False):
             baseRequest += '''
-                AND users.id NOT IN (
-                    SELECT viewed_id FROM user_views WHERE viewer_id = %s AND blocked = TRUE
+                AND u.id NOT IN (
+                    SELECT viewed_id FROM user_views WHERE viewer_id = %(user_id)s AND blocked = TRUE
                     UNION
-                    SELECT viewer_id FROM user_views WHERE viewed_id = %s AND blocked = TRUE
+                    SELECT viewer_id FROM user_views WHERE viewed_id = %(user_id)s AND blocked = TRUE
                 )
             '''
-            params.extend([user_id, user_id])
-        baseRequest += ' GROUP BY users.id, user_city.geom, my_city.geom'
+            params.update({'user_id': user_id})
+        baseRequest += current_app.config["QUERIES"].get('-- group by users')
         sort_order = arguments.get('sort_order', 'DESC')
         if sort_order not in ['ASC', 'DESC']:
             sort_order = 'DESC'
@@ -143,27 +152,26 @@ def research():
         if sort_by == 'common_interests':
             baseRequest += f' ORDER BY common_interests {sort_order}'
         elif sort_by == 'fame_rate':
-            baseRequest += f' ORDER BY users.fame_rate {sort_order}'
+            baseRequest += f' ORDER BY u.fame_rate {sort_order}'
         elif sort_by == 'age':
-            baseRequest += f' ORDER BY users.age {sort_order}'
+            baseRequest += f' ORDER BY u.age {sort_order}'
         elif sort_by == 'distance':
             baseRequest += f' ORDER BY distance {sort_order}'
         elif sort_by == 'id':
-            baseRequest += f' ORDER BY users.id {sort_order}'
-        users = cur.fetchall()
-        # start = (page - 1) * profile_per_page
-        # end = start + profile_per_page
+            baseRequest += f' ORDER BY u.id {sort_order}'
+        cur.execute(baseRequest, params)
+        u_max = cur.rowcount
+        if u_max == 0:
+            return jsonify({'success':True, 'result': [], 'max_page': 0, 'page': page, 'profile_per_page': profile_per_page, 'message': "No u found"})
         offset = (page - 1) * profile_per_page
         limit = profile_per_page
         baseRequest += f' OFFSET {offset} LIMIT {limit}'
-        cur.execute(baseRequest, tuple(params))
-        users = cur.fetchall()
-        for user in users:
+        cur.execute(baseRequest, params)
+        u = cur.fetchall()
+        for user in u:
             research_results.append(convert_to_public_profile(user, current_user))
-        cur.execute('SELECT COUNT(*) FROM users WHERE id != %s AND registration_complete = TRUE', (user_id,))
-        count = cur.fetchone()
-        max_page = count['count'] // profile_per_page
-        if count['count'] % profile_per_page != 0:
+        max_page = u_max // profile_per_page
+        if u_max % profile_per_page != 0:
             max_page += 1
     return jsonify({'success': True, 'result':research_results, 'max_page': max_page, 'page': page, 'profile_per_page': profile_per_page, 'message': " ,".join(errors) if errors else "All good"})
 
