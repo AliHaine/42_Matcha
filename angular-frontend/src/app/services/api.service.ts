@@ -9,6 +9,7 @@ import {backendIP} from "../app.config";
 
 export class ApiService {
   private baseUrl = `http://${backendIP}/api`;
+  isButtonLoading: boolean = false;
 
   constructor(private http: HttpClient) { }
 

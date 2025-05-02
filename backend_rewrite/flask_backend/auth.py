@@ -24,7 +24,8 @@ def load_blacklist():
 
 def save_blacklist():
     try:
-        os.makedirs(os.path.dirname(BLACKLIST_FILE), exist_ok=True)
+        if not os.path.exists(os.path.dirname(BLACKLIST_FILE)):
+            os.makedirs(os.path.dirname(BLACKLIST_FILE), exist_ok=True)
     except Exception as e:
         print("Failed to create blacklist directory :", e)
     with open(BLACKLIST_FILE, 'w') as file:

@@ -169,7 +169,7 @@
             @else if (formNumber() === 3) {
                 <form>
                     <h1 class="title">Upload picture</h1>
-                    <input id="picture" type="file" accept="image/png, image/jpeg">
+                    <input id="picture" type="file" accept="image/gif, image/png, image/jpeg">
                 </form>
             }
             @else if (formNumber() === 4) {
@@ -192,7 +192,7 @@
                 </form>
             }
             @if (formNumber() !== 4 && formNumber() !== 2) {
-                <button class="button-style-1" (click)="applyTrigger()">Submit</button>
+                <app-button buttonName='Submit' (click)="applyTrigger()" />
             }
         </div>
     </mat-sidenav-content>
