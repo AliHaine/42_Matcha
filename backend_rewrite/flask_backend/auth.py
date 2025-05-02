@@ -235,29 +235,6 @@ def confirm_email():
         db.commit()
     return jsonify({'success': True, 'message': 'Email verified successfully'})
 
-@bp.route('/resend_confirmation', methods=['POST'])
-def resend_confirmation():
-    try:
-        data = request.json
-    except Exception as e:
-        print("RESEND CONFIRMATION ERROR : Failed to get json :", e)
-        return jsonify({'success': False, 'message': 'Invalid JSON'})
-    email = data.get('email', '')
-    if email == '':
-        return jsonify({'success': False, 'message': 'Email not provided'})
-    if type(email) != str:
-        return jsonify({'success': False, 'message': 'Invalid email'})
-    db = get_db()
-    with db.cursor() as cur:
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
-        user = cur.fetchone()
-        if user is None:
-            return jsonify({'success': False, 'message': 'User not found'})
-        from .user import send_confirmation_email
-        if send_confirmation_email(user['email']) == False:
-            return jsonify({'success': False, 'message': 'Failed to send confirmation email'})
-    return jsonify({'success': True, 'message': 'Confirmation email sent successfully'})
-
 @bp.route('/get_reset_password', methods=['POST'])
 def get_reset_password():
     try:
