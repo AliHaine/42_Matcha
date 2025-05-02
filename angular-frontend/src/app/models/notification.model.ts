@@ -1,19 +1,22 @@
+import {signal, WritableSignal} from "@angular/core";
+
 export class NotificationModel {
     notifId: number;
     action: string;
 
     userFullName: string;
-    profilePicture: string = 'defaultpp.jpg';
+    profilePicturePath: WritableSignal<string>;
+    havePicture: boolean;
     userId: number;
     premium: boolean;
 
     constructor(notificationValues: {[key:string]: any}) {
-        console.log(notificationValues);
         this.notifId = notificationValues["notif_id"];
         this.action = notificationValues["action"];
 
         this.userFullName = notificationValues["author"].fullname;
-        //this.profilePicture = notificationValues["author"].avatar;
+        this.profilePicturePath = signal('defaultpp.jpg');
+        this.havePicture = notificationValues["author"].avatar;
         this.userId = notificationValues["author"].id;
         this.premium = notificationValues["author"].premium;
     }

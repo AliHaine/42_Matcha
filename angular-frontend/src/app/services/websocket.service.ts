@@ -2,7 +2,6 @@ import { inject, Injectable, NgZone } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { ApiService } from "./api.service";
 import { NotificationService } from "./notification.service";
-import { NotificationModel } from "../models/notification.model";
 import { backendIP } from "../app.config";
 import { ChatService } from "./chat.service";
 
@@ -35,7 +34,7 @@ export class WebsocketService {
       });
 
       this.websocket.on('notification', (msg: any) => {
-        this.notificationService.addNotification(new NotificationModel(msg));
+        this.notificationService.addNotification(msg);
       });
 
       this.websocket.on('message', (msg: any) => {

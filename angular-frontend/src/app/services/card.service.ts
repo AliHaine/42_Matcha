@@ -1,7 +1,7 @@
 import {inject, Injectable, signal, WritableSignal} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ProfileModel} from "../models/profile.model";
-import {ProfileFactory} from "./profile.factory";
+import {ProfileFactory} from "../others/profile.factory";
 
 @Injectable({
     providedIn: 'root'

@@ -2,19 +2,27 @@
     @if (notificationService.notifications().length > 0) {
         <h1 class="text-center">Notifications</h1>
 
-        <button class="button-style-1" (click)="notificationClearAll()">Clear</button>
+        <button class="button-style-1" (click)="notificationClearAll()">Clear all</button>
 
-        <section id="main-grid">
+        <section id="main-section">
+            <div class="main-grid grid-header">
+                <div></div>
+                <div>Name</div>
+                <div>Action</div>
+                <div></div>
+            </div>
             @for (notif of notificationService.notifications(); track notif.notifId) {
-                <img class="profilePicture" [src]=notif.profilePicture />
-                <div>{{ notif.userFullName }}</div>
-                <div>{{ notif.action }}</div>
-                <button (click)="notificationClear(notif.notifId)" >del</button>
+                <div [routerLink]="['/profile/', notif.userId]" class="main-grid grid-row">
+                    <img class="profilePicture" [src]=notif.profilePicturePath() />
+                    <div>{{ notif.userFullName }}</div>
+                    <div>{{ notif.action }}</div>
+                    <mat-icon svgIcon="x" (click)="notificationClear(notif.notifId); $event.stopPropagation()"></mat-icon>
+                </div>
             }
         </section>
 
     } @else {
-        <div id="nothing">
+        <div class="text-center">
             <h1>Notifications</h1>
             <p>You don't have any notifications</p>
         </div>

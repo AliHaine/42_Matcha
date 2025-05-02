@@ -3,7 +3,7 @@ import {ProfileModel} from "../../models/profile.model";
 import {ApiService} from "../../services/api.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {take} from "rxjs";
-import {ProfileFactory} from "../../services/profile.factory";
+import {ProfileFactory} from "../../others/profile.factory";
 import {CardimageComponent} from "../cardimage/cardimage.component";
 
 @Component({
