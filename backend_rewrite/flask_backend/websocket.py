@@ -169,7 +169,8 @@ def parse_service_notification(data):
                     return
                 cur.execute('DELETE FROM waiting_notifications WHERE id = %s', (notif_id,))
                 db.commit()
-        delete_all_notifications(connected_users[request.sid]["id"])
+        else:
+            delete_all_notifications(connected_users[request.sid]["id"])
         return
     
 def update_available_chats(sid):
