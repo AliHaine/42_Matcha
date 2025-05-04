@@ -1,3 +1,8 @@
+#footerRight {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
 
 
 @media (min-width: 1024px) {
