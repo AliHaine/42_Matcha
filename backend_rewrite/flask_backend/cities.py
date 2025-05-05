@@ -2,8 +2,6 @@ from .db import get_db
 import requests
 
 def get_city_id(cityname):
-    print(f"City name: {cityname}")
-    print(cityname.rsplit(" "))
     citycode = cityname.split(" ")[-1]
     citycode = citycode[1:len(citycode) - 1]
     cityname = cityname[0:(len(cityname) - len(citycode) - 2)].strip()
