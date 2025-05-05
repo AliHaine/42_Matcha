@@ -6,5 +6,4 @@ matcha.session.sql
 .idea
 /angular-frontend/package-lock.json
 test.json
-**/app.config.ts
 settings/
