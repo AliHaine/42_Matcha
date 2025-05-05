@@ -40,6 +40,10 @@ export class AuthService {
     this.websocketService.socketLoaderTmp();
     this.isLoggedIn.set(true);
     this.apiService.getData('/profiles/me', {}).subscribe(result => {
+      if (!result) {
+        this.logout();
+        return; 
+      }
       this.currentUserProfileModel.set(this.profileFactory.getNewProfile(result['user']));
     });
   }
