@@ -1,8 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
-import {PageService} from "../../services/page.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PageModel} from "../../models/page.model";
-import {mergeMap, switchMap} from 'rxjs'
+import {mergeMap} from 'rxjs'
 import { ApiService } from '../../services/api.service';
 import { PopupService } from '../../services/popup.service';
 
@@ -15,7 +14,6 @@ changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageComponent implements OnInit {
 
-    pageService = inject(PageService);
     apiService = inject(ApiService);
     popupService = inject(PopupService);
     route = inject(ActivatedRoute);

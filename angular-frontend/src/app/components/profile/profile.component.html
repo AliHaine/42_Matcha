@@ -1,49 +1,51 @@
 <div id="profileMain">
-    <h1>{{profile().firstname}} {{profile().lastname}}</h1>
-    <div class="profilePicturesContainer">
-        <app-cardimage [profile]="profile()"></app-cardimage>
-    </div>
-
-    <div id="city">
-        From {{profile().city}}
-        <br>
-        Fame: {{profile().fameRate}} | Match: {{profile().matching()}}
-        <br>
-        Last connection: {{profile().lastConnetion}}
-    </div>
-
-    <h3>Looking for</h3>
-    <div class="multipleArea">
-        @for (value of profile().lookingFor; track value) {
-            <div class="value">{{ value }}</div>
-        }
-    </div>
-
-    <h3>Shape</h3>
-    @if (profile().shape) {
-        <div class="multipleArea">
-            <div class="value">{{ profile().shape.at(2) }}</div>
-            <div class="value">{{ profile().shape.at(0) }}CM</div>
-            <div class="value">{{ profile().shape.at(1) }}KG</div>
+    @if (profile()) {
+        <h1>{{ profile()!.firstname }} {{ profile()!.lastname }}</h1>
+        <div class="profilePicturesContainer">
+            <app-cardimage [profile]="profile()!"></app-cardimage>
         </div>
+
+        <div id="city">
+            From {{ profile()!.city }}
+            <br>
+            Fame: {{ profile()!.fameRate }} | Match: {{ profile()!.matching() }}
+            <br>
+            Last connection: {{ profile()!.lastConnetion }}
+        </div>
+
+        <h3>Looking for</h3>
+        <div class="multipleArea">
+            @for (value of profile()!.lookingFor; track value) {
+                <div class="value">{{ value }}</div>
+            }
+        </div>
+
+        <h3>Shape</h3>
+        <div class="multipleArea">
+            <div class="value">{{ profile()!.shape.at(2) }}</div>
+            <div class="value">{{ profile()!.shape.at(0) }}CM</div>
+            <div class="value">{{ profile()!.shape.at(1) }}KG</div>
+        </div>
+
+        <h3>Health</h3>
+        <div class="multipleArea">
+            @for (value of profile()!.health; track value) {
+                <div class="value">{{ value }}</div>
+            }
+        </div>
+
+        <h3>Interests</h3>
+        <div class="multipleArea">
+            @for (value of profile()!.interestsModels.at(0)?.interests; track value) {
+                <div class="value">{{ value }}</div>
+            }
+        </div>
+
+        <div id="description">
+            <h2>More about me</h2>
+            <p>{{ profile()!.description }}</p>
+        </div>
+    } @else {
+        <app-loading />
     }
-
-    <h3>Health</h3>
-    <div class="multipleArea">
-        @for (value of profile().health; track value) {
-            <div class="value">{{ value }}</div>
-        }
-    </div>
-
-    <h3>Interests</h3>
-    <div class="multipleArea">
-        @for (value of profile().interestsModels.at(0)?.interests; track value) {
-            <div class="value">{{ value }}</div>
-        }
-    </div>
-
-    <div id="description">
-        <h2>More about me</h2>
-        <p>{{profile().description}}</p>
-    </div>
 </div>

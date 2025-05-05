@@ -1,5 +1,4 @@
 <div id="search-content">
-    <img src="/logoicon.png" (click)="updateSearch(1)">
     <form id="filter-area" [formGroup]="formGroup">
         <div>
             <label>Age gap</label>
@@ -26,12 +25,18 @@
                 <div mat-menu-item (click)="sortBy('common_interests')">Interest</div>
             </mat-menu>
         </div>
+        <button class="button-style-1" (click)="updateSearch(1)">Apply filters</button>
     </form>
-    <div id="cards">
-        <app-card *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p(), totalItems: searchService.maxPages * 6 }"
-                  [profile]="profile">
-        </app-card>
-    </div>
+    @if (searchService.searchProfiles().length > 0) {
+        <div id="cards">
+            <app-card
+                    *ngFor="let profile of searchService.searchProfiles() | paginate: { itemsPerPage: 6, currentPage: p(), totalItems: searchService.maxPages * 6 }"
+                    [profile]="profile">
+            </app-card>
+        </div>
+    } @else {
+        <app-loading />
+    }
     <div id="pagination">
         <pagination-controls (pageChange)="updateSearch($event)"></pagination-controls>
     </div>

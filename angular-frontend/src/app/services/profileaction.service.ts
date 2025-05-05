@@ -20,6 +20,10 @@ export class ProfileActionService {
         });
     }
 
+    nextProfile(profile: ProfileModel): void {
+        this.cardService.switchProfile(this.cardService.getIndexFromProfile(profile));
+    }
+
     likeProfile(profile: ProfileModel): void {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: 'like'}).subscribe(result => {
             if (!result['success'])
