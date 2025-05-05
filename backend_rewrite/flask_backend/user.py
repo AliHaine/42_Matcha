@@ -349,10 +349,16 @@ def check_fields_step3(data, fields=STEP3_FIELDS):
                     if len(data[field]) > 6:
                         result['success'] = False
                         result['errors'].append(f"Field interests is not valid, at most 6 interests are required")
+                    seen = set()
                     for interest in data[field]:
-                        if interest not in current_app.config['AVAILABLE_INTERESTS']:
+                        if interest in seen:
+                            result['success'] = False
+                            result['errors'].append(f"Field {field}/{interest} is duplicated")
+                        elif interest not in current_app.config['AVAILABLE_INTERESTS']:
                             result['success'] = False
                             result['errors'].append(f"Field {field}/{interest} is not valid")
+                        else:
+                            seen.add(interest)
             if field == "description":
                 if not isinstance(data[field], str):
                     result['success'] = False
