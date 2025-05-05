@@ -26,6 +26,8 @@ export class SearchService {
     this.searchProfiles.set([]);
     data["profile_per_page"] = this.profilePerPage;
     this.apiService.getData('/research', data).subscribe(result => {
+      if (!result)
+        return;
       for (const data of result["result"])
         this.searchProfiles().push(this.profileFactory.getNewProfile(data));
       this.maxPages = result['max_page'];

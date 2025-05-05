@@ -26,8 +26,10 @@ export class ProfileActionService {
 
     likeProfile(profile: ProfileModel): void {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: 'like'}).subscribe(result => {
-            if (!result['success'])
-                this.popupService.displayPopupBool(result['message'], result['success'])
+            if (!result['success']) {
+                this.popupService.displayPopupBool(result['message'], result['success']);
+                return;
+            }
             this.cardService.switchProfile(this.cardService.getIndexFromProfile(profile));
             profile.matching.set(result['matching'])
         })
