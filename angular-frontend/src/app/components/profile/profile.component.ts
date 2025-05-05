@@ -28,7 +28,14 @@ export class ProfileComponent {
 
   constructor() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
-      this.apiService.getData(`/profiles/${params.get('id')}`, {}).subscribe(profile => {
+      const param = Number(params.get('id'));
+
+      if (isNaN(param)) {
+        this.popupService.displayPopupBool('Profile not found', false)
+        this.router.navigate(['/']);
+        return;
+      }
+      this.apiService.getData(`/profiles/${param}`, {}).subscribe(profile => {
         if (!profile['success']) {
           this.popupService.displayPopupBool(profile['message'], profile['success'])
           this.router.navigate(['/']);

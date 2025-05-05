@@ -92,6 +92,7 @@
 }
 
 .messageButton {
+    color: var(--color-1);
     border: 2px solid var(--color-1);
 }
 
