@@ -69,9 +69,8 @@ export class ApiService {
 
     getClientIp(): Observable<string> {
         return this.http.get("https://checkip.amazonaws.com/", {responseType: "text"}).pipe(
-          catchError(error => {
-            console.error("Error fetching IP:", error);
-            return "Mulhouse";
+          catchError(_ => {
+            return "Mulhouse (68100)";
           })
         );
     }
@@ -79,12 +78,14 @@ export class ApiService {
     getClientCityFromIp(): Observable<string> {
       return this.getClientIp().pipe(
           switchMap(ipAddress => this.http.get<any>("http://ip-api.com/json/" + ipAddress).pipe(
-              catchError(error => {
-                console.error("Error fetching city:", error);
-                return of({ city: "Mulhouse (68100)" })
+              catchError(_ => {
+                return of({ city: "Mulhouse", zip: '68100' })
               })
           )),
-          map(value => `${value.city} (${value.zip.slice(0,5)})`)
+          map(value => `${value.city} (${value.zip.slice(0,5)})`),
+          catchError(_ => {
+            return "Mulhouse (68100)";
+          })
       )
     }
 }

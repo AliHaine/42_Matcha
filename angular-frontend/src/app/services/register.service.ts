@@ -13,9 +13,13 @@ export class RegisterService {
 
     constructor() {
         this.apiService.getData("/getInformations/interests", {}).subscribe((data: any) => {
+            if (!data)
+                return;
             this.INTERESTS.set(data["interests"]);
         });
         this.apiService.getData("/getInformations/register", {}).subscribe((data: any) => {
+            if (!data)
+                return;
             this.registerInfo.set(data["registerInfo"]);
         });
     }

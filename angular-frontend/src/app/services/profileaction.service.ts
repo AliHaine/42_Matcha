@@ -16,6 +16,8 @@ export class ProfileActionService {
 
     constructor() {
         this.apiService.getData("/getInformations/reportReasons", {}).subscribe(result => {
+            if (!result)
+                return;
             this.reportReason = result["reportReasons"];
         });
     }
@@ -26,6 +28,8 @@ export class ProfileActionService {
 
     likeProfile(profile: ProfileModel): void {
         this.apiService.postData(`/profiles/${profile.userId}`, {action: 'like'}).subscribe(result => {
+            if (!result)
+                return;
             if (!result['success']) {
                 this.popupService.displayPopupBool(result['message'], result['success']);
                 return;

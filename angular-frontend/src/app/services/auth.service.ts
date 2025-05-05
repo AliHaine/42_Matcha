@@ -27,15 +27,12 @@ export class AuthService {
   accessTokenCheck(): Observable<boolean> {
       return this.apiService.getData("/auth/verify_token", {}).pipe(
           tap(result => {
-          if (result["success"] === false) {
-            if (result['code'] === "email_confirm") {
-              
-            }
+          if (!result || result["success"] === false) {
             this.logout();
           } else
               this.login();
           }),
-          map(result => result["success"])
+          map(result => result["success"]),
       );
   }
 
