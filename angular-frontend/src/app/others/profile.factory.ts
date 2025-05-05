@@ -18,6 +18,8 @@ export class ProfileFactory {
         from(array).pipe(
             concatMap(value => this.apiService.getDataImg("/profiles/profile_pictures", {"user_id": profile.userId, "photo_number": value}))
         ).subscribe(result => {
+            if (!result)
+                return;
             const reader = new FileReader();
             reader.readAsDataURL(result);
             reader.onloadend = () => {
