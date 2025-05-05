@@ -63,7 +63,7 @@ def like_action(user, user_getting, user_view, old_matched):
         if user_view["blocked"]:
             return False, "User is blocked"
         if user_getting["pictures_number"] == 0:
-            return False, "User has no profile picture set"
+            return False, "Please upload a picture to like"
         cursor.execute("UPDATE user_views SET liked = NOT liked WHERE id = %s", (user_view["id"],))
         db.commit()
         cursor.execute("SELECT liked from user_views WHERE id = %s", (user_view["id"],))
