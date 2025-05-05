@@ -3,7 +3,7 @@
 }
 
 #openButton {
-    position: fixed;
+    position: absolute;
     -webkit-mask: url('/icons/arrow.png') center/contain;
     mask-repeat: no-repeat;
     aspect-ratio: 1;

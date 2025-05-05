@@ -23,25 +23,25 @@
             }
         </div>
         <div class="profilePicIcons">
-            @if (profile().matching() === "like" || profile().matching() === "match") {
-                <button (click)="profileActionService.likeProfile(profile())" class="button xButton">
-                    <mat-icon svgIcon="x"></mat-icon>
-                </button>
-            } @else {
-                <button (click)="profileActionService.likeProfile(profile())" class="button heartButton">
-                    <mat-icon svgIcon="heart"></mat-icon>
-                </button>
-            }
-            <button class="button superLikeButton">
-                <mat-icon svgIcon="star"></mat-icon>
+            <button [matMenuTriggerFor]="menu" class="button reportButton">
+                <mat-icon svgIcon="report"></mat-icon>
             </button>
             @if (profile().matching() === "match") {
                 <button (click)="sendMessageTrigger()" class="button messageButton">
                     <mat-icon svgIcon="chat"></mat-icon>
                 </button>
             }
-            <button [matMenuTriggerFor]="menu" class="button reportButton">
-                <mat-icon svgIcon="report"></mat-icon>
+            @if (profile().matching() === "like" || profile().matching() === "match") {
+                <button (click)="profileActionService.likeProfile(profile())" class="button heartButton">
+                    <mat-icon svgIcon="heart-unlike"></mat-icon>
+                </button>
+            } @else {
+                <button (click)="profileActionService.likeProfile(profile())" class="button heartButton">
+                    <mat-icon svgIcon="heart"></mat-icon>
+                </button>
+            }
+            <button (click)="profileActionService.nextProfile(profile())" class="button xButton">
+                <mat-icon svgIcon="x"></mat-icon>
             </button>
             <mat-menu #menu="matMenu">
                 @for (reason of profileActionService.reportReason; track reason) {

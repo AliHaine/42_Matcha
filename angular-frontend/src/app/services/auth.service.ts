@@ -4,7 +4,7 @@ import {Router} from "@angular/router";
 import {WebsocketService} from "./websocket.service";
 import {map, Observable, tap} from "rxjs";
 import {ProfileModel} from "../models/profile.model";
-import {ProfileFactory} from "./profile.factory";
+import {ProfileFactory} from "../others/profile.factory";
 
 @Injectable({
   providedIn: 'root'

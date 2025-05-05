@@ -1,7 +1,7 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {ProfileModel} from "../models/profile.model";
 import {ApiService} from "./api.service";
-import {ProfileFactory} from "./profile.factory";
+import {ProfileFactory} from "../others/profile.factory";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class SearchService {
   profilePerPage: number = 2;
 
   constructor() {
-    this.setProfilePerPage(4);
+    this.setProfilePerPage(6);
   }
 
   setProfilePerPage(per_page: number) {

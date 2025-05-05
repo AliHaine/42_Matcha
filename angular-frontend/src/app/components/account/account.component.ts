@@ -12,7 +12,7 @@ import { PaypalComponent } from "../utils/paypal/paypal.component";
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { ProfileModel } from '../../models/profile.model';
-import { ProfileFactory } from '../../services/profile.factory';
+import { ProfileFactory } from '../../others/profile.factory';
 import {RouterLink} from "@angular/router";
 import {PopupService} from "../../services/popup.service";
 import { MatSidenavModule } from '@angular/material/sidenav';

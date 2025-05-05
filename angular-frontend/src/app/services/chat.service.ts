@@ -3,7 +3,7 @@ import {ChatModel} from "../models/chat.model";
 import {ApiService} from "./api.service";
 import {concatMap, from, map} from "rxjs";
 import {ChatBubbleModel} from "../models/chatbubble.model";
-import { BubbleFactory } from './bubble.factory';
+import { BubbleFactory } from '../others/bubble.factory';
 
 @Injectable({
   providedIn: 'root'

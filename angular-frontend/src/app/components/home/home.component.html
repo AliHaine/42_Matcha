@@ -1,5 +1,4 @@
 <div id="home-content">
-    <img src="/logoicon.png" (click)="cardService.refreshProfile()">
     <div id="cards">
         @for (profile of cardService.profiles().slice(0, 6); track profile.userId) {
             <app-card [profile]="profile"/>

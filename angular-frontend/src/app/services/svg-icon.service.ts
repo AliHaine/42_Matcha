@@ -45,6 +45,10 @@ export class SvgIconService {
             this.domSanitizer.bypassSecurityTrustResourceUrl('icons/heart.svg')
         );
         this.matIconRegistry.addSvgIcon(
+            'heart-unlike',
+            this.domSanitizer.bypassSecurityTrustResourceUrl('icons/heart-unlike.svg')
+        );
+        this.matIconRegistry.addSvgIcon(
             'star',
             this.domSanitizer.bypassSecurityTrustResourceUrl('icons/star.svg')
         );

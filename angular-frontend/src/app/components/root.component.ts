@@ -26,7 +26,7 @@ import {SvgIconService} from "../services/svg-icon.service";
     </div>
     <app-popup/>
   `,
-  styles: ['#root-content { display: flex; flex-direction: column; min-height: 100vh;}']
+  styleUrl: './root.component.css'
 })
 export class RootComponent {
   authService = inject(AuthService);
