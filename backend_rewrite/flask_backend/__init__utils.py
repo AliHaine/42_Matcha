@@ -80,22 +80,6 @@ def load_queries(app, query_file):
         print(f"INIT FAIL : Failed to load queries from {query_file}: {e}")
     app.config['QUERIES'] = queries_dict
 
-def load_common_passwords(app, file_path):
-    """
-    charge un dictionnaire de mots de passe communs à partir d'un fichier et les stocke dans la configuration de l'application.
-    Le fichier doit contenir un mot de passe par ligne.
-    """
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            lines = f.read().splitlines()
-        # Remove duplicates and empty lines
-        common_passwords = set(filter(None, (line.strip().lower() for line in lines if line.strip() and len(line.strip()) >= 5)))
-        print("INIT : Common passwords loaded successfully")
-    except Exception as e:
-        print(f"INIT FAIL : Failed to load common passwords from {file_path}: {e}")
-        common_passwords = set()
-    app.config['COMMON_PASSWORDS'] = common_passwords
-
 def set_interests_list(app, cur):
     """
     Charge la liste des centres d'intérêt à partir de la base de données et les stocke dans la configuration de l'application.

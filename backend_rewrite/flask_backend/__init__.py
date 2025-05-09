@@ -15,7 +15,6 @@ def create_app(test_config=None):
     from . import db
     from .__init__utils import (
         load_queries,
-        load_common_passwords,
         set_interests_list,
         export_constraints,
         reset_active_connections,
@@ -89,7 +88,6 @@ def create_app(test_config=None):
                 export_constraints(app, cur)
                 reset_active_connections(cur)
             load_queries(app, os.path.join(app.config['BASE_DIR'], 'queries.sql'))
-            load_common_passwords(app, os.path.join(app.config['BASE_DIR'], 'common_passwords.txt'))
             create_paths(app)
             init_mail_server(app)
             register_blueprints(app)

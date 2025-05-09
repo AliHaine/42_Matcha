@@ -214,9 +214,6 @@ def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
             if field == "password":
-                PASSWORD_ALLOWED_CHARACTERS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-                SPECIAL_CHARACTERS = set("-/!@#$%^&*()_+;:,.?<>~`'\"{}[]|\\")
-                
                 password = data.get(field)
                 
                 if not isinstance(password, str):
@@ -230,46 +227,25 @@ def check_fields_step1(data, fields=STEP1_FIELDS, profile_exists_check=True):
                         result['success'] = False
                         result['errors'].append(f"Field {field} is too long")
                     else:
-                        invalid_chars = [c for c in password if c not in PASSWORD_ALLOWED_CHARACTERS and c not in SPECIAL_CHARACTERS]
-                        if invalid_chars:
-                            result['success'] = False
-                            result['errors'].append(f"Field {field} contains invalid characters: {', '.join(invalid_chars)}")
-                        else:
-                            has_lower = any(c.islower() for c in password)
-                            has_upper = any(c.isupper() for c in password)
-                            has_digit = any(c.isdigit() for c in password)
-                            has_special = any(c in SPECIAL_CHARACTERS for c in password)
+                        has_lower = any(c.islower() for c in password)
+                        has_upper = any(c.isupper() for c in password)
+                        has_digit = any(c.isdigit() for c in password)
 
-                            if not has_lower:
-                                result['success'] = False
-                                result['errors'].append("Password : at least one lowercase letter is required")
-                            if not has_upper:
-                                result['success'] = False
-                                result['errors'].append("Password : at least one uppercase letter is required")
-                            if not has_digit:
-                                result['success'] = False
-                                result['errors'].append("Password : at least one digit is required")
-                            if not has_special:
-                                result['success'] = False
-                                result['errors'].append("Password : at least one special character is required")
-                            if check_common_password(password):
-                                result['success'] = False
-                                result['errors'].append(f"Field {field} is too common")
+                        if not has_lower:
+                            result['success'] = False
+                            result['errors'].append("Password : at least one lowercase letter is required")
+                        if not has_upper:
+                            result['success'] = False
+                            result['errors'].append("Password : at least one uppercase letter is required")
+                        if not has_digit:
+                            result['success'] = False
+                            result['errors'].append("Password : at least one digit is required")
             if field == "gender":
                 if not isinstance(data[field], str) or data[field] not in ["M", "F"]:
                     result['success'] = False
                     result['errors'].append(f"Field {field} is not valid")
     return result
 
-def check_common_password(password=""):
-    password = password.lower()
-    common_passwords = current_app.config['COMMON_PASSWORDS']
-    for common_password in common_passwords:
-
-        if common_password in password:
-            print("Common password found", common_password, password)
-            return True
-    return False
 
 def check_fields_step2(data, fields=STEP2_FIELDS):
     result = {
