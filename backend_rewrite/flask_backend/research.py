@@ -87,7 +87,7 @@ def research():
                 arguments['sort_order'] = sort_order
         if 'sortBy' in request.args:
             sort_by = request.args['sortBy']
-            if sort_by in ['common_interests', 'fame_rate', 'age', 'distance']:
+            if sort_by in ['fame_rate', 'age', 'distance']:
                 arguments['sort_by'] = sort_by
             else:
                 errors.append('Invalid sortBy')
@@ -147,10 +147,8 @@ def research():
         if sort_order not in ['ASC', 'DESC']:
             sort_order = 'DESC'
         sort_by = arguments.get('sort_by', "")
-        if sort_by not in ['common_interests', 'fame_rate', 'age', 'distance']:
+        if sort_by not in ['fame_rate', 'age', 'distance']:
             sort_by = 'id'
-        if sort_by == 'common_interests':
-            baseRequest += f' ORDER BY common_interests {sort_order}'
         elif sort_by == 'fame_rate':
             baseRequest += f' ORDER BY u.fame_rate {sort_order}'
         elif sort_by == 'age':
